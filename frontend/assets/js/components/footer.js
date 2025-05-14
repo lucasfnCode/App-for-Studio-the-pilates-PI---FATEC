@@ -2,25 +2,25 @@ export const footerHtml = `
 <section class="p-4 border-top d-flex">
 
     <div class="col mb-3 text-center">
-      <h5>A</h5>
+      <h5 class="pt-2">A</h5>
       <ul class="nav flex-column">
       </ul>
     </div>
 
     <div class="col mb-3 text-center">
-      <h5>B</h5>
+      <h5 class="pt-2">B</h5>
       <ul class="nav flex-column">
       </ul>
     </div>
 
     <div class="col mb-3 text-center">
-      <h5>C</h5>
+      <h5 class="pt-2">C</h5>
       <ul class="nav flex-column">
       </ul>
     </div>
 
     <div class="col mb-3 text-center">
-      <h5>D</h5>
+      <h5 class="pt-2">D</h5>
       <ul class="nav flex-column">
       </ul>
     </div>
