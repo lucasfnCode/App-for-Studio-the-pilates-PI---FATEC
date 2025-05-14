@@ -1,0 +1,6 @@
+5
+73/home/gabriel/App-for-Studio-the-pilates-PI---FATEC/frontend/package.json1747187933746267067 0
+78/home/gabriel/App-for-Studio-the-pilates-PI---FATEC/frontend/package-lock.json1747187563932569829 0
+76/home/gabriel/App-for-Studio-the-pilates-PI---FATEC/frontend/html/index.html1747187827314004977 0
+65/home/gabriel/App-for-Studio-the-pilates-PI---FATEC/frontend/html1747187243217916139 1
+60/home/gabriel/App-for-Studio-the-pilates-PI---FATEC/frontend1747187951182830036 1
