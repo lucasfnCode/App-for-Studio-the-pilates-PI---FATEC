@@ -670,6 +670,7 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 var _bootstrapBundleMinJs = require("bootstrap/dist/js/bootstrap.bundle.min.js");
 var _home = require("./pages/home/home");
 var _header = require("./components/header");
+var _footer = require("./components/footer");
 function renderContentBasedOnHash() {
     switch(location.hash){
         case "":
@@ -681,7 +682,7 @@ function renderContentBasedOnHash() {
 }
 renderContentBasedOnHash();
 
-},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX"}],"joWv1":[function(require,module,exports,__globalThis) {
+},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo"}],"joWv1":[function(require,module,exports,__globalThis) {
 /*!
   * Bootstrap v5.3.6 (https://getbootstrap.com/)
   * Copyright 2011-2025 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
@@ -3726,7 +3727,7 @@ parcelHelpers.export(exports, "homeScreen", ()=>homeScreen);
 var _main = require("../../components/main");
 function homeScreen() {
     const homeHTML = `
-    <section class="container d-flex vh-100 p-5">
+    <section class="container d-flex p-5">
             <section class="container p-4 border border-white rounded" id="painelHome">
                 <h1 class="h1 text-center">
                     Bem vindo
@@ -3735,6 +3736,42 @@ function homeScreen() {
                 <p class="fs-5 text-center">
                     Abublebl\xe9 abu abubl\xe9 abuua
                 </p>
+            </section>
+            
+            
+            </section>
+
+            <section class="row row-cols-3 p-4">
+
+                <div class="col-sm">
+                <div class="card text-bg-warning text-center w-75" style="width: 20rem;">
+                    <img src="https://placehold.co/10" class="card-img-top" alt="...">
+                        <div class="card-body p-2">
+                            <h5 class="card-title">Planos</h5>
+                                <a href="#" class="btn btn-outline-dark">Go somewhere</a>
+                        </div>
+                </div>
+                </div>
+                
+                <div class="col-sm">
+                <div class="card text-bg-warning text-center w-75" style="width: 20rem;">
+                    <img src="https://placehold.co/10" class="card-img-top" alt="...">
+                        <div class="card-body p-2">
+                            <h5 class="card-title">Card title</h5>
+                                <a href="#" class="btn btn-outline-dark">Go somewhere</a>
+                        </div>
+                </div>
+                </div>
+
+                <div class="col-sm">
+                <div class="card text-bg-warning text-center w-75" style="width: 20rem;">
+                    <img src="https://placehold.co/10" class="card-img-top" alt="...">
+                        <div class="card-body p-2">
+                            <h5 class="card-title">Card title</h5>
+                                <a href="#" class="btn btn-outline-dark">Go somewhere</a>
+                        </div>
+                </div>
+                </div>
             </section>
 `;
     const main = (0, _main.getOrCreateMainElement)();
@@ -3750,10 +3787,8 @@ const getOrCreateMainElement = ()=>{
     if (!main) {
         main = document.createElement('main');
         main.id = 'main';
-        // const header = document.getElementsByTagName('header')[0];
-        // if (header) {
-        //     header.insertAdjacentElement('afterend', main);
-        // }
+        const header = document.getElementsByTagName('header')[0];
+        if (header) header.insertAdjacentElement('afterend', main);
         const footer = document.getElementsByTagName('footer')[0];
         if (footer) footer.insertAdjacentElement('beforebegin', main);
         else document.body.appendChild(main);
@@ -3815,6 +3850,51 @@ const headerHtml = `
 const headerElement = document.createElement('header');
 headerElement.innerHTML = headerHtml;
 document.body.insertAdjacentElement('afterbegin', headerElement);
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"dr3uo":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "footerHtml", ()=>footerHtml);
+parcelHelpers.export(exports, "createFooterElement", ()=>createFooterElement);
+const footerHtml = `
+<section class="p-4 border-top d-flex">
+
+    <div class="col mb-3 text-center">
+      <h5>A</h5>
+      <ul class="nav flex-column">
+      </ul>
+    </div>
+
+    <div class="col mb-3 text-center">
+      <h5>B</h5>
+      <ul class="nav flex-column">
+      </ul>
+    </div>
+
+    <div class="col mb-3 text-center">
+      <h5>C</h5>
+      <ul class="nav flex-column">
+      </ul>
+    </div>
+
+    <div class="col mb-3 text-center">
+      <h5>D</h5>
+      <ul class="nav flex-column">
+      </ul>
+    </div>
+
+  </section>
+`;
+const createFooterElement = ()=>{
+    let footerElement = document.getElementById("footer");
+    if (!footerElement) {
+        footerElement = document.createElement("footer");
+        footerElement.id = "footer";
+        footerElement.innerHTML = footerHtml;
+        document.body.insertAdjacentElement("beforeend", footerElement);
+    }
+};
+createFooterElement();
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
 
