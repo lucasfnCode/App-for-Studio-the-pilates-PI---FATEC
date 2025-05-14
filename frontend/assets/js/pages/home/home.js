@@ -3,10 +3,10 @@ import { getOrCreateMainElement } from "../../components/main";
 
 export function homeScreen(){
     const homeHTML= `
-    <section class="container-xxl d-flex flex-wrap col-md-5">
-            <section class="container-sm d-inline py-0" id="first-container">
+    <section class="container d-flex vh-100 p-5">
+            <section class="container p-4 border border-white rounded" id="painelHome">
                 <h1 class="h1 text-center">
-                    Home
+                    Bem vindo
                 </h1>
                 
                 <p class="fs-5 text-center">

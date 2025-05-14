@@ -3726,10 +3726,10 @@ parcelHelpers.export(exports, "homeScreen", ()=>homeScreen);
 var _main = require("../../components/main");
 function homeScreen() {
     const homeHTML = `
-    <section class="container-xxl d-flex flex-wrap col-md-5">
-            <section class="container-sm d-inline py-0" id="first-container">
+    <section class="container d-flex vh-100 p-5">
+            <section class="container p-4 border border-white rounded" id="painelHome">
                 <h1 class="h1 text-center">
-                    Home
+                    Bem vindo
                 </h1>
                 
                 <p class="fs-5 text-center">
@@ -3796,13 +3796,21 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "headerHtml", ()=>headerHtml);
 const headerHtml = `
+<nav class="d-flex justify-content-between align-items-center px-4 py-2 border-bottom">
 
-    <nav class="d-flex justify-content-center border-bottom text-bg-warning">
-        <section class="container-sm text text-center">
-            <h1>Bem Vindo ao Studio</h1>  
-        </section>
-    </nav>
-    
+  <div class="nav nav-underline">
+    <a class="nav-link m-1 text-secondary" aria-current="page" href="#home">Home</a>
+    <a class="nav-link m-1 text-secondary" href="#">Agendamento</a>
+    <a class="nav-link m-1 text-secondary" href="#">Link</a>
+  </div>
+
+  <div class="nav">
+    <a class="nav-link m-1 text-secondary" href="#">
+      <i class="bi bi-people-fill"></i>
+    </a>
+  </div>
+
+</nav>
 `;
 const headerElement = document.createElement('header');
 headerElement.innerHTML = headerHtml;
