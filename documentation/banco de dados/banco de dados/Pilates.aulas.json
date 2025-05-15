@@ -1,0 +1,12 @@
+[{
+  "_id": {
+    "$oid": "67f08325d5ffb65cce5d56f0"
+  },
+  "aluno": "Maria Oliveira",
+  "studio": "Studio Central",
+  "instrutor": "João Silva",
+  "data": "2025-04-10",
+  "horario": "10:00",
+  "status": "confirmada",
+  "tipo": "aula_fixa"
+}]
