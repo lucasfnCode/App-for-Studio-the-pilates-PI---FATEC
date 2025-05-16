@@ -1,12 +1,13 @@
-package br.com.studiomanager.service;
+package br.com.semesperanca.app.managing.pilates.studios.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import br.com.studiomanager.model.Aluno;
-import br.com.studiomanager.repository.AlunoRepository;
 import org.springframework.stereotype.Service;
+
+import br.com.semesperanca.app.managing.pilates.studios.model.Aluno;
+import br.com.semesperanca.app.managing.pilates.studios.repository.AlunoRepository;
 
 @Service
 public class AlunoService {

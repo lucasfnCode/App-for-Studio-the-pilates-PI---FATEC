@@ -1,4 +1,4 @@
-package br.com.studiomanager.model;
+package br.com.semesperanca.app.managing.pilates.studios.model;
 
 import java.util.List;
 import org.springframework.data.annotation.Id;
