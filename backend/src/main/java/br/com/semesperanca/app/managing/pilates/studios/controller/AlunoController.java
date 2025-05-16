@@ -14,8 +14,9 @@ import br.com.semesperanca.app.managing.pilates.studios.service.AlunoService;
 
 
 @RestController
-@RequestMapping("/Alunos")
+@RequestMapping("/alunos")
 public class AlunoController {
+    
     @Autowired
     private AlunoService alunoService;
     
