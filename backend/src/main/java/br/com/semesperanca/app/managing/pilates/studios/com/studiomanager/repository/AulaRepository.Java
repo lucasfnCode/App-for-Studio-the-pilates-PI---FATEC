@@ -1,1 +1,0 @@
-public interface AulaRepository extends JpaRepository<Aula, String> {}
