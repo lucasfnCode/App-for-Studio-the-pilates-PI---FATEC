@@ -1,4 +1,4 @@
-package br.com.semesperanca.app.managing.pilates.studios.controller;
+package br.com.semesperanca.app.managing.pilates.studios.application.controller;
 
 import java.util.List;
 
