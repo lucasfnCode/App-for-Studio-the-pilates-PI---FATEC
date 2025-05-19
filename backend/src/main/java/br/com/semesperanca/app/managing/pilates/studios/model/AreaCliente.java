@@ -7,13 +7,13 @@ import java.util.List;
 
 @Data
 public class AreaCliente {
-    private LocalDate dataVencimentoPagamento;
+    private LocalDate data_vencimento_pagamento;
     private int reposicoes;
-    private List<ProximaAula> proximasAulas;
-    private String meuPlano;
-    private String comprovantePagamento;
-    private String reciboFiscal;
+    private List<ProximaAula> proximas_aulas;
+    private String meu_plano;
+    private String comprovante_pagamento;
+    private String recibo_fiscal;
     private String contrato;
-    private boolean autorizacaoImagem;
+    private boolean autorizacao_imagem;
 }
 

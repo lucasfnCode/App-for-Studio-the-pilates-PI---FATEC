@@ -8,10 +8,10 @@ public class Plano {
     private String modalidade;
     private String frequencia;
     private String duracao;
-    private LocalDate dataInicio;
-    private String formaPagamento;
+    private LocalDate data_inicio;
+    private String forma_pagamento;
     private String desconto;
-    private String tipoPagamento;
-    private LocalDate dataPrimeiroPagamento;
-    private LocalDate dataVencimento;
+    private String tipo_pagamento;
+    private LocalDate data_primeiro_pagamento;
+    private LocalDate data_vencimento;
 }

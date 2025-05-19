@@ -13,19 +13,13 @@ public abstract class Usuario {
 
     @Id
     private String id;
-
     private String nome;
     private String tipo;
-    private LocalDate dataNascimento;
+    private LocalDate data_nascimento;
     private String email;
     private String contato;
     private String foto;
-
-    // private Avaliacao avaliacao;
-    // private String evolucao;
-    // private Reavaliacao reavaliacao;
-    // private Plano plano;
-    // private AreaCliente areaCliente;
-
+    private String evolucao;
+    private Boolean isActive;
 }
 

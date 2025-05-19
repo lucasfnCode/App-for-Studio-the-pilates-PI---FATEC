@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class Reavaliacao {
-    private String fotoPostural;
-    private String dadosRelevantes;
+    private String foto_postural;
+    private String dados_relevantes;
 }
