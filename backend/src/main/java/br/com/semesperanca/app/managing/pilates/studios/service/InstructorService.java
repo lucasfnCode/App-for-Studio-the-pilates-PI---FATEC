@@ -8,7 +8,6 @@ import br.com.semesperanca.app.managing.pilates.studios.application.model.Instru
 import br.com.semesperanca.app.managing.pilates.studios.application.model.Messages;
 import br.com.semesperanca.app.managing.pilates.studios.model.Instructor;
 import br.com.semesperanca.app.managing.pilates.studios.repository.InstructorRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -21,9 +20,16 @@ public class InstructorService {
 
     private final InstructorRepository instructorRepository;
 
-    public List<InstructorOutputDTO> listAllInstructors() {
+    public List<InstructorOutputDTO> listAllActiveInstructors() {
         List<Instructor> instructors = instructorRepository.findAll().stream()
             .filter(i -> Boolean.TRUE.equals(i.getIsActive()))
+            .toList();
+        return instructors.stream().map(this::assemblerInstructorOutputDTO).toList();
+    }
+
+    public List<InstructorOutputDTO> listAllInstructors(){
+        List<Instructor> instructors = instructorRepository.findAll()
+            .stream()
             .toList();
         return instructors.stream().map(this::assemblerInstructorOutputDTO).toList();
     }
@@ -35,10 +41,6 @@ public class InstructorService {
     public InstructorOutputDTO registerInstructor(InstructorInputDTO instructorInputDTO){
         return assemblerInstructorOutputDTO(instructorRepository.save(assemblerInstructorEntity(instructorInputDTO)));
     }
-
-    /*public InstructorOutputDTO updateInstructorById(String id, InstructorInputDTO instructorInputDTO){
-        return assemblerInstructorOutputDTO(instructorRepository.save(assemblerInstructorEntity(instructorInputDTO)));
-    }*/
 
     public InstructorOutputDTO updateInstructorById(String id, InstructorInputDTO instructorInputDTO){
         Optional<Instructor> optionalInstructor = instructorRepository.findById(id);
