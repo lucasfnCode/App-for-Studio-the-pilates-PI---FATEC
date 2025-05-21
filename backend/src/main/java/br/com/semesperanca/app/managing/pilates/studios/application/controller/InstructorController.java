@@ -9,8 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 
@@ -26,6 +25,12 @@ public class InstructorController {
     public ResponseEntity<List<InstructorOutputDTO>> listAll() {
         return ResponseEntity.ok(service.listAllInstructors());
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<InstructorOutputDTO> getById(@PathVariable String id) {
+        return ResponseEntity.ok(service.getInstructorById(id));
+    }
+    
 
     @PostMapping()
     public ResponseEntity<InstructorOutputDTO> register(@RequestBody InstructorInputDTO instrutor) {

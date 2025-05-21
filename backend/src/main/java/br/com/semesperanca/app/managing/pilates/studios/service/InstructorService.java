@@ -1,7 +1,6 @@
 package br.com.semesperanca.app.managing.pilates.studios.service;
 
 
-import java.util.List;
 import org.springframework.stereotype.Service;
 
 import br.com.semesperanca.app.managing.pilates.studios.application.model.InstructorOutputDTO;
@@ -9,6 +8,10 @@ import br.com.semesperanca.app.managing.pilates.studios.application.model.Instru
 import br.com.semesperanca.app.managing.pilates.studios.model.Instructor;
 import br.com.semesperanca.app.managing.pilates.studios.repository.InstructorRepository;
 import lombok.AllArgsConstructor;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -23,8 +26,23 @@ public class InstructorService {
         return instructors.stream().map(this::assemblerInstructorOutputDTO).toList();
     }
 
+    public InstructorOutputDTO getInstructorById(String id) {
+        return assemblerInstructorOutputDTO(Objects.requireNonNull(checkIfIsActive(id)));
+    }
+
     public InstructorOutputDTO registerInstructor(InstructorInputDTO instructorInputDTO){
         return assemblerInstructorOutputDTO(instructorRepository.save(assemblerInstructorEntity(instructorInputDTO)));
+    }
+
+    private Instructor checkIfIsActive(String id) {
+        Optional<Instructor> optionalInstructor = instructorRepository.findById(id);
+        if(optionalInstructor.isPresent()) {
+            Instructor instructor = optionalInstructor.get();
+            if (instructor.getIsActive()) {
+                return instructor;
+            }
+        }
+        return null;
     }
 
     private InstructorOutputDTO assemblerInstructorOutputDTO(Instructor instructor) {
