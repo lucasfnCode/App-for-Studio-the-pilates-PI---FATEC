@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 
 import br.com.semesperanca.app.managing.pilates.studios.application.model.InstructorOutputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.InstructorInputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.Messages;
 import br.com.semesperanca.app.managing.pilates.studios.model.Instructor;
 import br.com.semesperanca.app.managing.pilates.studios.repository.InstructorRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -32,6 +34,28 @@ public class InstructorService {
 
     public InstructorOutputDTO registerInstructor(InstructorInputDTO instructorInputDTO){
         return assemblerInstructorOutputDTO(instructorRepository.save(assemblerInstructorEntity(instructorInputDTO)));
+    }
+
+    /*public InstructorOutputDTO updateInstructorById(String id, InstructorInputDTO instructorInputDTO){
+        return assemblerInstructorOutputDTO(instructorRepository.save(assemblerInstructorEntity(instructorInputDTO)));
+    }*/
+
+    public InstructorOutputDTO updateInstructorById(String id, InstructorInputDTO instructorInputDTO){
+        Optional<Instructor> optionalInstructor = instructorRepository.findById(id);
+        if (optionalInstructor.isEmpty()){
+            throw new RuntimeException(Messages.Instructor.notFound);
+        }
+
+        Instructor instructor = optionalInstructor.get();
+
+        instructor.setFormation(instructorInputDTO.formation());
+        instructor.setAdvice(instructorInputDTO.advice());
+        instructor.setHiring_date(instructorInputDTO.hiring_date());
+        instructor.setPermissions(instructorInputDTO.permissions());
+        instructor.setIsActive(instructorInputDTO.isActive());
+
+        Instructor updated = instructorRepository.save(instructor);
+        return assemblerInstructorOutputDTO(updated);
     }
 
     private Instructor checkIfIsActive(String id) {
