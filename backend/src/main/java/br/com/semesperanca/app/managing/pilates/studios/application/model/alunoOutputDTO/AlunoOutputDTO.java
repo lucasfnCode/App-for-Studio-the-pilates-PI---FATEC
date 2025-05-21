@@ -11,9 +11,9 @@ public record AlunoOutputDTO (
     String foto,
     AvaliacaoOutputDTO avaliacao,
     String evolucao,
-    AreaClienteOutputDTO areaCliente,
     PlanoOutputDTO plano,
-    Boolean autorizacao_imagem
+    AreaClienteOutputDTO areaCliente,
+    Boolean isActive
 ) 
     
 {}

@@ -1,8 +1,10 @@
 package br.com.semesperanca.app.managing.pilates.studios.application.model.alunoInputDTO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public record AvaliacaoInputDTO(
-    String descricao, 
-    String profissional,
-    String fotoPostural,
-    String dadosRelevantes
+    @JsonProperty("descricao") String descricao, 
+    @JsonProperty("profissional") String profissional,
+    @JsonProperty("fotoPostural") String fotoPostural,
+    @JsonProperty("dadosRelevantes") String dadosRelevantes
      ) {}
