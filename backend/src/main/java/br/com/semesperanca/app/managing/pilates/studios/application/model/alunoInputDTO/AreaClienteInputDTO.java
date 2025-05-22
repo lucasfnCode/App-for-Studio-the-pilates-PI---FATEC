@@ -2,13 +2,13 @@ package br.com.semesperanca.app.managing.pilates.studios.application.model.aluno
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public record AreaClienteInputDTO(
-    @JsonProperty("dataVencimentoPagamento") LocalDate dataVencimentoPagamento,
-    @JsonProperty("reposicoes") Integer reposicoes,
-    @JsonProperty("comprovantePagamento") String comprovantePagamento,
-    @JsonProperty("reciboFiscal") String reciboFiscal,
-    @JsonProperty("contrato") String contrato,
-    @JsonProperty("autorizacaoImagem") Boolean autorizacaoImagem
+
+    LocalDate dataVencimentoPagamento,
+    Integer reposicoes,
+    String comprovantePagamento,
+    String reciboFiscal,
+    String contrato,
+    Boolean autorizacaoImagem
+    
 ) {}

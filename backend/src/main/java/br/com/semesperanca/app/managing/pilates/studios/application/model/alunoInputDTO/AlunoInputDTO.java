@@ -2,17 +2,28 @@ package br.com.semesperanca.app.managing.pilates.studios.application.model.aluno
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 public record AlunoInputDTO(
-    @JsonProperty("nome") String nome,
-    @JsonProperty("tipo") String tipo,
-    @JsonProperty("dataNascimento") LocalDate dataNascimento,
-    @JsonProperty("email") String email,
-    @JsonProperty("contato") String contato,
-    @JsonProperty("foto") String foto,
-    @JsonProperty("avaliacao") AvaliacaoInputDTO avaliacao,
+    
+    String nome,
+
+    String tipo,
+
+    LocalDate dataNascimento,
+
+    String email,
+
+    String contato,
+
+    String foto,
+
+    AvaliacaoInputDTO avaliacao,
+
     String evolucao,
-    @JsonProperty("plano") PlanoInputDTO plano,
-    @JsonProperty("areaCliente") AreaClienteInputDTO areaCliente,
+
+    PlanoInputDTO plano,
+
+    AreaClienteInputDTO areaCliente,
+
     Boolean isActive
+    
 ) {}

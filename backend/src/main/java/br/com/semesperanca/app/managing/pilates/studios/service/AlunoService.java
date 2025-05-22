@@ -38,20 +38,8 @@ public class AlunoService {
     }
 
     public AlunoOutputDTO salvarAluno(AlunoInputDTO alunoInputDTO) {
-        Aluno aluno = new Aluno(
-                alunoInputDTO.nome(),
-                alunoInputDTO.tipo(),
-                alunoInputDTO.dataNascimento(),
-                alunoInputDTO.email(),
-                alunoInputDTO.contato(),
-                alunoInputDTO.foto(),
-                alunoInputDTO.isActive(),
-                new Avaliacao(),
-                new Plano(),
-                new AreaCliente(),
-                alunoInputDTO.evolucao());
-        aluno = alunoRepository.save(aluno);
-        return assemblerAlunoOutputDTO(aluno);
+      
+        return assemblerAlunoOutputDTO(alunoRepository.save(assemblerAlunoEntity(alunoInputDTO)));
     }
 
     public void deleteAluno(String id) {
@@ -74,14 +62,12 @@ public class AlunoService {
     }
 
     private Aluno assemblerAlunoEntity(AlunoInputDTO alunoInput) {
-        System.out.println("Alvo da deserialização: " + alunoInput);
 
         Avaliacao avaliacao = new Avaliacao(
                 alunoInput.avaliacao().descricao(),
                 alunoInput.avaliacao().profissional(),
                 alunoInput.avaliacao().fotoPostural(),
                 alunoInput.avaliacao().dadosRelevantes());
-                System.out.println("Avaliacao mapeada: " + avaliacao);
 
         Plano plano = new Plano(
                 alunoInput.plano().modalidade(),
@@ -93,8 +79,6 @@ public class AlunoService {
                 alunoInput.plano().tipoPagamento(),
                 alunoInput.plano().dataPrimeiroPagamento(),
                 alunoInput.plano().dataVencimento());
-                System.out.println("Plano mapeado: " + plano);
-
         AreaCliente areaCliente = new AreaCliente(
                 alunoInput.areaCliente().dataVencimentoPagamento(),
                 alunoInput.areaCliente().reposicoes(),
@@ -102,7 +86,6 @@ public class AlunoService {
                 alunoInput.areaCliente().reciboFiscal(),
                 alunoInput.areaCliente().contrato(),
                 alunoInput.areaCliente().autorizacaoImagem());
-                System.out.println("Área Cliente mapeada: " + areaCliente);
 
         return new Aluno(
                 alunoInput.nome(),
