@@ -52,7 +52,7 @@ public class InstructorService {
 
         instructor.setFormation(instructorInputDTO.formation());
         instructor.setAdvice(instructorInputDTO.advice());
-        instructor.setHiring_date(instructorInputDTO.hiring_date());
+        instructor.setHiringDate(instructorInputDTO.hiringDate());
         instructor.setPermissions(instructorInputDTO.permissions());
         instructor.setIsActive(instructorInputDTO.isActive());
 
@@ -74,21 +74,31 @@ public class InstructorService {
     private InstructorOutputDTO assemblerInstructorOutputDTO(Instructor instructor) {
         return new InstructorOutputDTO(
                 instructor.getId(),
+                instructor.getName(),
+                instructor.getType(),
+                instructor.getHiringDate(),
+                instructor.getEmail(),
+                instructor.getContact(),
+                instructor.getPhoto(),
                 instructor.getFormation(),
                 instructor.getAdvice(),
-                instructor.getHiring_date(),
                 instructor.getPermissions()
         );
     }
 
-    private Instructor assemblerInstructorEntity(InstructorInputDTO instructorInputDTO){
-        return new Instructor(
-            instructorInputDTO.formation(),
-            instructorInputDTO.advice(),
-            instructorInputDTO.hiring_date(),
-            instructorInputDTO.permissions(),
-            instructorInputDTO.isActive()
-        );
+    private Instructor assemblerInstructorEntity(InstructorInputDTO dto){
+        Instructor instructor = new Instructor();
+    instructor.setName(dto.name());
+    instructor.setType("INSTRUCTOR");
+    instructor.setEmail(dto.email());
+    instructor.setContact(dto.contact());
+    instructor.setPhoto(dto.photo());
+    instructor.setHiringDate(dto.hiringDate());
+    instructor.setIsActive(dto.isActive());
+    instructor.setFormation(dto.formation());
+    instructor.setAdvice(dto.advice());
+    instructor.setPermissions(dto.permissions());
+    return instructor;
     }
 
 }
