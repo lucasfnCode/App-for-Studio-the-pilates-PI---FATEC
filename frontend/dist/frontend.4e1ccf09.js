@@ -671,6 +671,7 @@ var _bootstrapBundleMinJs = require("bootstrap/dist/js/bootstrap.bundle.min.js")
 var _home = require("./pages/home/home");
 var _header = require("./components/header");
 var _footer = require("./components/footer");
+var _schedulling = require("./pages/schedulling/schedulling");
 function renderContentBasedOnHash() {
     switch(location.hash){
         case "":
@@ -678,11 +679,14 @@ function renderContentBasedOnHash() {
         case undefined:
             (0, _home.homeScreen)();
             break;
+        case "#agendamento":
+            (0, _schedulling.renderAgendamentoPage)();
+            break;
     }
 }
 renderContentBasedOnHash();
 
-},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo"}],"joWv1":[function(require,module,exports,__globalThis) {
+},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp"}],"joWv1":[function(require,module,exports,__globalThis) {
 /*!
   * Bootstrap v5.3.6 (https://getbootstrap.com/)
   * Copyright 2011-2025 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
@@ -3842,7 +3846,7 @@ const headerHtml = `
 
   <div class="nav nav-underline">
     <a class="nav-link m-1 text-secondary" aria-current="page" href="#home">Home</a>
-    <a class="nav-link m-1 text-secondary" href="#">Agendamento</a>
+    <a class="nav-link m-1 text-secondary" href="#agendamento">Agendamento</a>
     <a class="nav-link m-1 text-secondary" href="#">Aulas</a>
   </div>
 
@@ -3902,6 +3906,174 @@ const createFooterElement = ()=>{
     }
 };
 createFooterElement();
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"gDpnp":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "renderAgendamentoPage", ()=>renderAgendamentoPage);
+var _main = require("../../components/main");
+var _modais = require("../../components/modais");
+// Mock de função para obter a role do usuário logado
+function getUserRole() {
+    const user = JSON.parse(localStorage.getItem("usuarioLogado"));
+    return user?.role || "aluno"; // padrão: aluno
+}
+// Mock de função para obter aulas do backend
+async function fetchAulas() {
+    return [
+        {
+            _id: {
+                $oid: "67f08325d5ffb65cce5d56f0"
+            },
+            aluno: "Maria Oliveira",
+            studio: "Studio Central",
+            instrutor: "Jo\xe3o Silva",
+            data: "2025-04-10",
+            horario: "10:00",
+            status: "confirmada",
+            tipo: "aula_fixa"
+        },
+        {
+            _id: {
+                $oid: "67f08325d5ffb65cce5d56f1"
+            },
+            aluno: "",
+            studio: "Studio Central",
+            instrutor: "Jo\xe3o Silva",
+            data: "2025-04-12",
+            horario: "14:00",
+            status: "aberta",
+            tipo: "aula_fixa"
+        },
+        {
+            _id: {
+                $oid: "67f08325d5ffb65cce5d56f1"
+            },
+            aluno: "",
+            studio: "Studio Central",
+            instrutor: "Jo\xe3o Silva",
+            data: "2025-04-12",
+            horario: "18:00",
+            status: "aberta",
+            tipo: "aula_fixa"
+        }
+    ];
+}
+async function renderAgendamentoPage() {
+    const main = (0, _main.getOrCreateMainElement)();
+    main.innerHTML = "";
+    main.style.minHeight = "calc(100vh - 200px)";
+    main.style.display = "flex";
+    main.style.flexDirection = "column";
+    main.style.justifyContent = "between";
+    const role = getUserRole();
+    const aulas = await fetchAulas();
+    const tableRows = aulas.map((aula)=>{
+        let acoes = "-";
+        if (role === "aluno") {
+            if (aula.status === "aberta") acoes = `<button class="btn btn-success" onclick="agendarAula('${aula._id.$oid}')">Agendar</button>`;
+            else if (aula.status === "confirmada" && aula.aluno === "Maria Oliveira") acoes = `<button class="btn btn-danger" onclick="cancelarAula('${aula._id.$oid}')">Cancelar</button>`;
+        } else if (role === "recepcionista") acoes = `<button class="btn btn-primary" onclick="abrirModalAlunos('${aula._id.$oid}')">Ver</button>`;
+        else if (role === "instrutor") acoes = `<button class="btn btn-secondary" onclick="verAlunosInstrutor('${aula._id.$oid}')">Visualizar</button>`;
+        return `
+      <tr>
+        <td>${aula.instrutor}</td>
+        <td>${aula.data}</td>
+        <td>${aula.horario}</td>
+        <td>${aula.studio}</td>
+        <td>${aula.status}</td>
+        <td>${acoes}</td>
+      </tr>
+    `;
+    }).join("");
+    main.innerHTML = `
+    <h2 class="ms-4">Datas</h2>
+    <div class="d-flex justify-content-center">
+    <div class="table-responsive w-100" style="max-width: 960px;">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Instrutor</th>
+          <th>Data</th>
+          <th>Hora</th>
+          <th>Est\xfadio</th>
+          <th>Status</th>
+          <th>Situa\xe7\xe3o</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${tableRows}
+      </tbody>
+    </table>
+    </div>
+    </div>
+    ${(0, _modais.criarModalListaAlunosHTML)()}
+    ${(0, _modais.criarModalCadastroAlunoHTML)()}
+  `;
+}
+window.agendarAula = function(id) {
+    alert("Agendando aula ID: " + id);
+};
+window.cancelarAula = function(id) {
+    alert("Cancelando aula ID: " + id);
+};
+window.abrirModalAlunos = function(id) {
+    const modal = document.getElementById("modalListaAlunos");
+    modal.style.display = "block";
+};
+window.fecharModalAlunos = function() {
+    document.getElementById("modalListaAlunos").style.display = "none";
+};
+window.adicionarAluno = function() {
+    document.getElementById("modalCadastroAluno").style.display = "block";
+};
+window.salvarAluno = function() {
+    alert("Aluno salvo!");
+};
+window.cancelarCadastro = function() {
+    document.getElementById("modalCadastroAluno").style.display = "none";
+};
+window.verAlunosInstrutor = function(id) {
+    alert("Instrutor visualizando alunos da aula ID: " + id);
+};
+
+},{"../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../components/modais":"1Ukbc"}],"1Ukbc":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "criarModalListaAlunosHTML", ()=>criarModalListaAlunosHTML);
+parcelHelpers.export(exports, "criarModalCadastroAlunoHTML", ()=>criarModalCadastroAlunoHTML);
+function criarModalListaAlunosHTML() {
+    return `
+    <div id="modalListaAlunos" style="display: none;">
+      <div class="modal-content">
+        <h3>Alunos da Aula</h3>
+        <table class="table">
+          <thead><tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>A\xe7\xf5es</th></tr></thead>
+          <tbody>
+            <tr><td>Ana</td><td>000.000.000-01</td><td>11/09/2001</td><td><button class="btn btn-danger">Remover</button></td></tr>
+            <tr><td>Beatriz</td><td>000.000.000-02</td><td>21/11/2000</td><td><button class="btn btn-danger">Remover</button></td></tr>
+          </tbody>
+        </table>
+        <button class="btn btn-secondary" onclick="adicionarAluno()">Adicionar Aluno</button>
+        <button class="btn" onclick="fecharModalAlunos()">Fechar</button>
+      </div>
+    </div>
+  `;
+}
+function criarModalCadastroAlunoHTML() {
+    return `
+    <div id="modalCadastroAluno" style="display: none;">
+      <div class="modal-content">
+        <h3>Cadastro de Aluno</h3>
+        <label>Nome: <input type="text"></label><br>
+        <label>CPF: <input type="text"></label><br>
+        <label>Data de Nascimento: <input type="date"></label><br>
+        <button class="btn btn-outline-success" onclick="salvarAluno()">Salvar</button>
+        <button class="btn btn-danger" onclick="cancelarCadastro()">Cancelar</button>
+      </div>
+    </div>
+  `;
+}
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
 
