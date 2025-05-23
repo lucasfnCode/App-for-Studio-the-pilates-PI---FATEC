@@ -15,7 +15,7 @@ async function fetchAulas() {
   return [
     {
       _id: { $oid: "67f08325d5ffb65cce5d56f0" },
-      aluno: "Maria Oliveira",
+      aluno: "",
       studio: "Studio Central",
       instrutor: "João Silva",
       data: "2025-04-10",
@@ -34,7 +34,7 @@ async function fetchAulas() {
       tipo: "aula_fixa",
     },
     {
-      _id: { $oid: "67f08325d5ffb65cce5d56f1" },
+      _id: { $oid: "67f08325d5ffb65cce5d56f2" },
       aluno: "",
       studio: "Studio Central",
       instrutor: "João Silva",
@@ -123,24 +123,31 @@ window.cancelarAula = function (id) {
 };
 
 window.abrirModalAlunos = function (id) {
-  const modal = document.getElementById("modalListaAlunos");
-  modal.style.display = "block";
+  const modal = new bootstrap.Modal(document.getElementById("modalListaAlunos"));
+  modal.show();
 };
 
 window.fecharModalAlunos = function () {
-  document.getElementById("modalListaAlunos").style.display = "none";
+  const modal = bootstrap.Modal.getInstance(document.getElementById("modalListaAlunos"));
+  modal.hide();
 };
 
 window.adicionarAluno = function () {
-  document.getElementById("modalCadastroAluno").style.display = "block";
+  const modalCadastro = new bootstrap.Modal(document.getElementById("modalCadastroAluno"));
+  modalCadastro.show();
 };
 
 window.salvarAluno = function () {
-  alert("Aluno salvo!");
+  const modalCadastro = bootstrap.Modal.getInstance(document.getElementById("modalCadastroAluno"));
+  modalCadastro.hide();
+
+  const modalConfirmacao = new bootstrap.Modal(document.getElementById("modalConfirmacao"));
+  modalConfirmacao.show();
 };
 
 window.cancelarCadastro = function () {
-  document.getElementById("modalCadastroAluno").style.display = "none";
+  const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastroAluno"));
+  modal.hide();
 };
 
 window.verAlunosInstrutor = function (id) {

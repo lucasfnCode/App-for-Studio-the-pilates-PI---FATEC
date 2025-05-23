@@ -1,32 +1,65 @@
 export function criarModalListaAlunosHTML() {
   return `
-    <div id="modalListaAlunos" style="display: none;">
-      <div class="modal-content">
-        <h3>Alunos da Aula</h3>
-        <table class="table">
-          <thead><tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>Ações</th></tr></thead>
+    <div class="modal fade" id="modalListaAlunos" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-4">
+      <div class="modal-header">
+        <h5 class="modal-title">Alunos da Aula</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table text-center">
+          <thead>
+            <tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>Ações</th></tr>
+          </thead>
           <tbody>
-            <tr><td>Ana</td><td>000.000.000-01</td><td>11/09/2001</td><td><button class="btn btn-danger">Remover</button></td></tr>
-            <tr><td>Beatriz</td><td>000.000.000-02</td><td>21/11/2000</td><td><button class="btn btn-danger">Remover</button></td></tr>
+            <tr><td>Ana</td><td>000.000.000-01</td><td>11/09/2001</td>
+                <td><button class="btn btn-danger">Remover</button></td></tr>
+            <tr><td>Beatriz</td><td>000.000.000-02</td><td>21/11/2000</td>
+                <td><button class="btn btn-danger">Remover</button></td></tr>
           </tbody>
         </table>
-        <button class="btn btn-secondary" onclick="adicionarAluno()">Adicionar Aluno</button>
-        <button class="btn" onclick="fecharModalAlunos()">Fechar</button>
+      </div>
+      <div class="modal-footer d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>
+        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
       </div>
     </div>
+  </div>
+</div>
   `;
 }
 
 export function criarModalCadastroAlunoHTML() {
   return `
-    <div id="modalCadastroAluno" style="display: none;">
-      <div class="modal-content">
-        <h3>Cadastro de Aluno</h3>
-        <label>Nome: <input type="text"></label><br>
-        <label>CPF: <input type="text"></label><br>
-        <label>Data de Nascimento: <input type="date"></label><br>
-        <button class="btn btn-outline-success" onclick="salvarAluno()">Salvar</button>
-        <button class="btn btn-outline-danger" onclick="cancelarCadastro()">Cancelar</button>
+    <div id="modalCadastroAluno" class="modal fade" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4">
+          <div class="modal-header">
+            <h3 class="modal-title">Cadastro de Aluno</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form class="d-flex flex-column gap-3">
+              <div class="mb-3">
+                <label class="form-label" for="nomeAluno">Nome:</label>
+                <input type="text" class="form-control" id="nomeAluno">
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="cpfAluno">CPF:</label>
+                <input type="text" class="form-control" id="cpfAluno">
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="dataNascimento">Data de Nascimento:</label>
+                <input type="date" class="form-control" id="dataNascimento">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-success" onclick="salvarAluno()">Salvar</button>
+            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </div>
       </div>
     </div>
   `;
