@@ -60,6 +60,21 @@ public class InstructorService {
         return assemblerInstructorOutputDTO(updated);
     }
 
+    public InstructorOutputDTO desactiveInstructorById(String id){
+        Optional<Instructor> optionalInstructor = instructorRepository.findById(id);
+        if (optionalInstructor.isEmpty()){
+            throw new RuntimeException(Messages.Instructor.notFound);
+        }
+
+        Instructor instructor = optionalInstructor.get();
+
+        instructor.setIsActive(false);
+
+        Instructor desactived = instructorRepository.save(instructor);
+        return assemblerInstructorOutputDTO(desactived);
+
+    }
+
     private Instructor checkIfIsActive(String id) {
         Optional<Instructor> optionalInstructor = instructorRepository.findById(id);
         if(optionalInstructor.isPresent()) {
@@ -88,17 +103,17 @@ public class InstructorService {
 
     private Instructor assemblerInstructorEntity(InstructorInputDTO dto){
         Instructor instructor = new Instructor();
-    instructor.setName(dto.name());
-    instructor.setType("INSTRUCTOR");
-    instructor.setEmail(dto.email());
-    instructor.setContact(dto.contact());
-    instructor.setPhoto(dto.photo());
-    instructor.setHiringDate(dto.hiringDate());
-    instructor.setIsActive(dto.isActive());
-    instructor.setFormation(dto.formation());
-    instructor.setAdvice(dto.advice());
-    instructor.setPermissions(dto.permissions());
-    return instructor;
+                instructor.setName(dto.name());
+                instructor.setType(dto.type());
+                instructor.setEmail(dto.email());
+                instructor.setContact(dto.contact());
+                instructor.setPhoto(dto.photo());
+                instructor.setHiringDate(dto.hiringDate());
+                instructor.setIsActive(dto.isActive());
+                instructor.setFormation(dto.formation());
+                instructor.setAdvice(dto.advice());
+                instructor.setPermissions(dto.permissions());
+            return instructor;
     }
 
 }
