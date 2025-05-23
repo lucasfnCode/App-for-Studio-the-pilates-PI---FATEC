@@ -1,6 +1,6 @@
 html, body {
-  width: 100%;
-  overflow-x: hidden;
+  height: 100%;
+  overflow: hidden auto;
 }
 
 #head {
@@ -18,5 +18,12 @@ html, body {
 footer {
   background-color: #ffcfad;
   margin-top: auto;
+}
+
+main {
+  flex-direction: column;
+  min-height: 100vh;
+  display: flex;
+  overflow-y: auto;
 }
 /*# sourceMappingURL=frontend.84181066.css.map */

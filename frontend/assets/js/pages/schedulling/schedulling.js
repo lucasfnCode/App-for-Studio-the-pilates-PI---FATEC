@@ -6,9 +6,14 @@ import {
 
 // Mock de função para obter a role do usuário logado
 function getUserRole() {
-  const user = JSON.parse(localStorage.getItem("usuarioLogado"));
+  const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
   return user?.role || "aluno"; // padrão: aluno
 }
+// Função corrigida para obter o objeto completo do usuário logado
+function getUserLoggedData() {
+  return JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+}
+
 
 // Mock de função para obter aulas do backend
 async function fetchAulas() {
@@ -55,17 +60,17 @@ export async function renderAgendamentoPage() {
   main.style.justifyContent = "between";
 
   const role = getUserRole();
+  const user = getUserLoggedData();
   const aulas = await fetchAulas();
 
   const tableRows = aulas
     .map((aula) => {
-      let acoes = "-";
+      let acoes = "";
       if (role === "aluno") {
         if (aula.status === "aberta") {
           acoes = `<button class="btn btn-success" onclick="agendarAula('${aula._id.$oid}')">Agendar</button>`;
         } else if (
-          aula.status === "confirmada" &&
-          aula.aluno === "Maria Oliveira"
+          aula.status === "confirmada"
         ) {
           acoes = `<button class="btn btn-danger" onclick="cancelarAula('${aula._id.$oid}')">Cancelar</button>`;
         }
@@ -92,7 +97,7 @@ export async function renderAgendamentoPage() {
     <h2 class="ms-4">Datas</h2>
     <div class="d-flex justify-content-center">
     <div class="table-responsive w-100" style="max-width: 960px;">
-    <table class="table">
+    <table class="table table-hover table-striped">
       <thead>
         <tr>
           <th>Instrutor</th>
@@ -103,7 +108,7 @@ export async function renderAgendamentoPage() {
           <th>Situação</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="table-group-divider">
         ${tableRows}
       </tbody>
     </table>

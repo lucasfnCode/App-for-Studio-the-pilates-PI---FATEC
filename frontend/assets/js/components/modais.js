@@ -1,39 +1,45 @@
-export function criarModalListaAlunosHTML() {
+export function criarModalListaAlunosHTML(alunos = []) {
+  const alunosRows = alunos.map(aluno => `
+    <tr>
+      <td>${aluno.nome}</td>
+      <td>${aluno.cpf}</td>
+      <td>${aluno.dataNascimento}</td>
+      <td><button class="btn btn-danger" onclick="removerAluno('${aluno.id}')">Remover</button></td>
+    </tr>
+  `).join("");
+
   return `
     <div class="modal fade" id="modalListaAlunos" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content p-4">
-      <div class="modal-header">
-        <h5 class="modal-title">Alunos da Aula</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <table class="table text-center">
-          <thead>
-            <tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>Ações</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Ana</td><td>000.000.000-01</td><td>11/09/2001</td>
-                <td><button class="btn btn-danger">Remover</button></td></tr>
-            <tr><td>Beatriz</td><td>000.000.000-02</td><td>21/11/2000</td>
-                <td><button class="btn btn-danger">Remover</button></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="modal-footer d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>
-        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4">
+          <div class="modal-header">
+            <h5 class="modal-title">Alunos da Aula</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table text-center">
+              <thead>
+                <tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>Ações</th></tr>
+              </thead>
+              <tbody>
+                ${alunosRows}
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>
+            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
   `;
 }
 
 export function criarModalCadastroAlunoHTML() {
   return `
     <div id="modalCadastroAluno" class="modal fade" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog modal-dialog-centered ">
         <div class="modal-content p-4">
           <div class="modal-header">
             <h3 class="modal-title">Cadastro de Aluno</h3>

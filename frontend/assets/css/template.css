@@ -1,7 +1,9 @@
-html, body /*  adicionado pra acabar com um scroll chato desnecessario na horizontal que tava aparencendo */ {
+html, body {
+    height: 100%;
     overflow-x: hidden;
-    width: 100%;
+    overflow-y: auto;
 }
+
 #head{
     background-color: #FFCFAD;
 }
@@ -15,4 +17,10 @@ html, body /*  adicionado pra acabar com um scroll chato desnecessario na horizo
 footer{
     background-color: #FFCFAD;
     margin-top: auto;
+}
+main {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Permite que o scroll funcione corretamente */
 }

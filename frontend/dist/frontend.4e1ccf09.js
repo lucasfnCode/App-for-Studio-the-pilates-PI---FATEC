@@ -3916,8 +3916,12 @@ var _main = require("../../components/main");
 var _modais = require("../../components/modais");
 // Mock de função para obter a role do usuário logado
 function getUserRole() {
-    const user = JSON.parse(localStorage.getItem("usuarioLogado"));
+    const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
     return user?.role || "aluno"; // padrão: aluno
+}
+// Função corrigida para obter o objeto completo do usuário logado
+function getUserLoggedData() {
+    return JSON.parse(localStorage.getItem("usuarioLogado")) || {};
 }
 // Mock de função para obter aulas do backend
 async function fetchAulas() {
@@ -3968,12 +3972,13 @@ async function renderAgendamentoPage() {
     main.style.flexDirection = "column";
     main.style.justifyContent = "between";
     const role = getUserRole();
+    const user = getUserLoggedData();
     const aulas = await fetchAulas();
     const tableRows = aulas.map((aula)=>{
-        let acoes = "-";
+        let acoes = "";
         if (role === "aluno") {
             if (aula.status === "aberta") acoes = `<button class="btn btn-success" onclick="agendarAula('${aula._id.$oid}')">Agendar</button>`;
-            else if (aula.status === "confirmada" && aula.aluno === "Maria Oliveira") acoes = `<button class="btn btn-danger" onclick="cancelarAula('${aula._id.$oid}')">Cancelar</button>`;
+            else if (aula.status === "confirmada") acoes = `<button class="btn btn-danger" onclick="cancelarAula('${aula._id.$oid}')">Cancelar</button>`;
         } else if (role === "recepcionista") acoes = `<button class="btn btn-outline-success" onclick="abrirModalAlunos('${aula._id.$oid}')">Ver</button>`;
         else if (role === "instrutor") acoes = `<button class="btn btn-secondary" onclick="verAlunosInstrutor('${aula._id.$oid}')">Visualizar</button>`;
         return `
@@ -3991,7 +3996,7 @@ async function renderAgendamentoPage() {
     <h2 class="ms-4">Datas</h2>
     <div class="d-flex justify-content-center">
     <div class="table-responsive w-100" style="max-width: 960px;">
-    <table class="table">
+    <table class="table table-hover table-striped">
       <thead>
         <tr>
           <th>Instrutor</th>
@@ -4002,7 +4007,7 @@ async function renderAgendamentoPage() {
           <th>Situa\xe7\xe3o</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="table-group-divider">
         ${tableRows}
       </tbody>
     </table>
@@ -4018,7 +4023,6 @@ window.agendarAula = function(id) {
 window.cancelarAula = function(id) {
     alert("Cancelando aula ID: " + id);
 };
-console.log(typeof bootstrap !== "undefined" ? "Bootstrap carregado!" : "Bootstrap n\xe3o encontrado.");
 window.abrirModalAlunos = function(id) {
     const modal = new bootstrap.Modal(document.getElementById("modalListaAlunos"));
     modal.show();
@@ -4051,41 +4055,46 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "criarModalListaAlunosHTML", ()=>criarModalListaAlunosHTML);
 parcelHelpers.export(exports, "criarModalCadastroAlunoHTML", ()=>criarModalCadastroAlunoHTML);
 parcelHelpers.export(exports, "modalSalvarAltera\xe7\xe3o", ()=>modalSalvarAltera\u00e7\u00e3o);
-function criarModalListaAlunosHTML() {
+function criarModalListaAlunosHTML(alunos = []) {
+    const alunosRows = alunos.map((aluno)=>`
+    <tr>
+      <td>${aluno.nome}</td>
+      <td>${aluno.cpf}</td>
+      <td>${aluno.dataNascimento}</td>
+      <td><button class="btn btn-danger" onclick="removerAluno('${aluno.id}')">Remover</button></td>
+    </tr>
+  `).join("");
     return `
     <div class="modal fade" id="modalListaAlunos" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content p-4">
-      <div class="modal-header">
-        <h5 class="modal-title">Alunos da Aula</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <table class="table text-center">
-          <thead>
-            <tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>A\xe7\xf5es</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Ana</td><td>000.000.000-01</td><td>11/09/2001</td>
-                <td><button class="btn btn-danger">Remover</button></td></tr>
-            <tr><td>Beatriz</td><td>000.000.000-02</td><td>21/11/2000</td>
-                <td><button class="btn btn-danger">Remover</button></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="modal-footer d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>
-        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4">
+          <div class="modal-header">
+            <h5 class="modal-title">Alunos da Aula</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table text-center">
+              <thead>
+                <tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>A\xe7\xf5es</th></tr>
+              </thead>
+              <tbody>
+                ${alunosRows}
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>
+            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
   `;
 }
 function criarModalCadastroAlunoHTML() {
     return `
     <div id="modalCadastroAluno" class="modal fade" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog modal-dialog-centered ">
         <div class="modal-content p-4">
           <div class="modal-header">
             <h3 class="modal-title">Cadastro de Aluno</h3>
