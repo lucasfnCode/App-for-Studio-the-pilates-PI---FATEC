@@ -2,11 +2,18 @@ html, body /*  adicionado pra acabar com um scroll chato desnecessario na horizo
     overflow-x: hidden;
     width: 100%;
 }
-
-  
-header{
+#head{
     background-color: #FFCFAD;
 }
+#nav{
+    background-color: rgba(255, 207, 173, 0.6);
+    
+}
+  
+/* header{
+    background-color: #FFCFAD;
+    
+} */
 #painelHome{
     background-color: #FFFBD4;
 }

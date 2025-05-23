@@ -3,8 +3,12 @@ html, body {
   overflow-x: hidden;
 }
 
-header {
+#head {
   background-color: #ffcfad;
+}
+
+#nav {
+  background-color: #ffcfad99;
 }
 
 #painelHome {
