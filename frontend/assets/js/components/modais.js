@@ -26,8 +26,12 @@ export function criarModalCadastroAlunoHTML() {
         <label>CPF: <input type="text"></label><br>
         <label>Data de Nascimento: <input type="date"></label><br>
         <button class="btn btn-outline-success" onclick="salvarAluno()">Salvar</button>
-        <button class="btn btn-danger" onclick="cancelarCadastro()">Cancelar</button>
+        <button class="btn btn-outline-danger" onclick="cancelarCadastro()">Cancelar</button>
       </div>
     </div>
   `;
+}
+
+export function modalSalvarAlteração() {
+
 }

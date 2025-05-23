@@ -70,7 +70,7 @@ export async function renderAgendamentoPage() {
           acoes = `<button class="btn btn-danger" onclick="cancelarAula('${aula._id.$oid}')">Cancelar</button>`;
         }
       } else if (role === "recepcionista") {
-        acoes = `<button class="btn btn-primary" onclick="abrirModalAlunos('${aula._id.$oid}')">Ver</button>`;
+        acoes = `<button class="btn btn-outline-success" onclick="abrirModalAlunos('${aula._id.$oid}')">Ver</button>`;
       } else if (role === "instrutor") {
         acoes = `<button class="btn btn-secondary" onclick="verAlunosInstrutor('${aula._id.$oid}')">Visualizar</button>`;
       }

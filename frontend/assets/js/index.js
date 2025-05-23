@@ -21,3 +21,4 @@ function renderContentBasedOnHash() {
   }
 }
 renderContentBasedOnHash();
+window.addEventListener("hashchange", renderContentBasedOnHash);

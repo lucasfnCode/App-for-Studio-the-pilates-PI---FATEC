@@ -685,6 +685,7 @@ function renderContentBasedOnHash() {
     }
 }
 renderContentBasedOnHash();
+window.addEventListener("hashchange", renderContentBasedOnHash);
 
 },{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp"}],"joWv1":[function(require,module,exports,__globalThis) {
 /*!
@@ -3973,7 +3974,7 @@ async function renderAgendamentoPage() {
         if (role === "aluno") {
             if (aula.status === "aberta") acoes = `<button class="btn btn-success" onclick="agendarAula('${aula._id.$oid}')">Agendar</button>`;
             else if (aula.status === "confirmada" && aula.aluno === "Maria Oliveira") acoes = `<button class="btn btn-danger" onclick="cancelarAula('${aula._id.$oid}')">Cancelar</button>`;
-        } else if (role === "recepcionista") acoes = `<button class="btn btn-primary" onclick="abrirModalAlunos('${aula._id.$oid}')">Ver</button>`;
+        } else if (role === "recepcionista") acoes = `<button class="btn btn-outline-success" onclick="abrirModalAlunos('${aula._id.$oid}')">Ver</button>`;
         else if (role === "instrutor") acoes = `<button class="btn btn-secondary" onclick="verAlunosInstrutor('${aula._id.$oid}')">Visualizar</button>`;
         return `
       <tr>
@@ -4042,6 +4043,7 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "criarModalListaAlunosHTML", ()=>criarModalListaAlunosHTML);
 parcelHelpers.export(exports, "criarModalCadastroAlunoHTML", ()=>criarModalCadastroAlunoHTML);
+parcelHelpers.export(exports, "modalSalvarAltera\xe7\xe3o", ()=>modalSalvarAltera\u00e7\u00e3o);
 function criarModalListaAlunosHTML() {
     return `
     <div id="modalListaAlunos" style="display: none;">
@@ -4069,11 +4071,12 @@ function criarModalCadastroAlunoHTML() {
         <label>CPF: <input type="text"></label><br>
         <label>Data de Nascimento: <input type="date"></label><br>
         <button class="btn btn-outline-success" onclick="salvarAluno()">Salvar</button>
-        <button class="btn btn-danger" onclick="cancelarCadastro()">Cancelar</button>
+        <button class="btn btn-outline-danger" onclick="cancelarCadastro()">Cancelar</button>
       </div>
     </div>
   `;
 }
+function modalSalvarAltera\u00e7\u00e3o() {}
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
 
