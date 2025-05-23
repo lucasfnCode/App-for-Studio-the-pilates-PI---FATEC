@@ -1,4 +1,2 @@
-frontend/node_modules/
-frontend/.parcel-cache/
-*.mdbnode_modules/
+node_modules/
 .parcel-cache/
