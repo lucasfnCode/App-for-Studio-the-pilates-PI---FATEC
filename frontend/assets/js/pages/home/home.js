@@ -1,35 +1,45 @@
 import { getOrCreateMainElement } from "../../components/main";
+import {
+  criarModalInstrutoresHTML,
+  criarModalAssinaturasHTML,
+  criarModalSobreHTML,
+} from "../../components/modais";
 
-export function homeScreen() {
-    const homeHTML = `
-    <section class="container py-5 d-flex flex-column align-items-center gap-4">
-        <section id="painelHome" class="w-100 p-5 rounded-4 shadow-lg text-center" style="max-width: 900px;">
-            <h1 class="display-5 fw-bold mb-3">Bem vindo</h1>
-            <p class="fs-5 text-muted">Abubleblé abu abublé abuua</p>
-        </section>
-
-        <section class="row row-cols-1 row-cols-md-3 g-4 w-100 justify-content-center">
-            ${createCard("Instrutores", "https://placehold.co/600x400", "#")}
-            ${createCard("Assinaturas", "https://placehold.co/600x400", "#")}
-            ${createCard("Sobre", "https://placehold.co/600x400", "#")}
-        </section>
-    </section>
-    `;
-
-    const main = getOrCreateMainElement();
-    main.innerHTML = homeHTML;
+function createCard(title, imageUrl, modalTargetId) {
+  return `
+    <div class="col">
+      <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
+        <img src="${imageUrl}" class="card-img-top" alt="${title}">
+        <div class="card-body text-center">
+          <h5 class="card-title fw-bold">${title}</h5>
+          <button class="btn btn-dark w-100 rounded-pill mt-2" data-bs-toggle="modal" data-bs-target="#${modalTargetId}">Acessar</button>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
-function createCard(title, imageUrl, link) {
-    return `
-    <div class="col">
-        <div class="card h-100 border-0 rounded-4 shadow-sm overflow-hidden">
-            <img src="${imageUrl}" class="card-img-top object-fit-cover" alt="${title}" style="height: 200px;">
-            <div class="card-body text-center d-flex flex-column justify-content-between gap-2 p-4">
-                <h5 class="card-title fs-4 fw-semibold">${title}</h5>
-                <a href="${link}" class="btn btn-dark rounded-pill px-4">Acessar</a>
-            </div>
-        </div>
-    </div>
-    `;
+export function homeScreen() {
+  const homeHTML = `
+    <section id="bemVindoSection" class="text-center p-5">
+  <div class="bem-vindo-container">
+    <img src="https://cdn-icons-png.flaticon.com/512/685/685352.png" alt="Ícone Pilates" class="bem-vindo-icone">
+    <h1 class="bem-vindo-titulo">Bem-vindo</h1>
+    <p class="bem-vindo-subtitulo">Explore mais sobre nossos instrutores, planos e o mundo do Pilates!</p>
+  </div>
+
+      <section class="row row-cols-1 row-cols-md-3 g-4 w-100 justify-content-center">
+        ${createCard("Instrutores", "https://placehold.co/600x400?text=Instrutores", "modalInstrutores")}
+        ${createCard("Assinaturas", "https://placehold.co/600x400?text=Assinaturas", "modalAssinaturas")}
+        ${createCard("Sobre", "https://placehold.co/600x400?text=Sobre", "modalSobre")}
+      </section>
+
+      ${criarModalInstrutoresHTML()}
+      ${criarModalAssinaturasHTML()}
+      ${criarModalSobreHTML()}
+    </section>
+  `;
+
+  const main = getOrCreateMainElement();
+  main.innerHTML = homeHTML;
 }

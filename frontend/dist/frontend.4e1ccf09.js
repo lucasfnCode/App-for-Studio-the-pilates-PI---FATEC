@@ -3730,39 +3730,45 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "homeScreen", ()=>homeScreen);
 var _main = require("../../components/main");
+var _modais = require("../../components/modais");
+function createCard(title, imageUrl, modalTargetId) {
+    return `
+    <div class="col">
+      <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
+        <img src="${imageUrl}" class="card-img-top" alt="${title}">
+        <div class="card-body text-center">
+          <h5 class="card-title fw-bold">${title}</h5>
+          <button class="btn btn-dark w-100 rounded-pill mt-2" data-bs-toggle="modal" data-bs-target="#${modalTargetId}">Acessar</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
 function homeScreen() {
     const homeHTML = `
-    <section class="container py-5 d-flex flex-column align-items-center gap-4">
-        <section id="painelHome" class="w-100 p-5 rounded-4 shadow-lg text-center" style="max-width: 900px;">
-            <h1 class="display-5 fw-bold mb-3">Bem vindo</h1>
-            <p class="fs-5 text-muted">Abublebl\xe9 abu abubl\xe9 abuua</p>
-        </section>
+    <section id="bemVindoSection" class="text-center p-5">
+  <div class="bem-vindo-container">
+    <img src="https://cdn-icons-png.flaticon.com/512/685/685352.png" alt="\xcdcone Pilates" class="bem-vindo-icone">
+    <h1 class="bem-vindo-titulo">Bem-vindo</h1>
+    <p class="bem-vindo-subtitulo">Explore mais sobre nossos instrutores, planos e o mundo do Pilates!</p>
+  </div>
 
-        <section class="row row-cols-1 row-cols-md-3 g-4 w-100 justify-content-center">
-            ${createCard("Instrutores", "https://placehold.co/600x400", "#")}
-            ${createCard("Assinaturas", "https://placehold.co/600x400", "#")}
-            ${createCard("Sobre", "https://placehold.co/600x400", "#")}
-        </section>
+      <section class="row row-cols-1 row-cols-md-3 g-4 w-100 justify-content-center">
+        ${createCard("Instrutores", "https://placehold.co/600x400?text=Instrutores", "modalInstrutores")}
+        ${createCard("Assinaturas", "https://placehold.co/600x400?text=Assinaturas", "modalAssinaturas")}
+        ${createCard("Sobre", "https://placehold.co/600x400?text=Sobre", "modalSobre")}
+      </section>
+
+      ${(0, _modais.criarModalInstrutoresHTML)()}
+      ${(0, _modais.criarModalAssinaturasHTML)()}
+      ${(0, _modais.criarModalSobreHTML)()}
     </section>
-    `;
+  `;
     const main = (0, _main.getOrCreateMainElement)();
     main.innerHTML = homeHTML;
 }
-function createCard(title, imageUrl, link) {
-    return `
-    <div class="col">
-        <div class="card h-100 border-0 rounded-4 shadow-sm overflow-hidden">
-            <img src="${imageUrl}" class="card-img-top object-fit-cover" alt="${title}" style="height: 200px;">
-            <div class="card-body text-center d-flex flex-column justify-content-between gap-2 p-4">
-                <h5 class="card-title fs-4 fw-semibold">${title}</h5>
-                <a href="${link}" class="btn btn-dark rounded-pill px-4">Acessar</a>
-            </div>
-        </div>
-    </div>
-    `;
-}
 
-},{"../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"5zsxX":[function(require,module,exports,__globalThis) {
+},{"../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../components/modais":"1Ukbc"}],"5zsxX":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getOrCreateMainElement", ()=>getOrCreateMainElement);
@@ -3810,7 +3816,178 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"3QKkX":[function(require,module,exports,__globalThis) {
+},{}],"1Ukbc":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "criarModalListaAlunosHTML", ()=>criarModalListaAlunosHTML);
+parcelHelpers.export(exports, "criarModalCadastroAlunoHTML", ()=>criarModalCadastroAlunoHTML);
+parcelHelpers.export(exports, "modalSalvarAltera\xe7\xe3o", ()=>modalSalvarAltera\u00e7\u00e3o);
+parcelHelpers.export(exports, "criarModalInstrutoresHTML", ()=>criarModalInstrutoresHTML);
+parcelHelpers.export(exports, "criarModalAssinaturasHTML", ()=>criarModalAssinaturasHTML);
+parcelHelpers.export(exports, "criarModalSobreHTML", ()=>criarModalSobreHTML);
+function criarModalListaAlunosHTML(alunos = []) {
+    const alunosRows = alunos.map((aluno)=>`
+    <tr>
+      <td>${aluno.nome}</td>
+      <td>${aluno.cpf}</td>
+      <td>${aluno.dataNascimento}</td>
+      <td><button class="btn btn-danger" onclick="removerAluno('${aluno.id}')">Remover</button></td>
+    </tr>
+  `).join("");
+    return `
+    <div class="modal fade" id="modalListaAlunos" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4">
+          <div class="modal-header">
+            <h5 class="modal-title">Alunos da Aula</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table text-center">
+              <thead>
+                <tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>A\xe7\xf5es</th></tr>
+              </thead>
+              <tbody>
+                ${alunosRows}
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>
+            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function criarModalCadastroAlunoHTML() {
+    return `
+    <div id="modalCadastroAluno" class="modal fade" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered ">
+        <div class="modal-content p-4">
+          <div class="modal-header">
+            <h3 class="modal-title">Cadastro de Aluno</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form class="d-flex flex-column gap-3">
+              <div class="mb-3">
+                <label class="form-label" for="nomeAluno">Nome:</label>
+                <input type="text" class="form-control" id="nomeAluno">
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="cpfAluno">CPF:</label>
+                <input type="text" class="form-control" id="cpfAluno">
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="dataNascimento">Data de Nascimento:</label>
+                <input type="date" class="form-control" id="dataNascimento">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-success" onclick="salvarAluno()">Salvar</button>
+            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function modalSalvarAltera\u00e7\u00e3o() {}
+function criarModalInstrutoresHTML() {
+    return `
+    <div class="modal fade" id="modalInstrutores" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h4 class="modal-title">Nossos Instrutores</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body row g-4">
+            <div class="col-md-4 text-center">
+              <img src="https://placehold.co/300x300?text=Ana+Clara" class="img-fluid rounded-3 shadow-sm" alt="Ana Clara">
+              <h5 class="mt-3">Ana Clara</h5>
+              <p>Especialista em Pilates Solo e Alongamento</p>
+            </div>
+            <div class="col-md-4 text-center">
+              <img src="https://placehold.co/300x300?text=Bruno+Silva" class="img-fluid rounded-3 shadow-sm" alt="Bruno Silva">
+              <h5 class="mt-3">Bruno Silva</h5>
+              <p>Reabilita\xe7\xe3o e Pilates para Idosos</p>
+            </div>
+            <div class="col-md-4 text-center">
+              <img src="https://placehold.co/300x300?text=Camila+Torres" class="img-fluid rounded-3 shadow-sm" alt="Camila Torres">
+              <h5 class="mt-3">Camila Torres</h5>
+              <p>Pilates com foco em respira\xe7\xe3o e relaxamento</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function criarModalAssinaturasHTML() {
+    return `
+    <div class="modal fade" id="modalAssinaturas" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h4 class="modal-title">Planos de Assinatura</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <div class="list-group">
+              <div class="list-group-item py-3">
+                <h5>\u{2728} B\xe1sico</h5>
+                <p>2x por semana, acesso ao app, <strong>R$ 89/m\xeas</strong></p>
+              </div>
+              <div class="list-group-item py-3">
+                <h5>\u{1F525} Intermedi\xe1rio</h5>
+                <p>3x por semana + sess\xf5es online, <strong>R$ 129/m\xeas</strong></p>
+              </div>
+              <div class="list-group-item py-3">
+                <h5>\u{1F48E} Premium</h5>
+                <p>Aulas di\xe1rias + consultoria personalizada, <strong>R$ 199/m\xeas</strong></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function criarModalSobreHTML() {
+    return `
+    <div class="modal fade" id="modalSobre" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h4 class="modal-title">Sobre o Pilates</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body row g-4 align-items-center">
+            <div class="col-md-6">
+              <img src="https://placehold.co/600x400?text=Pilates" class="img-fluid rounded-3 shadow-sm" alt="Pilates">
+            </div>
+            <div class="col-md-6">
+              <p class="fs-5">
+                O Pilates \xe9 uma pr\xe1tica de exerc\xedcios f\xedsicos focada no controle muscular, respira\xe7\xe3o, alongamento e fortalecimento.
+                Criado por Joseph Pilates, ele promove equil\xedbrio entre corpo e mente, melhorando postura, flexibilidade e bem-estar geral.
+              </p>
+              <p class="fs-5">
+                Ideal para todas as idades, o m\xe9todo trabalha a musculatura profunda, favorece a reabilita\xe7\xe3o f\xedsica e previne dores cr\xf4nicas.
+                A pr\xe1tica regular ajuda no aumento da consci\xeancia corporal, da energia e da sa\xfade mental.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"3QKkX":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "headerHtml", ()=>headerHtml);
@@ -4028,84 +4205,6 @@ window.verAlunosInstrutor = function(id) {
     alert("Instrutor visualizando alunos da aula ID: " + id);
 };
 
-},{"../../components/main":"5zsxX","../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"1Ukbc":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "criarModalListaAlunosHTML", ()=>criarModalListaAlunosHTML);
-parcelHelpers.export(exports, "criarModalCadastroAlunoHTML", ()=>criarModalCadastroAlunoHTML);
-parcelHelpers.export(exports, "modalSalvarAltera\xe7\xe3o", ()=>modalSalvarAltera\u00e7\u00e3o);
-function criarModalListaAlunosHTML(alunos = []) {
-    const alunosRows = alunos.map((aluno)=>`
-    <tr>
-      <td>${aluno.nome}</td>
-      <td>${aluno.cpf}</td>
-      <td>${aluno.dataNascimento}</td>
-      <td><button class="btn btn-danger" onclick="removerAluno('${aluno.id}')">Remover</button></td>
-    </tr>
-  `).join("");
-    return `
-    <div class="modal fade" id="modalListaAlunos" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content p-4">
-          <div class="modal-header">
-            <h5 class="modal-title">Alunos da Aula</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <table class="table text-center">
-              <thead>
-                <tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>A\xe7\xf5es</th></tr>
-              </thead>
-              <tbody>
-                ${alunosRows}
-              </tbody>
-            </table>
-          </div>
-          <div class="modal-footer d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>
-            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-function criarModalCadastroAlunoHTML() {
-    return `
-    <div id="modalCadastroAluno" class="modal fade" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered ">
-        <div class="modal-content p-4">
-          <div class="modal-header">
-            <h3 class="modal-title">Cadastro de Aluno</h3>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form class="d-flex flex-column gap-3">
-              <div class="mb-3">
-                <label class="form-label" for="nomeAluno">Nome:</label>
-                <input type="text" class="form-control" id="nomeAluno">
-              </div>
-              <div class="mb-3">
-                <label class="form-label" for="cpfAluno">CPF:</label>
-                <input type="text" class="form-control" id="cpfAluno">
-              </div>
-              <div class="mb-3">
-                <label class="form-label" for="dataNascimento">Data de Nascimento:</label>
-                <input type="date" class="form-control" id="dataNascimento">
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-outline-success" onclick="salvarAluno()">Salvar</button>
-            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-function modalSalvarAltera\u00e7\u00e3o() {}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
+},{"../../components/main":"5zsxX","../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
 
 //# sourceMappingURL=frontend.4e1ccf09.js.map

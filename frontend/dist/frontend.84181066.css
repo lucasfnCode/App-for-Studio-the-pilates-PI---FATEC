@@ -54,4 +54,39 @@ main {
 .btn:hover {
   opacity: .9;
 }
+
+#bemVindoSection {
+  background-color: #0000;
+  margin-top: 40px;
+  margin-bottom: 30px;
+}
+
+.bem-vindo-container {
+  background-color: #fffbd4;
+  border-radius: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 25px #00000012;
+}
+
+.bem-vindo-icone {
+  opacity: .9;
+  width: 60px;
+  margin-bottom: 20px;
+}
+
+.bem-vindo-titulo {
+  color: #3e2f2f;
+  margin-bottom: 10px;
+  font-size: 2.75rem;
+  font-weight: 700;
+}
+
+.bem-vindo-subtitulo {
+  color: #5e4a4a;
+  font-size: 1.25rem;
+}
 /*# sourceMappingURL=frontend.84181066.css.map */
