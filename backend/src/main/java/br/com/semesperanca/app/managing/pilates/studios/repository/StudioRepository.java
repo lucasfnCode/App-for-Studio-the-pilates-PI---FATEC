@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StudioRepository extends MongoRepository<Studio, String> {
     Optional<Studio> findByName(String name);
-    Optional<Studio> findInstructorByName(String instructor);
 }

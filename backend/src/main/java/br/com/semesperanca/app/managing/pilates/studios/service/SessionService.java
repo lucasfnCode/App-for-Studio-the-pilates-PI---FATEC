@@ -1,6 +1,5 @@
 package br.com.semesperanca.app.managing.pilates.studios.service;
 
-import org.springframework.data.mongodb.core.aggregation.DateOperators.Hour;
 import org.springframework.stereotype.Service;
 
 import br.com.semesperanca.app.managing.pilates.studios.application.model.SessionInputDTO;
@@ -14,8 +13,6 @@ import br.com.semesperanca.app.managing.pilates.studios.repository.SessionReposi
 import lombok.AllArgsConstructor;
 
 import java.util.*;
-
-import javax.management.RuntimeErrorException;
 
 @AllArgsConstructor
 @Service
@@ -35,39 +32,38 @@ public class SessionService {
         if (!checkMaxOfStudents(sessionInputDTO)) {
             throw new RuntimeException();
         }
-        if(!checkIfInstructorIsAvalible(sessionInputDTO)){
+        if (!checkIfInstructorIsAvalible(sessionInputDTO)) {
             throw new RuntimeException();
         }
         return assemblerSessionOutputDTO(sessionRepository.save(assemblerSessionEntity(sessionInputDTO)));
     }
 
     private Boolean checkIfInstructorIsAvalible(SessionInputDTO sessionInputDTO) {
-    String studioName = sessionInputDTO.studio();
-    String instructorName = sessionInputDTO.instructor();
-    List<String> hoursToCheck = sessionInputDTO.Hours();
+        String studioName = sessionInputDTO.studio();
+        String instructorName = sessionInputDTO.instructor();
+        List<String> hoursToCheck = sessionInputDTO.Hours();
 
-    Optional<Studio> optionalStudio = studioRepository.findByName(studioName);
-    if (optionalStudio.isEmpty()) {
-        throw new RuntimeException("Estúdio não encontrado: " + studioName);
-    }
-
-    Studio studio = optionalStudio.get();
-    Map<Schedules, String> instructorsByTime = studio.getInstructorsByTime();
-
-    List<Schedules> scheduleHours = hoursToCheck.stream()
-            .map(Schedules::fromHorario)
-            .toList();
-
-    for (Schedules schedule : scheduleHours) {
-        String instructorAtTime = instructorsByTime.get(schedule);
-        if (instructorAtTime != null && !instructorAtTime.equals(instructorName)) {
-            return false;
+        Optional<Studio> optionalStudio = studioRepository.findByName(studioName);
+        if (optionalStudio.isEmpty()) {
+            throw new RuntimeException("Estúdio não encontrado: " + studioName);
         }
+
+        Studio studio = optionalStudio.get();
+        Map<Schedules, String> instructorsByTime = studio.getInstructorsByTime();
+
+        List<Schedules> scheduleHours = hoursToCheck.stream()
+                .map(Schedules::fromHorario)
+                .toList();
+
+        for (Schedules schedule : scheduleHours) {
+            String instructorAtTime = instructorsByTime.get(schedule);
+            if (instructorAtTime != null && !instructorAtTime.equals(instructorName)) {
+                return false;
+            }
+        }
+
+        return true;
     }
-
-    return true;
-}
-
 
     private Boolean checkMaxOfStudents(SessionInputDTO sessionInputDTO) {
         String studioName = sessionInputDTO.studio();
@@ -104,7 +100,7 @@ public class SessionService {
         List<DaysOfWeek> day = sessionInputDTO.day().stream()
                 .map(DaysOfWeek::fromDescricao)
                 .toList();
-          List<Schedules> hours = sessionInputDTO.Hours().stream().map(Schedules::fromHorario).toList();
+        List<Schedules> hours = sessionInputDTO.Hours().stream().map(Schedules::fromHorario).toList();
         return new Session(
                 sessionInputDTO.students(),
                 sessionInputDTO.studio(),
