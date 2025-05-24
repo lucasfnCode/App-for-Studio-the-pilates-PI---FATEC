@@ -4,7 +4,8 @@ import org.springframework.stereotype.Service;
 
 import br.com.semesperanca.app.managing.pilates.studios.application.model.SessionInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.SessionOutputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.model.Session;
+import br.com.semesperanca.app.managing.pilates.studios.model.session.SessionStatus;
+import br.com.semesperanca.app.managing.pilates.studios.model.session.Session;
 import br.com.semesperanca.app.managing.pilates.studios.model.studio.DaysOfWeek;
 import br.com.semesperanca.app.managing.pilates.studios.model.studio.Schedules;
 import br.com.semesperanca.app.managing.pilates.studios.model.studio.Studio;
@@ -69,7 +70,7 @@ public class SessionService {
     private Boolean checkIfInstructorIsAvalible(SessionInputDTO sessionInputDTO) {
         String studioName = sessionInputDTO.studio();
         String instructorName = sessionInputDTO.instructor();
-        List<String> hoursToCheck = sessionInputDTO.Hours();
+        List<String> hoursToCheck = sessionInputDTO.hours();
 
         Optional<Studio> optionalStudio = studioRepository.findByName(studioName);
         if (optionalStudio.isEmpty()) {
@@ -112,6 +113,7 @@ public class SessionService {
                 .map(DaysOfWeek::toDescricao)
                 .toList();
         List<String> hours = session.getHours().stream().map(Schedules::getValor).toList();
+            String status = SessionStatus.toDescricao(session.getStatus());
         return new SessionOutputDTO(
                 session.getId(),
                 session.getStudents(),
@@ -119,7 +121,7 @@ public class SessionService {
                 session.getInstructor(),
                 day,
                 hours,
-                session.getStatus(),
+                status,
                 session.getType(),
                 session.getIsActive());
     }
@@ -128,14 +130,15 @@ public class SessionService {
         List<DaysOfWeek> day = sessionInputDTO.day().stream()
                 .map(DaysOfWeek::fromDescricao)
                 .toList();
-        List<Schedules> hours = sessionInputDTO.Hours().stream().map(Schedules::fromHorario).toList();
+        List<Schedules> hours = sessionInputDTO.hours().stream().map(Schedules::fromHorario).toList();
+        SessionStatus status = SessionStatus.fromDescricao(sessionInputDTO.status());
         return new Session(
                 sessionInputDTO.students(),
                 sessionInputDTO.studio(),
                 sessionInputDTO.instructor(),
                 day,
                 hours,
-                sessionInputDTO.status(),
+                status,
                 sessionInputDTO.type(),
                 sessionInputDTO.isActive());
     }

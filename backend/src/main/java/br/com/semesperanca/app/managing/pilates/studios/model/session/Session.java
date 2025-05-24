@@ -1,4 +1,4 @@
-package br.com.semesperanca.app.managing.pilates.studios.model;
+package br.com.semesperanca.app.managing.pilates.studios.model.session;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -31,9 +31,9 @@ public class Session {
     @NonNull
     private List<DaysOfWeek> day;
     @NonNull
-    private List<Schedules> Hours;
+    private List<Schedules> hours;
     @NonNull
-    private String status;
+    private SessionStatus status;
     @NonNull
     private String type;
     @NonNull
