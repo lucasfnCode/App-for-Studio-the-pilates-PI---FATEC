@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import br.com.semesperanca.app.managing.pilates.studios.application.model.InstructorOutputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.InstructorInputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.Messages;
 import br.com.semesperanca.app.managing.pilates.studios.model.Instructor;
 import br.com.semesperanca.app.managing.pilates.studios.repository.InstructorRepository;
 import lombok.AllArgsConstructor;
@@ -45,7 +44,7 @@ public class InstructorService {
     public InstructorOutputDTO updateInstructorById(String id, InstructorInputDTO instructorInputDTO){
         Optional<Instructor> optionalInstructor = instructorRepository.findById(id);
         if (optionalInstructor.isEmpty()){
-            throw new RuntimeException(Messages.Instructor.notFound);
+            throw new RuntimeException();
         }
 
         Instructor instructor = optionalInstructor.get();
@@ -63,7 +62,7 @@ public class InstructorService {
     public InstructorOutputDTO desactiveInstructorById(String id){
         Optional<Instructor> optionalInstructor = instructorRepository.findById(id);
         if (optionalInstructor.isEmpty()){
-            throw new RuntimeException(Messages.Instructor.notFound);
+            throw new RuntimeException("Instrutor não encontrado.");
         }
 
         Instructor instructor = optionalInstructor.get();

@@ -50,17 +50,5 @@ public class InstructorController {
     public ResponseEntity<InstructorOutputDTO> update(@PathVariable String id) {
         return ResponseEntity.status(HttpStatus.OK).body(service.desactiveInstructorById(id));
     }
-
-    /*
-    
-     Anotações -- 
-
-     Possiveis funções a serem adicionadas:
-     1. Função para ativar ou desativar um instrutor(sem precisar mandar os dados do instrutor junto no body).
-     2. sla tinha mais coisa qnd eu pensei em fzr essa anotações, mas são 5h 04min da manhã e eu esqueci oq eu ia colocar obs* estou acabado :)
-
-     Qualquer comentário pode colocar aq ou na task no github
-
-    */
     
 }
