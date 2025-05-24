@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.semesperanca.app.managing.pilates.studios.application.model.SessionInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.SessionOutputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.Messages;
 import br.com.semesperanca.app.managing.pilates.studios.model.Session;
 import br.com.semesperanca.app.managing.pilates.studios.repository.SessionRepository;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,23 @@ public class SessionService {
     }
 
     public SessionOutputDTO openSession(SessionInputDTO sessionInputDTO){
+        if(!checkMaxOfStudents(sessionInputDTO)){
+            throw new RuntimeException(Messages.Session.OverMax);
+        }
         return assemblerSessionOutputDTO(sessionRepository.save(assemblerSessionEntity(sessionInputDTO)));
+    }
+
+    public Boolean checkMaxOfStudents(SessionInputDTO sessionInputDTO){
+        /*Optional<Studio> optinalStudOptional = studioRepository.findById(idStudio);
+        Studio studio = optinalStudOptiona.get();*/
+         List<String> session = sessionInputDTO.students();
+
+            if(session.size()>3){
+            return false;
+        }
+
+        return true;
+
     }
 
     private SessionOutputDTO assemblerSessionOutputDTO(Session session){
