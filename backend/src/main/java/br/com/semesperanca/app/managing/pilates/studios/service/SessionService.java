@@ -15,6 +15,8 @@ import lombok.AllArgsConstructor;
 
 import java.util.*;
 
+import javax.print.attribute.standard.SheetCollate;
+
 @AllArgsConstructor
 @Service
 public class SessionService {
@@ -30,42 +32,69 @@ public class SessionService {
     }
 
     public SessionOutputDTO openSession(SessionInputDTO sessionInputDTO) {
-        if(!checkIfStudioIsOperatingByDay(sessionInputDTO)){
-            throw new RuntimeException();
-        }
         if (!checkMaxOfStudents(sessionInputDTO)) {
             throw new RuntimeException();
         }
         if (!checkIfInstructorIsAvalible(sessionInputDTO)) {
             throw new RuntimeException();
         }
+        if (!checkIfStudioIsInOperatingDay(sessionInputDTO)) {
+            throw new RuntimeException();
+        }
+        if (!checkIfSheduleIsAvaliable(sessionInputDTO)){
+            throw new RuntimeException();
+        }
         return assemblerSessionOutputDTO(sessionRepository.save(assemblerSessionEntity(sessionInputDTO)));
     }
 
-    private Boolean checkIfStudioIsOperatingByDay(SessionInputDTO sessionInputDTO) {
-    String studioName = sessionInputDTO.studio();
-    List<String> daysRequested = sessionInputDTO.day();
+    private Boolean checkIfSheduleIsAvaliable(SessionInputDTO sessionInputDTO) {
+        String studioName = sessionInputDTO.studio();
+        List<String> hoursToCheck = sessionInputDTO.hours();
 
-    Optional<Studio> optionalStudio = studioRepository.findByName(studioName);
-    if (optionalStudio.isEmpty()) {
-        throw new RuntimeException("Estúdio não encontrado: " + studioName);
-    }
-
-    Studio studio = optionalStudio.get();
-
-    List<String> activeDays = studio.getDaysOperation().stream()
-            .map(DaysOfWeek::toDescricao)
-            .toList();
-
-    for (String dayRequested : daysRequested) {
-        if (!activeDays.contains(dayRequested)) {
-            return false;
+        Optional<Studio> optionalStudio = studioRepository.findByName(studioName);
+        if (optionalStudio.isEmpty()) {
+            throw new RuntimeException("Estúdio não encontrado: " + studioName);
         }
+
+        Studio studio = optionalStudio.get();
+        List<Schedules> unavailableSchedules = studio.getUnavailableTimes();
+        List<Schedules> scheduleHours = hoursToCheck.stream()
+                .map(Schedules::fromHorario)
+                .toList();
+
+        for (Schedules hour : scheduleHours) {
+            if (unavailableSchedules.contains(hour)) {
+                return false;
+            }
+        }
+
+        return true;
+
     }
 
-    return true;
-}
+    private Boolean checkIfStudioIsInOperatingDay(SessionInputDTO sessionInputDTO) {
+        String studioName = sessionInputDTO.studio();
+        List<String> daysRequested = sessionInputDTO.day();
 
+        Optional<Studio> optionalStudio = studioRepository.findByName(studioName);
+        if (optionalStudio.isEmpty()) {
+            throw new RuntimeException("Estúdio não encontrado: " + studioName);
+        }
+
+        Studio studio = optionalStudio.get();
+
+        List<String> activeDays = studio.getDaysOperation().stream()
+                .map(DaysOfWeek::toDescricao)
+                .toList();
+
+        for (String dayRequested : daysRequested) {
+            if (!activeDays.contains(dayRequested)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     private Boolean checkIfInstructorIsAvalible(SessionInputDTO sessionInputDTO) {
         String studioName = sessionInputDTO.studio();
@@ -113,7 +142,7 @@ public class SessionService {
                 .map(DaysOfWeek::toDescricao)
                 .toList();
         List<String> hours = session.getHours().stream().map(Schedules::getValor).toList();
-            String status = SessionStatus.toDescricao(session.getStatus());
+        String status = SessionStatus.toDescricao(session.getStatus());
         return new SessionOutputDTO(
                 session.getId(),
                 session.getStudents(),
