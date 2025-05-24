@@ -29,6 +29,9 @@ public class SessionService {
     }
 
     public SessionOutputDTO openSession(SessionInputDTO sessionInputDTO) {
+        if(!checkIfStudioIsOperatingByDay(sessionInputDTO)){
+            throw new RuntimeException();
+        }
         if (!checkMaxOfStudents(sessionInputDTO)) {
             throw new RuntimeException();
         }
@@ -37,6 +40,31 @@ public class SessionService {
         }
         return assemblerSessionOutputDTO(sessionRepository.save(assemblerSessionEntity(sessionInputDTO)));
     }
+
+    private Boolean checkIfStudioIsOperatingByDay(SessionInputDTO sessionInputDTO) {
+    String studioName = sessionInputDTO.studio();
+    List<String> daysRequested = sessionInputDTO.day();
+
+    Optional<Studio> optionalStudio = studioRepository.findByName(studioName);
+    if (optionalStudio.isEmpty()) {
+        throw new RuntimeException("Estúdio não encontrado: " + studioName);
+    }
+
+    Studio studio = optionalStudio.get();
+
+    List<String> activeDays = studio.getDaysOperation().stream()
+            .map(DaysOfWeek::toDescricao)
+            .toList();
+
+    for (String dayRequested : daysRequested) {
+        if (!activeDays.contains(dayRequested)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 
     private Boolean checkIfInstructorIsAvalible(SessionInputDTO sessionInputDTO) {
         String studioName = sessionInputDTO.studio();
