@@ -2,25 +2,57 @@ html, body {
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
+    background: linear-gradient(to bottom, #fff9f0, #ffe8d6);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-#head{
+#head {
     background-color: #FFCFAD;
 }
-#nav{
+
+#nav {
     background-color: rgba(255, 207, 173, 0.6);
-    
 }
-#painelHome{
+
+#painelHome {
     background-color: #FFFBD4;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
-footer{
+
+footer {
     background-color: #FFCFAD;
     margin-top: auto;
 }
+
 main {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* Permite que o scroll funcione corretamente */
+    overflow-y: auto;
+}
+
+/* Novos estilos para visual profissional */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 1.5rem !important;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 25px rgba(0,0,0,0.1);
+}
+
+.card img {
+    border-top-left-radius: 1.5rem;
+    border-top-right-radius: 1.5rem;
+    object-fit: cover;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    opacity: 0.9;
 }

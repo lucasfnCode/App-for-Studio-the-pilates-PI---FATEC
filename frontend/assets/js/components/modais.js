@@ -72,5 +72,4 @@ export function criarModalCadastroAlunoHTML() {
 }
 
 export function modalSalvarAlteração() {
-
 }
