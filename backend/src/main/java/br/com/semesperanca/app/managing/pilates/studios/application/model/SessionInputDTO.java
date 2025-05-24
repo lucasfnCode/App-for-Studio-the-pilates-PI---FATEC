@@ -7,9 +7,8 @@ public record SessionInputDTO(
     List<String> students,
     String studio,
     String instructor,
-    /* 
-    Adicionar o date e schodule
-    */
+    List<String> day,
+    List<String> Hours,
     String status,
     String type,
     Boolean isActive

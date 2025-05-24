@@ -3,6 +3,8 @@ package br.com.semesperanca.app.managing.pilates.studios.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import br.com.semesperanca.app.managing.pilates.studios.model.studio.DaysOfWeek;
+import br.com.semesperanca.app.managing.pilates.studios.model.studio.Schedules;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -26,12 +28,10 @@ public class Session {
     private String studio;
     @NonNull
     private String instructor;
-    /*
     @NonNull
-    private String date;
+    private List<DaysOfWeek> day;
     @NonNull
-    private String schedule;
-    */
+    private List<Schedules> Hours;
     @NonNull
     private String status;
     @NonNull
