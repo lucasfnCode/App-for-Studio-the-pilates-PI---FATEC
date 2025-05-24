@@ -4,8 +4,9 @@ import org.springframework.stereotype.Service;
 
 import br.com.semesperanca.app.managing.pilates.studios.application.model.SessionInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.SessionOutputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.Messages;
 import br.com.semesperanca.app.managing.pilates.studios.model.Session;
+import br.com.semesperanca.app.managing.pilates.studios.model.studio.Studio;
+import br.com.semesperanca.app.managing.pilates.studios.repository.StudioRepository;
 import br.com.semesperanca.app.managing.pilates.studios.repository.SessionRepository;
 import lombok.AllArgsConstructor;
 
@@ -16,27 +17,29 @@ import java.util.*;
 public class SessionService {
 
     private final SessionRepository sessionRepository;
+    private final StudioRepository studioRepository;
 
-    public List<SessionOutputDTO> listAllActiveSessions(){
+    public List<SessionOutputDTO> listAllActiveSessions() {
         List<Session> sessions = sessionRepository.findAll().stream()
-            .filter(i -> Boolean.TRUE.equals(i.getIsActive()))
-            .toList();
+                .filter(i -> Boolean.TRUE.equals(i.getIsActive()))
+                .toList();
         return sessions.stream().map(this::assemblerSessionOutputDTO).toList();
     }
 
-    public SessionOutputDTO openSession(SessionInputDTO sessionInputDTO){
-        if(!checkMaxOfStudents(sessionInputDTO)){
-            throw new RuntimeException(Messages.Session.OverMax);
+    public SessionOutputDTO openSession(SessionInputDTO sessionInputDTO) {
+        if (!checkMaxOfStudents(sessionInputDTO)) {
+            throw new RuntimeException();
         }
         return assemblerSessionOutputDTO(sessionRepository.save(assemblerSessionEntity(sessionInputDTO)));
     }
 
-    public Boolean checkMaxOfStudents(SessionInputDTO sessionInputDTO){
-        /*Optional<Studio> optinalStudOptional = studioRepository.findById(idStudio);
-        Studio studio = optinalStudOptiona.get();*/
-         List<String> session = sessionInputDTO.students();
+    private Boolean checkMaxOfStudents(SessionInputDTO sessionInputDTO) {
+        String studioName = sessionInputDTO.studio();
+        Optional<Studio> optionalStudio = studioRepository.findByName(studioName);
+        Studio studio = optionalStudio.get();
+        List<String> session = sessionInputDTO.students();
 
-            if(session.size()>3){
+        if (session.size() > studio.getLimitStudentsPerClass()) {
             return false;
         }
 
@@ -44,27 +47,25 @@ public class SessionService {
 
     }
 
-    private SessionOutputDTO assemblerSessionOutputDTO(Session session){
+    private SessionOutputDTO assemblerSessionOutputDTO(Session session) {
         return new SessionOutputDTO(
-            session.getId(),
-            session.getStudents(),
-            session.getStudio(),
-            session.getInstructor(),
-            session.getStatus(),
-            session.getType(),
-            session.getIsActive()
-        );
+                session.getId(),
+                session.getStudents(),
+                session.getStudio(),
+                session.getInstructor(),
+                session.getStatus(),
+                session.getType(),
+                session.getIsActive());
     }
 
-    private Session assemblerSessionEntity(SessionInputDTO sessionInputDTO){
+    private Session assemblerSessionEntity(SessionInputDTO sessionInputDTO) {
         return new Session(
-            sessionInputDTO.students(),
-            sessionInputDTO.studio(),
-            sessionInputDTO.instructor(),
-            sessionInputDTO.status(),
-            sessionInputDTO.type(),
-            sessionInputDTO.isActive()
-        );
+                sessionInputDTO.students(),
+                sessionInputDTO.studio(),
+                sessionInputDTO.instructor(),
+                sessionInputDTO.status(),
+                sessionInputDTO.type(),
+                sessionInputDTO.isActive());
     }
 
 }
