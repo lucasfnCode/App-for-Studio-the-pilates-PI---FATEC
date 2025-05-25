@@ -46,6 +46,13 @@ public class StudentService {
         return assemblerStudentOutputDTO(student);
     }
 
+    public List<StudentOutputDTO> listAllActiveStudent() {
+        List<Student> Students = studentRepository.findAll().stream()
+            .filter(i -> Boolean.TRUE.equals(i.getIsActive()))
+            .toList();
+        return Students.stream().map(this::assemblerStudentOutputDTO).toList();
+    }
+
     public StudentOutputDTO createStudent(StudentInputDTO dto) {
         Student student = assemblerStudentEntity(dto);
         Student saved = studentRepository.save(student);

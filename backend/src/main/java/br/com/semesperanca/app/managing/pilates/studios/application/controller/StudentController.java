@@ -45,6 +45,11 @@ public class StudentController {
     return ResponseEntity.ok(student);
 }
 
+@GetMapping("/actives")
+    public ResponseEntity<List<StudentOutputDTO>> listAllActive() {
+        return ResponseEntity.ok(studentService.listAllActiveStudent());
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<StudentOutputDTO> update(@PathVariable String id, @RequestBody StudentInputDTO dto) {
         StudentOutputDTO updated = studentService.updateStudent(id, dto);

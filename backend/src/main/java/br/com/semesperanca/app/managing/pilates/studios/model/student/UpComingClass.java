@@ -1,14 +1,15 @@
 package br.com.semesperanca.app.managing.pilates.studios.model.student;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 

@@ -3,32 +3,30 @@ package br.com.semesperanca.app.managing.pilates.studios.model.student;
 import java.time.LocalDate;
 
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import br.com.semesperanca.app.managing.pilates.studios.model.User;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.Setter;
+
 
 @Document(collection = "Usuarios")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 
 public class Student extends User {
 
     @NonNull
-    @Field("avaliacao")
     private Assessment assessment;
 
     @NonNull
-    @Field("plano")
     private Plan plan;
 
-    @Field("area_cliente")
     private ClientArea clientArea;
 
     @NonNull
-    @Field("evolucao")
     private String progress;
 
     public Student(
