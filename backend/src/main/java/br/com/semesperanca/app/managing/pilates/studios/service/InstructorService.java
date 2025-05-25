@@ -49,6 +49,12 @@ public class InstructorService {
 
         Instructor instructor = optionalInstructor.get();
 
+        instructor.setName(instructorInputDTO.name());
+        instructor.setType(instructorInputDTO.type());
+        instructor.setHiringDate(instructorInputDTO.hiringDate());
+        instructor.setEmail(instructorInputDTO.email());
+        instructor.setContact(instructorInputDTO.contact());
+        instructor.setFormation(instructorInputDTO.formation());
         instructor.setFormation(instructorInputDTO.formation());
         instructor.setAdvice(instructorInputDTO.advice());
         instructor.setHiringDate(instructorInputDTO.hiringDate());
