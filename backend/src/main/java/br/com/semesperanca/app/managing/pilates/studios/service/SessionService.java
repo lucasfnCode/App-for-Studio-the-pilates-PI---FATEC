@@ -29,6 +29,21 @@ public class SessionService {
         return sessions.stream().map(this::assemblerSessionOutputDTO).toList();
     }
 
+    public List<SessionOutputDTO> listAllSessions(){
+        List<Session> sessions = sessionRepository.findAll()
+            .stream()
+            .toList();
+        return sessions.stream().map(this::assemblerSessionOutputDTO).toList();
+     
+    }
+
+    public SessionOutputDTO listSessionById(String id){
+        /*return assemblerSessionOutputDTO(Objects.requireNonNull(checkIfIsActive(id)));*/
+        Optional<Session> optionalsession = sessionRepository.findById(id);
+        Session sesseion = optionalsession.get();
+        return assemblerSessionOutputDTO(sesseion);
+    }
+
     public SessionOutputDTO openSession(SessionInputDTO sessionInputDTO) {
         if (!checkMaxOfStudents(sessionInputDTO)) {
             throw new RuntimeException();
@@ -44,6 +59,67 @@ public class SessionService {
         }
         return assemblerSessionOutputDTO(sessionRepository.save(assemblerSessionEntity(sessionInputDTO)));
     }
+
+    public SessionOutputDTO updateSessionById(String id, SessionInputDTO sessionInputDTO){
+        Optional<Session> optionalsession = sessionRepository.findById(id);
+        if (optionalsession.isEmpty()){
+            throw new RuntimeException("Session não encontrada");
+        }
+        if (!checkMaxOfStudents(sessionInputDTO)) {
+            throw new RuntimeException();
+        }
+        if (!checkIfInstructorIsAvalible(sessionInputDTO)) {
+            throw new RuntimeException();
+        }
+        if (!checkIfStudioIsInOperatingDay(sessionInputDTO)) {
+            throw new RuntimeException();
+        }
+        if (!checkIfSheduleIsAvaliable(sessionInputDTO)){
+            throw new RuntimeException();
+        }
+
+        Session session = optionalsession.get();
+        List<DaysOfWeek> day = sessionInputDTO.day().stream()
+                .map(DaysOfWeek::fromDescricao)
+                .toList();
+        List<Schedules> hours = sessionInputDTO.hours().stream().map(Schedules::fromHorario).toList();
+        SessionStatus status = SessionStatus.fromDescricao(sessionInputDTO.status());
+
+        session.setStudents(sessionInputDTO.students());
+        session.setStudio(sessionInputDTO.studio());
+        session.setInstructor(sessionInputDTO.instructor());
+        session.setDay(day);
+        session.setHours(hours);
+        session.setStatus(status);
+        session.setType(sessionInputDTO.type());
+        session.setIsActive(sessionInputDTO.isActive());
+        
+        Session updated = sessionRepository.save(session);
+        return assemblerSessionOutputDTO(updated);
+
+    }
+
+    public SessionOutputDTO desactiveSessionById(String id){
+        Optional<Session> optionalsession = sessionRepository.findById(id);
+        Session session = optionalsession.get();
+
+        session.setIsActive(false);
+
+        Session updated = sessionRepository.save(session);
+        return assemblerSessionOutputDTO(updated);
+
+    }
+
+    /*private Session checkIfIsActive(String id){
+        Optional<Session> optionalsession = sessionRepository.findById(id);
+        if(optionalsession.isPresent()) {
+            Session session = optionalsession.get();
+            if(session.getIsActive()){
+                return session;
+            }
+        }
+        return null;
+    */
 
     private Boolean checkIfSheduleIsAvaliable(SessionInputDTO sessionInputDTO) {
         String studioName = sessionInputDTO.studio();
