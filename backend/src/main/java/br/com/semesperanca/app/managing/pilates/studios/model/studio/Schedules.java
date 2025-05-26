@@ -26,5 +26,6 @@ public enum Schedules {
         }
         throw new IllegalArgumentException("Horário inválido: " + horario);
     }
+    
 
 }
