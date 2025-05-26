@@ -47,7 +47,7 @@ public class InstructorController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<InstructorOutputDTO> update(@PathVariable String id) {
+    public ResponseEntity<InstructorOutputDTO> desactive(@PathVariable String id) {
         return ResponseEntity.status(HttpStatus.OK).body(service.desactiveInstructorById(id));
     }
     
