@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/instructors")
@@ -44,16 +46,9 @@ public class InstructorController {
         
     }
 
-    /*
-    
-     Anotações -- 
-
-     Possiveis funções a serem adicionadas:
-     1. Função para ativar ou desativar um instrutor(sem precisar mandar os dados do instrutor junto no body).
-     2. sla tinha mais coisa qnd eu pensei em fzr essa anotações, mas são 5h 04min da manhã e eu esqueci oq eu ia colocar obs* estou acabado :)
-
-     Qualquer comentário pode colocar aq ou na task no github
-
-    */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<InstructorOutputDTO> desactive(@PathVariable String id) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.desactiveInstructorById(id));
+    }
     
 }
