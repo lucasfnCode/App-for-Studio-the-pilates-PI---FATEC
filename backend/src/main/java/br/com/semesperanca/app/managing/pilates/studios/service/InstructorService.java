@@ -73,7 +73,7 @@ public class InstructorService {
 
         Instructor instructor = optionalInstructor.get();
 
-        instructor.setIsActive(false);
+        instructor.setIsActive(Boolean.FALSE);
 
         Instructor desactived = instructorRepository.save(instructor);
         return assemblerInstructorOutputDTO(desactived);
