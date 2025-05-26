@@ -29,9 +29,9 @@ public class Session {
     @NonNull
     private String instructor;
     @NonNull
-    private List<DaysOfWeek> day;
+    private DaysOfWeek day;
     @NonNull
-    private List<Schedules> hours;
+    private Schedules hours;
     @NonNull
     private SessionStatus status;
     @NonNull

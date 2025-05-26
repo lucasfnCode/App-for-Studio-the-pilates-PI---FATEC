@@ -38,7 +38,6 @@ public class SessionService {
     }
 
     public SessionOutputDTO listSessionById(String id){
-        /*return assemblerSessionOutputDTO(Objects.requireNonNull(checkIfIsActive(id)));*/
         Optional<Session> optionalsession = sessionRepository.findById(id);
         Session sesseion = optionalsession.get();
         return assemblerSessionOutputDTO(sesseion);
@@ -46,7 +45,7 @@ public class SessionService {
 
     public SessionOutputDTO openSession(SessionInputDTO sessionInputDTO) {
         if (!checkMaxOfStudents(sessionInputDTO)) {
-            throw new RuntimeException();
+            throw new RuntimeException("caguei no mato");
         }
         if (!checkIfInstructorIsAvalible(sessionInputDTO)) {
             throw new RuntimeException();
@@ -79,10 +78,8 @@ public class SessionService {
         }
 
         Session session = optionalsession.get();
-        List<DaysOfWeek> day = sessionInputDTO.day().stream()
-                .map(DaysOfWeek::fromDescricao)
-                .toList();
-        List<Schedules> hours = sessionInputDTO.hours().stream().map(Schedules::fromHorario).toList();
+        DaysOfWeek day = DaysOfWeek.fromDescricao(sessionInputDTO.day());
+        Schedules hours = Schedules.fromHorario(sessionInputDTO.hours());
         SessionStatus status = SessionStatus.fromDescricao(sessionInputDTO.status());
 
         session.setStudents(sessionInputDTO.students());
@@ -103,27 +100,15 @@ public class SessionService {
         Optional<Session> optionalsession = sessionRepository.findById(id);
         Session session = optionalsession.get();
 
-        session.setIsActive(false);
+        session.setIsActive(Boolean.FALSE);
 
         Session updated = sessionRepository.save(session);
         return assemblerSessionOutputDTO(updated);
 
     }
 
-    /*private Session checkIfIsActive(String id){
-        Optional<Session> optionalsession = sessionRepository.findById(id);
-        if(optionalsession.isPresent()) {
-            Session session = optionalsession.get();
-            if(session.getIsActive()){
-                return session;
-            }
-        }
-        return null;
-    */
-
     private Boolean checkIfSheduleIsAvaliable(SessionInputDTO sessionInputDTO) {
         String studioName = sessionInputDTO.studio();
-        List<String> hoursToCheck = sessionInputDTO.hours();
 
         Optional<Studio> optionalStudio = studioRepository.findByName(studioName);
         if (optionalStudio.isEmpty()) {
@@ -132,15 +117,12 @@ public class SessionService {
 
         Studio studio = optionalStudio.get();
         List<Schedules> unavailableSchedules = studio.getUnavailableTimes();
-        List<Schedules> scheduleHours = hoursToCheck.stream()
-                .map(Schedules::fromHorario)
-                .toList();
+        Schedules hours = Schedules.fromHorario(sessionInputDTO.hours());
 
-        for (Schedules hour : scheduleHours) {
-            if (unavailableSchedules.contains(hour)) {
+            if (unavailableSchedules.contains(hours)) {
                 return false;
             }
-        }
+
 
         return true;
 
@@ -148,7 +130,6 @@ public class SessionService {
 
     private Boolean checkIfStudioIsInOperatingDay(SessionInputDTO sessionInputDTO) {
         String studioName = sessionInputDTO.studio();
-        List<String> daysRequested = sessionInputDTO.day();
 
         Optional<Studio> optionalStudio = studioRepository.findByName(studioName);
         if (optionalStudio.isEmpty()) {
@@ -161,11 +142,9 @@ public class SessionService {
                 .map(DaysOfWeek::toDescricao)
                 .toList();
 
-        for (String dayRequested : daysRequested) {
-            if (!activeDays.contains(dayRequested)) {
+            if (!activeDays.contains(sessionInputDTO.day())) {
                 return false;
             }
-        }
 
         return true;
     }
@@ -173,7 +152,6 @@ public class SessionService {
     private Boolean checkIfInstructorIsAvalible(SessionInputDTO sessionInputDTO) {
         String studioName = sessionInputDTO.studio();
         String instructorName = sessionInputDTO.instructor();
-        List<String> hoursToCheck = sessionInputDTO.hours();
 
         Optional<Studio> optionalStudio = studioRepository.findByName(studioName);
         if (optionalStudio.isEmpty()) {
@@ -183,16 +161,12 @@ public class SessionService {
         Studio studio = optionalStudio.get();
         Map<Schedules, String> instructorsByTime = studio.getInstructorsByTime();
 
-        List<Schedules> scheduleHours = hoursToCheck.stream()
-                .map(Schedules::fromHorario)
-                .toList();
+        Schedules hours = Schedules.fromHorario(sessionInputDTO.hours());
 
-        for (Schedules schedule : scheduleHours) {
-            String instructorAtTime = instructorsByTime.get(schedule);
+            String instructorAtTime = instructorsByTime.get(hours);
             if (instructorAtTime != null && !instructorAtTime.equals(instructorName)) {
                 return false;
             }
-        }
 
         return true;
     }
@@ -212,10 +186,8 @@ public class SessionService {
     }
 
     private SessionOutputDTO assemblerSessionOutputDTO(Session session) {
-        List<String> day = session.getDay().stream()
-                .map(DaysOfWeek::toDescricao)
-                .toList();
-        List<String> hours = session.getHours().stream().map(Schedules::getValor).toList();
+        String day = DaysOfWeek.toDescricao(session.getDay());
+        String hours = session.getHours().getValor();
         String status = SessionStatus.toDescricao(session.getStatus());
         return new SessionOutputDTO(
                 session.getId(),
@@ -230,10 +202,8 @@ public class SessionService {
     }
 
     private Session assemblerSessionEntity(SessionInputDTO sessionInputDTO) {
-        List<DaysOfWeek> day = sessionInputDTO.day().stream()
-                .map(DaysOfWeek::fromDescricao)
-                .toList();
-        List<Schedules> hours = sessionInputDTO.hours().stream().map(Schedules::fromHorario).toList();
+        DaysOfWeek day = DaysOfWeek.fromDescricao(sessionInputDTO.day());
+        Schedules hours = Schedules.fromHorario(sessionInputDTO.hours());
         SessionStatus status = SessionStatus.fromDescricao(sessionInputDTO.status());
         return new Session(
                 sessionInputDTO.students(),

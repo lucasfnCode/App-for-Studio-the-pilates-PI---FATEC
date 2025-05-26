@@ -49,7 +49,4 @@ public class SessionController {
         return ResponseEntity.ok(service.desactiveSessionById(id));
     }
 
-    
-    
-
 }
