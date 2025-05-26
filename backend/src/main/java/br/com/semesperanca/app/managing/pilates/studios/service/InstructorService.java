@@ -1,6 +1,5 @@
 package br.com.semesperanca.app.managing.pilates.studios.service;
 
-
 import org.springframework.stereotype.Service;
 
 import br.com.semesperanca.app.managing.pilates.studios.application.model.InstructorOutputDTO;
@@ -21,15 +20,15 @@ public class InstructorService {
 
     public List<InstructorOutputDTO> listAllActiveInstructors() {
         List<Instructor> instructors = instructorRepository.findAll().stream()
-            .filter(i -> Boolean.TRUE.equals(i.getIsActive()))
-            .toList();
+                .filter(i -> Boolean.TRUE.equals(i.getIsActive()))
+                .toList();
         return instructors.stream().map(this::assemblerInstructorOutputDTO).toList();
     }
 
-    public List<InstructorOutputDTO> listAllInstructors(){
+    public List<InstructorOutputDTO> listAllInstructors() {
         List<Instructor> instructors = instructorRepository.findAll()
-            .stream()
-            .toList();
+                .stream()
+                .toList();
         return instructors.stream().map(this::assemblerInstructorOutputDTO).toList();
     }
 
@@ -37,13 +36,13 @@ public class InstructorService {
         return assemblerInstructorOutputDTO(Objects.requireNonNull(checkIfIsActive(id)));
     }
 
-    public InstructorOutputDTO registerInstructor(InstructorInputDTO instructorInputDTO){
+    public InstructorOutputDTO registerInstructor(InstructorInputDTO instructorInputDTO) {
         return assemblerInstructorOutputDTO(instructorRepository.save(assemblerInstructorEntity(instructorInputDTO)));
     }
 
-    public InstructorOutputDTO updateInstructorById(String id, InstructorInputDTO instructorInputDTO){
+    public InstructorOutputDTO updateInstructorById(String id, InstructorInputDTO instructorInputDTO) {
         Optional<Instructor> optionalInstructor = instructorRepository.findById(id);
-        if (optionalInstructor.isEmpty()){
+        if (optionalInstructor.isEmpty()) {
             throw new RuntimeException();
         }
 
@@ -65,9 +64,9 @@ public class InstructorService {
         return assemblerInstructorOutputDTO(updated);
     }
 
-    public InstructorOutputDTO desactiveInstructorById(String id){
+    public InstructorOutputDTO desactiveInstructorById(String id) {
         Optional<Instructor> optionalInstructor = instructorRepository.findById(id);
-        if (optionalInstructor.isEmpty()){
+        if (optionalInstructor.isEmpty()) {
             throw new RuntimeException("Instrutor não encontrado.");
         }
 
@@ -82,7 +81,7 @@ public class InstructorService {
 
     private Instructor checkIfIsActive(String id) {
         Optional<Instructor> optionalInstructor = instructorRepository.findById(id);
-        if(optionalInstructor.isPresent()) {
+        if (optionalInstructor.isPresent()) {
             Instructor instructor = optionalInstructor.get();
             if (instructor.getIsActive()) {
                 return instructor;
@@ -102,23 +101,37 @@ public class InstructorService {
                 instructor.getPhoto(),
                 instructor.getFormation(),
                 instructor.getAdvice(),
-                instructor.getPermissions()
-        );
+                instructor.getPermissions());
     }
 
-    private Instructor assemblerInstructorEntity(InstructorInputDTO dto){
-        Instructor instructor = new Instructor();
-                instructor.setName(dto.name());
-                instructor.setType(dto.type());
-                instructor.setEmail(dto.email());
-                instructor.setContact(dto.contact());
-                instructor.setPhoto(dto.photo());
-                instructor.setHiringDate(dto.hiringDate());
-                instructor.setIsActive(dto.isActive());
-                instructor.setFormation(dto.formation());
-                instructor.setAdvice(dto.advice());
-                instructor.setPermissions(dto.permissions());
-            return instructor;
+    private Instructor assemblerInstructorEntity(InstructorInputDTO dto) {
+        /*
+         * Instructor instructor = new Instructor();
+         * instructor.setName(dto.name());
+         * instructor.setType(dto.type());
+         * instructor.setEmail(dto.email());
+         * instructor.setContact(dto.contact());
+         * instructor.setPhoto(dto.photo());
+         * instructor.setHiringDate(dto.hiringDate());
+         * instructor.setIsActive(dto.isActive());
+         * instructor.setFormation(dto.formation());
+         * instructor.setAdvice(dto.advice());
+         * instructor.setPermissions(dto.permissions());
+         * return instructor;
+         */
+        return Instructor.builder()
+                .name(dto.name())
+                .type(dto.type())
+                .email(dto.email())
+                .contact(dto.contact())
+                .photo(dto.photo())
+                .hiringDate(dto.hiringDate())
+                .isActive(dto.isActive())
+                .formation(dto.formation())
+                .advice(dto.advice())
+                .permissions(dto.permissions())
+                .build();
+
     }
 
 }

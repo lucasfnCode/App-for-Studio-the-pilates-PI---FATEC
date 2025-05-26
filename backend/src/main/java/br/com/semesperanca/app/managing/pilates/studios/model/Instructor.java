@@ -6,9 +6,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -16,18 +15,16 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
+@SuperBuilder
 @Document(collection = "Usuarios")
 public class Instructor extends User {
 
     @Id
     private String id;
     
-    @NonNull
+   
     private String formation;
-    @NonNull
     private String advice;
-    @NonNull
     private List<String> permissions;
 
 }
