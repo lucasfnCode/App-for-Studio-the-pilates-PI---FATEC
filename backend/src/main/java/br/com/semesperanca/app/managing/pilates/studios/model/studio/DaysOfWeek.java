@@ -46,5 +46,8 @@ public enum DaysOfWeek {
         throw new IllegalArgumentException("Dia inválido!");
     }
 
+    public static DaysOfWeek fromJavaDayOfWeek(java.time.DayOfWeek diaJava) {
+        return fromValor(diaJava.getValue());
+    }
 
 }
