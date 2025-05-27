@@ -14,7 +14,7 @@ export const headerHtml = `
     <a class="nav-link m-1 text-secondary" href="#">Aulas</a>
   </div>
 
-  <div class="nav">
+  <div class="nav ">
     <a class="nav-link m-1 text-secondary" href="#">
       <i class="bi bi-people-fill"></i>
     </a>

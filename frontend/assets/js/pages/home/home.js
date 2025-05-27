@@ -21,12 +21,13 @@ function createCard(title, imageUrl, modalTargetId) {
 
 export function homeScreen() {
   const homeHTML = `
-    <section id="bemVindoSection" class="text-center p-5">
-  <div class="bem-vindo-container">
-    <img src="https://cdn-icons-png.flaticon.com/512/685/685352.png" alt="Ícone Pilates" class="bem-vindo-icone">
-    <h1 class="bem-vindo-titulo">Bem-vindo</h1>
-    <p class="bem-vindo-subtitulo">Explore mais sobre nossos instrutores, planos e o mundo do Pilates!</p>
+    <section id="bemVindoSection">
+  <div class="bem-vindo-container text-center">
+    <img src="https://cdn-icons-png.flaticon.com/512/2983/2983094.png" alt="Ícone de Pilates" class="bem-vindo-icone">
+    <h1 class="bem-vindo-titulo">Bem-vindo ao Estúdio de Pilates</h1>
+    <p class="bem-vindo-subtitulo">Transforme seu corpo e mente com nossas aulas especializadas.</p>
   </div>
+</section>
 
       <section class="row row-cols-1 row-cols-md-3 g-4 w-100 justify-content-center">
         ${createCard("Instrutores", "https://placehold.co/600x400?text=Instrutores", "modalInstrutores")}

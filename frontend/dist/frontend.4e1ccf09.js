@@ -3746,12 +3746,13 @@ function createCard(title, imageUrl, modalTargetId) {
 }
 function homeScreen() {
     const homeHTML = `
-    <section id="bemVindoSection" class="text-center p-5">
-  <div class="bem-vindo-container">
-    <img src="https://cdn-icons-png.flaticon.com/512/685/685352.png" alt="\xcdcone Pilates" class="bem-vindo-icone">
-    <h1 class="bem-vindo-titulo">Bem-vindo</h1>
-    <p class="bem-vindo-subtitulo">Explore mais sobre nossos instrutores, planos e o mundo do Pilates!</p>
+    <section id="bemVindoSection">
+  <div class="bem-vindo-container text-center">
+    <img src="https://cdn-icons-png.flaticon.com/512/2983/2983094.png" alt="\xcdcone de Pilates" class="bem-vindo-icone">
+    <h1 class="bem-vindo-titulo">Bem-vindo ao Est\xfadio de Pilates</h1>
+    <p class="bem-vindo-subtitulo">Transforme seu corpo e mente com nossas aulas especializadas.</p>
   </div>
+</section>
 
       <section class="row row-cols-1 row-cols-md-3 g-4 w-100 justify-content-center">
         ${createCard("Instrutores", "https://placehold.co/600x400?text=Instrutores", "modalInstrutores")}
@@ -3907,17 +3908,17 @@ function criarModalInstrutoresHTML() {
           </div>
           <div class="modal-body row g-4">
             <div class="col-md-4 text-center">
-              <img src="https://placehold.co/300x300?text=Ana+Clara" class="img-fluid rounded-3 shadow-sm" alt="Ana Clara">
+              <img src="https://images.unsplash.com/photo-1605296867304-46d5465a13f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="img-fluid rounded-3 shadow-sm" alt="Ana Clara">
               <h5 class="mt-3">Ana Clara</h5>
               <p>Especialista em Pilates Solo e Alongamento</p>
             </div>
             <div class="col-md-4 text-center">
-              <img src="https://placehold.co/300x300?text=Bruno+Silva" class="img-fluid rounded-3 shadow-sm" alt="Bruno Silva">
+              <img src="https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="img-fluid rounded-3 shadow-sm" alt="Bruno Silva">
               <h5 class="mt-3">Bruno Silva</h5>
               <p>Reabilita\xe7\xe3o e Pilates para Idosos</p>
             </div>
             <div class="col-md-4 text-center">
-              <img src="https://placehold.co/300x300?text=Camila+Torres" class="img-fluid rounded-3 shadow-sm" alt="Camila Torres">
+              <img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="img-fluid rounded-3 shadow-sm" alt="Camila Torres">
               <h5 class="mt-3">Camila Torres</h5>
               <p>Pilates com foco em respira\xe7\xe3o e relaxamento</p>
             </div>
@@ -3968,7 +3969,7 @@ function criarModalSobreHTML() {
           </div>
           <div class="modal-body row g-4 align-items-center">
             <div class="col-md-6">
-              <img src="https://placehold.co/600x400?text=Pilates" class="img-fluid rounded-3 shadow-sm" alt="Pilates">
+              <img src="https://images.unsplash.com/photo-1615647004010-6d3b5f5d7c02?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="img-fluid rounded-3 shadow-sm" alt="Pilates Studio">
             </div>
             <div class="col-md-6">
               <p class="fs-5">
@@ -4007,7 +4008,7 @@ const headerHtml = `
     <a class="nav-link m-1 text-secondary" href="#">Aulas</a>
   </div>
 
-  <div class="nav">
+  <div class="nav ">
     <a class="nav-link m-1 text-secondary" href="#">
       <i class="bi bi-people-fill"></i>
     </a>

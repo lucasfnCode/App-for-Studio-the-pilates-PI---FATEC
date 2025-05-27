@@ -7,10 +7,19 @@ html, body {
 
 #head {
   background-color: #ffcfad;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 25px #00000012;
 }
 
 #nav {
   background-color: #ffcfad99;
+  margin: 0 auto;
+  font-size: 1.75rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 25px #00000012;
 }
 
 #painelHome {
@@ -57,8 +66,8 @@ main {
 
 #bemVindoSection {
   background-color: #0000;
-  margin-top: 40px;
-  margin-bottom: 30px;
+  margin-top: 60px;
+  margin-bottom: 60px;
 }
 
 .bem-vindo-container {
@@ -74,7 +83,7 @@ main {
 
 .bem-vindo-icone {
   opacity: .9;
-  width: 60px;
+  width: 80px;
   margin-bottom: 20px;
 }
 
