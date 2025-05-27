@@ -40,12 +40,10 @@ public class SessionController {
         return ResponseEntity.ok(service.listSessionByStudentId(id));
     }
 
-    /*
-     * @GetMapping("/current")
-     * public ResponseEntity<List<SessionOutputDTO>> listAllCurrent() {
-     * return ResponseEntity.ok(service.listAllCurrentSessions());
-     * }
-     */
+    @GetMapping("/current")
+    public ResponseEntity<List<SessionOutputDTO>> listAllCurrent() {
+        return ResponseEntity.ok(service.listAllCurrentSessionsWithDayLimiter());
+    }
 
     @GetMapping("/day/{day}")
     public ResponseEntity<List<SessionOutputDTO>> listByDay(@PathVariable LocalDate day) {
