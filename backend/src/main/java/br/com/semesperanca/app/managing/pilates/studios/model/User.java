@@ -7,15 +7,17 @@ import lombok.NonNull;
 import java.time.LocalDate;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @SuperBuilder
+@NoArgsConstructor
+
 
 public abstract class User {
 
-    @NonNull
     @Id
     private String id;
 
@@ -43,18 +45,4 @@ public abstract class User {
     @NonNull
     private Boolean isActive;
 
-    public User() {
-    }
-
-    public User(String name, String role, String cpf, LocalDate birthDate, String email, String contact, String photo,
-            Boolean isActive) {
-        this.name = name;
-        this.role = role;
-        this.cpf = cpf;
-        this.birthDate = birthDate;
-        this.email = email;
-        this.contact = contact;
-        this.photo = photo;
-        this.isActive = isActive;
-    }
 }

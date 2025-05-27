@@ -41,11 +41,11 @@ public class StudentController {
 
     @GetMapping("/cpf{cpf}")
     public ResponseEntity<StudentOutputDTO> getByCpf(@PathVariable String cpf) {
-    StudentOutputDTO student = studentService.getStudentByCpf(cpf);
-    return ResponseEntity.ok(student);
-}
+        StudentOutputDTO student = studentService.getStudentByCpf(cpf);
+        return ResponseEntity.ok(student);
+    }
 
-@GetMapping("/actives")
+    @GetMapping("/actives")
     public ResponseEntity<List<StudentOutputDTO>> listAllActive() {
         return ResponseEntity.ok(studentService.listAllActiveStudent());
     }
@@ -56,20 +56,16 @@ public class StudentController {
         return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
     }
 
-
-    @DeleteMapping("/desactivate{id}")
+    @PutMapping("/desactivate{id}")
     public ResponseEntity<Void> desactivate(@PathVariable String id) {
         studentService.desactivateStudent(id);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/activate{id}")
+    @PutMapping("/activate{id}")
     public ResponseEntity<Void> activate(@PathVariable String id) {
         studentService.activateStudent(id);
         return ResponseEntity.noContent().build();
     }
-
-
-
 
 }
