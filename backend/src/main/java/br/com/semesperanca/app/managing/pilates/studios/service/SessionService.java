@@ -45,29 +45,42 @@ public class SessionService {
         return assemblerSessionOutputDTO(sesseion);
     }
 
-    public List<SessionOutputDTO> listAllCurrentSessions() {
+    /*
+     * public List<SessionOutputDTO> listAllCurrentSessions() {
+     * LocalDate today = LocalDate.now();
+     * List<Session> sessions = sessionRepository.findByDayGreaterThanEqual(today);
+     * return sessions.stream()
+     * .map(this::assemblerSessionOutputDTO)
+     * .collect(Collectors.toList());
+     * }
+     */
+
+    public List<SessionOutputDTO> listAllCurrentSessionsWithDayLimiter() {
         LocalDate today = LocalDate.now();
-        List<Session> sessions = sessionRepository.findByDayGreaterThanEqual(today);
-        return sessions.stream()
+        LocalDate nextWeek = today.plusDays(7);
+
+        List<Session> sessions = sessionRepository.findByIsActive(Boolean.TRUE);
+
+        List<Session> filtered = sessions.stream()
+                .filter(s -> !s.getDay().isBefore(today) && !s.getDay().isAfter(nextWeek))
+                .collect(Collectors.toList());
+
+        return filtered.stream()
                 .map(this::assemblerSessionOutputDTO)
                 .collect(Collectors.toList());
     }
 
-    public List<SessionOutputDTO> listAllCurrentSessionsWithDayLimiter() {
-    LocalDate today = LocalDate.now();
-    LocalDate nextWeek = today.plusDays(7);
+    public List<SessionOutputDTO> listSessionByDay(LocalDate date) {
+        List<Session> sessions = sessionRepository.findByIsActive(Boolean.TRUE);
 
-    List<Session> sessions = sessionRepository.findByIsActive(Boolean.TRUE);
+        List<Session> filtered = sessions.stream()
+                .filter(s -> s.getDay().equals(date))
+                .collect(Collectors.toList());
 
-    List<Session> filtered = sessions.stream()
-        .filter(s -> !s.getDay().isBefore(today) && !s.getDay().isAfter(nextWeek))
-        .collect(Collectors.toList());
-
-    return filtered.stream()
-        .map(this::assemblerSessionOutputDTO)
-        .collect(Collectors.toList());
-}
-
+        return filtered.stream()
+                .map(this::assemblerSessionOutputDTO)
+                .collect(Collectors.toList());
+    }
 
     public List<SessionOutputDTO> listSessionByStudentId(String studentId) {
         List<Session> sessions = sessionRepository.findByStudents(studentId);

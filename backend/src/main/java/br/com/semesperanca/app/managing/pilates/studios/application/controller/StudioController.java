@@ -18,25 +18,24 @@ public class StudioController {
     private final StudioService service;
 
     @PostMapping
-    public ResponseEntity<StudioOutputDTO> create(@RequestBody StudioInputDTO studio){
+    public ResponseEntity<StudioOutputDTO> create(@RequestBody StudioInputDTO studio) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createStudio(studio));
     }
 
     @GetMapping
-    public ResponseEntity<List<StudioOutputDTO>> listAll(){
+    public ResponseEntity<List<StudioOutputDTO>> listAll() {
         return ResponseEntity.ok(service.listAllStudios());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StudioOutputDTO> getById(@PathVariable String id){
+    public ResponseEntity<StudioOutputDTO> getById(@PathVariable String id) {
         return ResponseEntity.status(HttpStatus.OK).body(service.getStudioById(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable String id){
+    public ResponseEntity<Object> delete(@PathVariable String id) {
         service.deleteStudio(id);
         return ResponseEntity.noContent().build();
     }
-
 
 }

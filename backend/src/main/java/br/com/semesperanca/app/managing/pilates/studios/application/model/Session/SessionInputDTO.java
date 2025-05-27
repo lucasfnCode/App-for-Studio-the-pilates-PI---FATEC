@@ -5,13 +5,14 @@ import java.util.List;
 
 public record SessionInputDTO(
 
-    List<String> students,
-    String studio,
-    String instructor,
-    LocalDate day,
-    String hours,
-    String status,
-    String type,
-    Boolean isActive
+        List<String> students,
+        String studio,
+        String instructor,
+        LocalDate day,
+        String hours,
+        String status,
+        String type,
+        Boolean isActive
 
-) {}
+) {
+}

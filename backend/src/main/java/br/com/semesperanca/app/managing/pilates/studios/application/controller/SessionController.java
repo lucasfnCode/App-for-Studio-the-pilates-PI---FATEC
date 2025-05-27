@@ -9,9 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
-
-
 
 @AllArgsConstructor
 @RestController
@@ -41,11 +40,17 @@ public class SessionController {
         return ResponseEntity.ok(service.listSessionByStudentId(id));
     }
 
-    @GetMapping("/current")
-    public ResponseEntity<List<SessionOutputDTO>> listAllCurrent() {
-        return ResponseEntity.ok(service.listAllCurrentSessions());
+    /*
+     * @GetMapping("/current")
+     * public ResponseEntity<List<SessionOutputDTO>> listAllCurrent() {
+     * return ResponseEntity.ok(service.listAllCurrentSessions());
+     * }
+     */
+
+    @GetMapping("/day/{day}")
+    public ResponseEntity<List<SessionOutputDTO>> listByDay(@PathVariable LocalDate day) {
+        return ResponseEntity.ok(service.listSessionByDay(day));
     }
-    
 
     @PostMapping()
     public ResponseEntity<SessionOutputDTO> open(@RequestBody SessionInputDTO session) {
@@ -54,7 +59,7 @@ public class SessionController {
 
     @PostMapping("/register/{sessionId}")
     public SessionOutputDTO addStudentInSession(@PathVariable String sessionId, @RequestBody StudentRegisterDTO dto) {
-        return service.registerStudentInSession(dto.studentId(),sessionId);
+        return service.registerStudentInSession(dto.studentId(), sessionId);
     }
 
     @PutMapping("/{id}")
@@ -63,7 +68,8 @@ public class SessionController {
     }
 
     @PutMapping("/unregister/{sessionId}")
-    public ResponseEntity<SessionOutputDTO> unregisterStudent(@PathVariable String sessionId, @RequestBody StudentRegisterDTO dto) {
+    public ResponseEntity<SessionOutputDTO> unregisterStudent(@PathVariable String sessionId,
+            @RequestBody StudentRegisterDTO dto) {
         return ResponseEntity.ok(service.unregisterStudentFromSession(dto.studentId(), sessionId));
     }
 
