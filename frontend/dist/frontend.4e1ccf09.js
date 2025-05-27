@@ -3947,7 +3947,7 @@ async function renderAgendamentoPage() {
         const tableBody = document.querySelector("tbody.table-group-divider");
         if (!tableBody) return;
         const tableRows = aulas.map((aula)=>{
-            const aulaId = aula._id?.$oid || aula._id;
+            const aulaId = aula.id || aula._id?.$oid || aula._id;
             let acoes = "";
             const jaAgendado = aula.aluno === user.name;
             if (role === "aluno") {
@@ -4039,10 +4039,49 @@ window.cancelarAula = async function(id) {
         console.error("Erro ao cancelar:", error);
     }
 };
-window.abrirModalAlunos = function(id) {
-    const modal = new bootstrap.Modal(document.getElementById("modalListaAlunos"));
-    modal.show();
+window.abrirModalAlunos = async function(id) {
+    try {
+        const response = await fetch(`/api/sessions/${id}`);
+        if (!response.ok) throw new Error("Falha ao buscar aula");
+        const aula = await response.json();
+        const alunos = aula.students || [];
+        const tbody = document.querySelector("#modalListaAlunos tbody");
+        tbody.innerHTML = alunos.map((alunoId)=>`
+      <tr>
+        <td>${alunoId}</td> <!-- Temporariamente usando o ID como nome -->
+        <td>---</td>
+        <td>---</td>
+        <td><button class="btn btn-danger" onclick="removerAluno('${alunoId}')">Remover</button></td>
+      </tr>
+    `).join("");
+        const modal = new bootstrap.Modal(document.getElementById("modalListaAlunos"));
+        modal.show();
+    } catch (error) {
+        console.error("Erro ao abrir modal de alunos:", error);
+        alert("N\xe3o foi poss\xedvel carregar os alunos da aula.");
+    }
 };
+async function atualizarModalAlunos(id) {
+    try {
+        const response = await fetch(`/api/sessions/${id}`);
+        if (!response.ok) throw new Error("Erro ao buscar sess\xe3o");
+        const aula = await response.json();
+        const alunos = aula.students.map((studentId)=>({
+                id: studentId,
+                nome: studentId,
+                cpf: "\u2014",
+                dataNascimento: "\u2014"
+            }));
+        const modalContainer = document.getElementById("modalListaAlunos");
+        modalContainer.outerHTML = (0, _modais.criarModalListaAlunosHTML)(alunos);
+        // Re-anexa o modal e reabre
+        const novoModal = new bootstrap.Modal(document.getElementById("modalListaAlunos"));
+        novoModal.show();
+    } catch (err) {
+        console.error("Erro ao atualizar lista de alunos:", err);
+        alert("Erro ao atualizar lista de alunos.");
+    }
+}
 window.fecharModalAlunos = function() {
     const modal = bootstrap.Modal.getInstance(document.getElementById("modalListaAlunos"));
     modal.hide();
@@ -4072,12 +4111,12 @@ parcelHelpers.export(exports, "criarModalListaAlunosHTML", ()=>criarModalListaAl
 parcelHelpers.export(exports, "criarModalCadastroAlunoHTML", ()=>criarModalCadastroAlunoHTML);
 parcelHelpers.export(exports, "modalSalvarAltera\xe7\xe3o", ()=>modalSalvarAltera\u00e7\u00e3o);
 function criarModalListaAlunosHTML(alunos = []) {
-    const alunosRows = alunos.map((aluno)=>`
+    const alunosRows = alunos.map((alunoId, index)=>`
     <tr>
-      <td>${aluno.nome}</td>
-      <td>${aluno.cpf}</td>
-      <td>${aluno.dataNascimento}</td>
-      <td><button class="btn btn-danger" onclick="removerAluno('${aluno.id}')">Remover</button></td>
+      <td>${alunoId}</td>
+      <td>\u{2014}</td>
+      <td>\u{2014}</td>
+      <td><button class="btn btn-danger" onclick="removerAluno('${alunoId}')">Remover</button></td>
     </tr>
   `).join("");
     return `
@@ -4091,7 +4130,7 @@ function criarModalListaAlunosHTML(alunos = []) {
           <div class="modal-body">
             <table class="table text-center">
               <thead>
-                <tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>A\xe7\xf5es</th></tr>
+                <tr><th>Nome (ID)</th><th>CPF</th><th>Nascimento</th><th>A\xe7\xf5es</th></tr>
               </thead>
               <tbody>
                 ${alunosRows}

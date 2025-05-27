@@ -27,6 +27,7 @@ async function fetchAulas() {
 
 let intervalId = null;
 
+
 export async function renderAgendamentoPage() {
   const main = getOrCreateMainElement();
   main.innerHTML = "";
@@ -45,7 +46,7 @@ export async function renderAgendamentoPage() {
 
     const tableRows = aulas
       .map((aula) => {
-        const aulaId = aula._id?.$oid || aula._id;
+        const aulaId = aula.id || aula._id?.$oid || aula._id;
         let acoes = "";
         const jaAgendado = aula.aluno === user.name;
 
@@ -147,12 +148,60 @@ window.cancelarAula = async function (id) {
   }
 };
 
-window.abrirModalAlunos = function (id) {
-  const modal = new bootstrap.Modal(
-    document.getElementById("modalListaAlunos")
-  );
-  modal.show();
+window.abrirModalAlunos = async function (id) {
+  try {
+    const response = await fetch(`/api/sessions/${id}`);
+    if (!response.ok) throw new Error("Falha ao buscar aula");
+
+    const aula = await response.json();
+
+    const alunos = aula.students || [];
+
+    const tbody = document.querySelector("#modalListaAlunos tbody");
+    tbody.innerHTML = alunos.map((alunoId) => `
+      <tr>
+        <td>${alunoId}</td> <!-- Temporariamente usando o ID como nome -->
+        <td>---</td>
+        <td>---</td>
+        <td><button class="btn btn-danger" onclick="removerAluno('${alunoId}')">Remover</button></td>
+      </tr>
+    `).join("");
+
+    const modal = new bootstrap.Modal(document.getElementById("modalListaAlunos"));
+    modal.show();
+
+  } catch (error) {
+    console.error("Erro ao abrir modal de alunos:", error);
+    alert("Não foi possível carregar os alunos da aula.");
+  }
 };
+
+async function atualizarModalAlunos(id) {
+  try {
+    const response = await fetch(`/api/sessions/${id}`);
+    if (!response.ok) throw new Error("Erro ao buscar sessão");
+
+    const aula = await response.json();
+
+    const alunos = aula.students.map((studentId) => ({
+      id: studentId,
+      nome: studentId,
+      cpf: "—",
+      dataNascimento: "—",
+    }));
+
+    const modalContainer = document.getElementById("modalListaAlunos");
+    modalContainer.outerHTML = criarModalListaAlunosHTML(alunos);
+
+    // Re-anexa o modal e reabre
+    const novoModal = new bootstrap.Modal(document.getElementById("modalListaAlunos"));
+    novoModal.show();
+  } catch (err) {
+    console.error("Erro ao atualizar lista de alunos:", err);
+    alert("Erro ao atualizar lista de alunos.");
+  }
+}
+
 
 window.fecharModalAlunos = function () {
   const modal = bootstrap.Modal.getInstance(

@@ -1,10 +1,10 @@
 export function criarModalListaAlunosHTML(alunos = []) {
-  const alunosRows = alunos.map(aluno => `
+  const alunosRows = alunos.map((alunoId, index) => `
     <tr>
-      <td>${aluno.nome}</td>
-      <td>${aluno.cpf}</td>
-      <td>${aluno.dataNascimento}</td>
-      <td><button class="btn btn-danger" onclick="removerAluno('${aluno.id}')">Remover</button></td>
+      <td>${alunoId}</td>
+      <td>—</td>
+      <td>—</td>
+      <td><button class="btn btn-danger" onclick="removerAluno('${alunoId}')">Remover</button></td>
     </tr>
   `).join("");
 
@@ -19,7 +19,7 @@ export function criarModalListaAlunosHTML(alunos = []) {
           <div class="modal-body">
             <table class="table text-center">
               <thead>
-                <tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>Ações</th></tr>
+                <tr><th>Nome (ID)</th><th>CPF</th><th>Nascimento</th><th>Ações</th></tr>
               </thead>
               <tbody>
                 ${alunosRows}

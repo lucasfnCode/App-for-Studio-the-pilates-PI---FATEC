@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.SessionInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.SessionOutputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.model.session.Session;
 import br.com.semesperanca.app.managing.pilates.studios.model.session.SessionStatus;
 import br.com.semesperanca.app.managing.pilates.studios.model.studio.DaysOfWeek;
 import br.com.semesperanca.app.managing.pilates.studios.model.studio.Schedules;
@@ -17,10 +18,6 @@ import br.com.semesperanca.app.managing.pilates.studios.model.studio.Studio;
 import br.com.semesperanca.app.managing.pilates.studios.repository.SessionRepository;
 import br.com.semesperanca.app.managing.pilates.studios.repository.StudioRepository;
 import lombok.AllArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -112,21 +109,21 @@ public class SessionService {
 
     public SessionOutputDTO updateSessionById(String id, SessionInputDTO sessionInputDTO) {
         Optional<Session> optionalsession = sessionRepository.findById(id);
-        if (optionalsession.isEmpty()) {
-            throw new RuntimeException("Session não encontrada");
-        }
-        if (!checkMaxOfStudents(sessionInputDTO)) {
-            throw new RuntimeException("caguei no mato");
-        }
-        if (!checkIfInstructorIsAvalible(sessionInputDTO)) {
-            throw new RuntimeException("xereca mole");
-        }
-        if (!checkIfStudioIsInOperatingDay(sessionInputDTO)) {
-            throw new RuntimeException("pinto molenga");
-        }
-        if (!checkIfSheduleIsAvaliable(sessionInputDTO)) {
-            throw new RuntimeException("suruba no acre");
-        }
+        // if (optionalsession.isEmpty()) {
+        //     throw new RuntimeException("Session não encontrada");
+        // }
+        // if (!checkMaxOfStudents(sessionInputDTO)) {
+        //     throw new RuntimeException("caguei no mato");
+        // }
+        // if (!checkIfInstructorIsAvalible(sessionInputDTO)) {
+        //     throw new RuntimeException("xereca mole");
+        // }
+        // if (!checkIfStudioIsInOperatingDay(sessionInputDTO)) {
+        //     throw new RuntimeException("pinto molenga");
+        // }
+        // if (!checkIfSheduleIsAvaliable(sessionInputDTO)) {
+        //     throw new RuntimeException("suruba no acre");
+        // }
 
         Session session = optionalsession.get();
         Schedules hours = Schedules.fromHorario(sessionInputDTO.hours());
