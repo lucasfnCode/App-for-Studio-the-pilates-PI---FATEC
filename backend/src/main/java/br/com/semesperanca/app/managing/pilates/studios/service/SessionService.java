@@ -133,6 +133,7 @@ public class SessionService {
         session.setDay(sessionInputDTO.day());
         session.setHours(hours);
         session.setStatus(status);
+        session.setPresences(sessionInputDTO.presences());
         session.setType(sessionInputDTO.type());
         session.setIsActive(sessionInputDTO.isActive());
 
@@ -172,6 +173,42 @@ public class SessionService {
         session.setStudents(students);
         Session updated = sessionRepository.save(session);
         return assemblerSessionOutputDTO(updated);
+    }
+
+    public SessionOutputDTO registerPresencesInSession(List<String> studentIds, String sessionId) {
+        Optional<Session> optionalsession = sessionRepository.findById(sessionId);
+        Session session = optionalsession.get();
+
+        List<String> currentPresences = session.getPresences();
+
+        for (String id : studentIds) {
+            if (!currentPresences.contains(id)) {
+                currentPresences.add(id);
+            }
+        }
+
+        session.setPresences(currentPresences);
+        Session updated = sessionRepository.save(session);
+        return assemblerSessionOutputDTO(updated);
+
+    }
+
+    public SessionOutputDTO unregisterPresencesInSession(List<String> studentIds, String sessionId) {
+        Optional<Session> optionalsession = sessionRepository.findById(sessionId);
+        Session session = optionalsession.get();
+
+        List<String> currentPresences = session.getPresences();
+
+        for (String id : studentIds) {
+            if (currentPresences.contains(id)) {
+                currentPresences.remove(id);
+            }
+        }
+
+        session.setPresences(currentPresences);
+        Session updated = sessionRepository.save(session);
+        return assemblerSessionOutputDTO(updated);
+
     }
 
     public SessionOutputDTO desactiveSessionById(String id) {
@@ -268,6 +305,7 @@ public class SessionService {
                 session.getDay(),
                 hours,
                 status,
+                session.getPresences(),
                 session.getType(),
                 session.getIsActive());
     }
@@ -282,6 +320,7 @@ public class SessionService {
                 sessionInputDTO.day(),
                 hours,
                 status,
+                sessionInputDTO.presences(),
                 sessionInputDTO.type(),
                 sessionInputDTO.isActive());
     }

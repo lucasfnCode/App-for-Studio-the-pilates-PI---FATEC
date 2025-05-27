@@ -35,6 +35,8 @@ public class Session {
     @NonNull
     private SessionStatus status;
     @NonNull
+    private List<String> presences;
+    @NonNull
     private String type;
     @NonNull
     private Boolean isActive;

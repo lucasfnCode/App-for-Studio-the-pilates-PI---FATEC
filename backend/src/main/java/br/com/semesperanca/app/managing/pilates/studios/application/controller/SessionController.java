@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @AllArgsConstructor
 @RestController
@@ -60,15 +64,24 @@ public class SessionController {
         return service.registerStudentInSession(dto.studentId(), sessionId);
     }
 
+    @PostMapping("/presence/{sessionId}")
+    public SessionOutputDTO registerPresence(@PathVariable String sessionId, @RequestBody List<String> studentIds) {
+        return service.registerPresencesInSession(studentIds, sessionId);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<SessionOutputDTO> update(@PathVariable String id, @RequestBody SessionInputDTO session) {
         return ResponseEntity.status(HttpStatus.OK).body(service.updateSessionById(id, session));
     }
 
     @PutMapping("/unregister/{sessionId}")
-    public ResponseEntity<SessionOutputDTO> unregisterStudent(@PathVariable String sessionId,
-            @RequestBody StudentRegisterDTO dto) {
+    public ResponseEntity<SessionOutputDTO> unregisterStudent(@PathVariable String sessionId, @RequestBody StudentRegisterDTO dto) {
         return ResponseEntity.ok(service.unregisterStudentFromSession(dto.studentId(), sessionId));
+    }
+
+    @PutMapping("presence/{sessionId}")
+    public SessionOutputDTO unregisterPresence(@PathVariable String sessionId, @RequestBody List<String> studentIds) {
+        return service.unregisterPresencesInSession(studentIds, sessionId);
     }
 
     @DeleteMapping("/{id}")

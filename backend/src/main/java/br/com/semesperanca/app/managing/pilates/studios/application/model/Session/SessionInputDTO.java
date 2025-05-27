@@ -11,6 +11,7 @@ public record SessionInputDTO(
         LocalDate day,
         String hours,
         String status,
+        List<String> presences,
         String type,
         Boolean isActive
 
