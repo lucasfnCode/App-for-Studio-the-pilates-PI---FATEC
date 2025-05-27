@@ -10,9 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
+
 
 
 @AllArgsConstructor
@@ -43,12 +41,18 @@ public class SessionController {
         return ResponseEntity.ok(service.listSessionByStudentId(id));
     }
 
+    @GetMapping("/current")
+    public ResponseEntity<List<SessionOutputDTO>> listAllCurrent() {
+        return ResponseEntity.ok(service.listAllCurrentSessions());
+    }
+    
+
     @PostMapping()
     public ResponseEntity<SessionOutputDTO> open(@RequestBody SessionInputDTO session) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.openSession(session));
     }
 
-    @PostMapping("/{sessionId}")
+    @PostMapping("/register/{sessionId}")
     public SessionOutputDTO addStudentInSession(@PathVariable String sessionId, @RequestBody StudentRegisterDTO dto) {
         return service.registerStudentInSession(dto.studentId(),sessionId);
     }

@@ -13,7 +13,9 @@ import br.com.semesperanca.app.managing.pilates.studios.repository.StudioReposit
 import br.com.semesperanca.app.managing.pilates.studios.repository.SessionRepository;
 import lombok.AllArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -42,6 +44,30 @@ public class SessionService {
         Session sesseion = optionalsession.get();
         return assemblerSessionOutputDTO(sesseion);
     }
+
+    public List<SessionOutputDTO> listAllCurrentSessions() {
+        LocalDate today = LocalDate.now();
+        List<Session> sessions = sessionRepository.findByDayGreaterThanEqual(today);
+        return sessions.stream()
+                .map(this::assemblerSessionOutputDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<SessionOutputDTO> listAllCurrentSessionsWithDayLimiter() {
+    LocalDate today = LocalDate.now();
+    LocalDate nextWeek = today.plusDays(7);
+
+    List<Session> sessions = sessionRepository.findByIsActive(Boolean.TRUE);
+
+    List<Session> filtered = sessions.stream()
+        .filter(s -> !s.getDay().isBefore(today) && !s.getDay().isAfter(nextWeek))
+        .collect(Collectors.toList());
+
+    return filtered.stream()
+        .map(this::assemblerSessionOutputDTO)
+        .collect(Collectors.toList());
+}
+
 
     public List<SessionOutputDTO> listSessionByStudentId(String studentId) {
         List<Session> sessions = sessionRepository.findByStudents(studentId);
