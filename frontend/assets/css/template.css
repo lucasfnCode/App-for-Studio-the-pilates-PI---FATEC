@@ -1,0 +1,26 @@
+html, body {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#head{
+    background-color: #FFCFAD;
+}
+#nav{
+    background-color: rgba(255, 207, 173, 0.6);
+    
+}
+#painelHome{
+    background-color: #FFFBD4;
+}
+footer{
+    background-color: #FFCFAD;
+    margin-top: auto;
+}
+main {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Permite que o scroll funcione corretamente */
+}

@@ -1,0 +1,11 @@
+[{
+  "_id": {
+    "$oid": "67f0830ed5ffb65cce5d56ed"
+  },
+  "nome": "Plano Trimestral 2x/semana",
+  "periodo": "trimestral",
+  "frequencia": "2x/semana",
+  "valor_mensal": 200,
+  "valor_total": 600,
+  "politica_cancelamento": "Proporcional ao uso até o momento do cancelamento"
+}]

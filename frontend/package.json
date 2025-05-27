@@ -1,0 +1,31 @@
+{
+  "name": "app-for-studio-the-pilates-pi---fatec",
+  "version": "1.0.0",
+  "description": "App Estudio de Pilates - PI 3º Semestre",
+  "scripts": {
+    "dev": "parcel index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucasfnCode/App-for-Studio-the-pilates-PI---FATEC.git"
+  },
+  "keywords": [
+    "Pilates",
+    "PI",
+    "Estudio"
+  ],
+  "author": "100esperanca",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucasfnCode/App-for-Studio-the-pilates-PI---FATEC/issues"
+  },
+  "homepage": "https://github.com/lucasfnCode/App-for-Studio-the-pilates-PI---FATEC#readme",
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "bootstrap": "^5.3.6",
+    "bootstrap-icons": "^1.13.1"
+  },
+  "devDependencies": {
+    "parcel": "^2.15.0"
+  }
+}

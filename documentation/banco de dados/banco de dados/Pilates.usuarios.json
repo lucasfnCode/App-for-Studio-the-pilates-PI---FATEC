@@ -1,0 +1,116 @@
+[{
+  "_id": {
+    "$oid": "67f08609d5ffb65cce5d5702"
+  },
+  "nome": "Maria Oliveira",
+  "tipo": "aluno",
+  "data_nascimento": "1990-06-20",
+  "cpf": "123.456.789-00",
+  "email": "maria.oliveira@example.com",
+  "contato": "(11) 98765-4321",
+  "profissao": "Advogada",
+  "foto": "maria.jpg",
+  "avaliacao": {
+    "descricao": "Avaliação inicial: dor lombar",
+    "profissional": "Dr. João Santos"
+  },
+  "evolucao": "Melhora visível após 2 semanas",
+  "reavaliacao": {
+    "foto_postural": "reavaliacao_maria.jpg",
+    "dados_relevantes": "Alinhamento melhorado"
+  },
+  "plano": {
+    "modalidade": "Pilates",
+    "frequencia": "3x/semana",
+    "duracao": "mensal",
+    "data_inicio": "2025-04-01",
+    "forma_pagamento": "Pix",
+    "desconto": "10%",
+    "tipo_pagamento": "à vista",
+    "data_primeiro_pagamento": "2025-04-01",
+    "data_vencimento": "2025-05-01"
+  },
+  "area_cliente": {
+    "data_vencimento_pagamento": "2025-05-01",
+    "reposicoes": 2,
+    "proximas_aulas": [
+      {
+        "data": "2025-04-10",
+        "horario": "10:00",
+        "status": "confirmada"
+      }
+    ],
+    "meu_plano": "mensal, 3x semana, vence 01/05/2025",
+    "comprovante_pagamento": "comprovante_maria.pdf",
+    "recibo_fiscal": "recibo_maria.pdf",
+    "contrato": "contrato_maria.pdf",
+    "autorizacao_imagem": true
+  }
+},
+{
+  "_id": {
+    "$oid": "67f08638d5ffb65cce5d5704"
+  },
+  "nome": "João Silva",
+  "tipo": "instrutor",
+  "formacao": "Educação Física",
+  "conselho": "CREF 123456-G/SP",
+  "email": "joao.silva@example.com",
+  "data_nascimento": "1985-03-15",
+  "contato": "(11) 98888-1234",
+  "data_contratacao": "2022-01-10",
+  "foto": "joao.jpg",
+  "permissoes": [
+    "marcar_presenca",
+    "marcar_falta",
+    "reagendar_aula",
+    "visualizar_agenda",
+    "registrar_evolucao",
+    "registrar_reavaliacao"
+  ]
+},
+{
+  "_id": {
+    "$oid": "67f08646d5ffb65cce5d5706"
+  },
+  "nome": "Ana Souza",
+  "tipo": "recepcionista",
+  "formacao": "Administração",
+  "email": "ana.souza@example.com",
+  "data_nascimento": "1993-10-05",
+  "contato": "(11) 91234-5678",
+  "data_contratacao": "2023-02-15",
+  "foto": "ana.jpg",
+  "permissoes": [
+    "marcar_aula_experimental",
+    "cadastrar_aluno",
+    "vender_plano",
+    "agendar_aulas",
+    "desmarcar_aula",
+    "reagendar_aula",
+    "alterar_aula_fixa",
+    "informar_ferias_licenca",
+    "reativar_plano"
+  ]
+},
+{
+  "_id": {
+    "$oid": "67f08658d5ffb65cce5d5708"
+  },
+  "nome": "Carlos Mendes",
+  "tipo": "administrador",
+  "formacao": "Gestão Empresarial",
+  "email": "carlos.mendes@example.com",
+  "data_nascimento": "1980-09-30",
+  "contato": "(11) 99999-8888",
+  "data_contratacao": "2020-08-01",
+  "foto": "carlos.jpg",
+  "permissoes": [
+    "emitir_nota_fiscal",
+    "controlar_financas",
+    "cancelar_planos",
+    "suspender_planos",
+    "gerenciar_agendas",
+    "abrir_agenda_studio"
+  ]
+}]
