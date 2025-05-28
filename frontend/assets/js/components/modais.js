@@ -4,7 +4,7 @@ export function criarModalListaAlunosHTML(alunos = []) {
       <td>${alunoId}</td>
       <td>—</td>
       <td>—</td>
-      <td><button class="btn btn-danger" onclick="removerAluno('${alunoId}')">Remover</button></td>
+      <td><button class="btn btn-sm btn-danger" onclick="removerAluno('${alunoId}')">Remover</button></td>
     </tr>
   `).join("");
 
