@@ -1,23 +1,23 @@
 package br.com.semesperanca.app.managing.pilates.studios.application.controller;
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.SessionInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.SessionOutputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.StudentRegisterDTO;
 import br.com.semesperanca.app.managing.pilates.studios.service.SessionService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.util.List;
-<<<<<<< HEAD
-=======
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
->>>>>>> origin/felps-session
 
 @AllArgsConstructor
 @RestController
@@ -67,27 +67,17 @@ public class SessionController {
         return service.registerStudentInSession(dto.studentId(), sessionId);
     }
 
-<<<<<<< HEAD
-=======
     @PostMapping("/presence/{sessionId}")
     public SessionOutputDTO registerPresence(@PathVariable String sessionId, @RequestBody List<String> studentIds) {
         return service.registerPresencesInSession(studentIds, sessionId);
     }
 
->>>>>>> origin/felps-session
     @PutMapping("/{id}")
     public ResponseEntity<SessionOutputDTO> update(@PathVariable String id, @RequestBody SessionInputDTO session) {
         return ResponseEntity.status(HttpStatus.OK).body(service.updateSessionById(id, session));
     }
 
     @PutMapping("/unregister/{sessionId}")
-<<<<<<< HEAD
-    public ResponseEntity<SessionOutputDTO> unregisterStudent(@PathVariable String sessionId,
-            @RequestBody StudentRegisterDTO dto) {
-        return ResponseEntity.ok(service.unregisterStudentFromSession(dto.studentId(), sessionId));
-    }
-
-=======
     public ResponseEntity<SessionOutputDTO> unregisterStudent(@PathVariable String sessionId, @RequestBody StudentRegisterDTO dto) {
         return ResponseEntity.ok(service.unregisterStudentFromSession(dto.studentId(), sessionId));
     }
@@ -97,7 +87,6 @@ public class SessionController {
         return service.unregisterPresencesInSession(studentIds, sessionId);
     }
 
->>>>>>> origin/felps-session
     @DeleteMapping("/{id}")
     public ResponseEntity<SessionOutputDTO> desactive(@PathVariable String id) {
         return ResponseEntity.ok(service.desactiveSessionById(id));

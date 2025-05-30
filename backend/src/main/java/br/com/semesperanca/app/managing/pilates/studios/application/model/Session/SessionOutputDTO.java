@@ -5,19 +5,16 @@ import java.util.List;
 
 public record SessionOutputDTO(
 
-        String id,
-        List<String> students,
-        String studio,
-        String instructor,
-        LocalDate day,
-        String hours,
-        String status,
-<<<<<<< HEAD
-=======
-        List<String> presences,
->>>>>>> origin/felps-session
-        String type,
-        Boolean isActive
+                String id,
+                List<String> students,
+                String studio,
+                String instructor,
+                LocalDate day,
+                String hours,
+                String status,
+                List<String> presences,
+                String type,
+                Boolean isActive
 
 ) {
 }
