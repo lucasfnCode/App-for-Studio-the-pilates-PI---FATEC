@@ -1,8 +1,11 @@
 package br.com.semesperanca.app.managing.pilates.studios.model.session;
 
+<<<<<<< HEAD
 import java.time.LocalDate;
 import java.util.List;
 
+=======
+>>>>>>> origin/felps-session
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,6 +15,12 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+<<<<<<< HEAD
+=======
+import java.time.LocalDate;
+import java.util.List;
+
+>>>>>>> origin/felps-session
 @RequiredArgsConstructor
 @NoArgsConstructor
 @Data
@@ -35,6 +44,11 @@ public class Session {
     @NonNull
     private SessionStatus status;
     @NonNull
+<<<<<<< HEAD
+=======
+    private List<String> presences;
+    @NonNull
+>>>>>>> origin/felps-session
     private String type;
     @NonNull
     private Boolean isActive;

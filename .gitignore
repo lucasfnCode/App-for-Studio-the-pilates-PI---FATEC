@@ -6,7 +6,8 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
+!**/src/main/**/build/
+!**/src/test/**/build/
 ### STS (Spring Tool Suite) ###
 .apt_generated
 .classpath

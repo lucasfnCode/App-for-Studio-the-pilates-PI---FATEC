@@ -1,15 +1,19 @@
 package br.com.semesperanca.app.managing.pilates.studios.service;
 
+<<<<<<< HEAD
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+=======
+>>>>>>> origin/felps-session
 import org.springframework.stereotype.Service;
 
 import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.SessionInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.SessionOutputDTO;
+<<<<<<< HEAD
 import br.com.semesperanca.app.managing.pilates.studios.model.session.Session;
 import br.com.semesperanca.app.managing.pilates.studios.model.session.SessionStatus;
 import br.com.semesperanca.app.managing.pilates.studios.model.studio.DaysOfWeek;
@@ -19,6 +23,21 @@ import br.com.semesperanca.app.managing.pilates.studios.repository.SessionReposi
 import br.com.semesperanca.app.managing.pilates.studios.repository.StudioRepository;
 import lombok.AllArgsConstructor;
 
+=======
+import br.com.semesperanca.app.managing.pilates.studios.model.session.SessionStatus;
+import br.com.semesperanca.app.managing.pilates.studios.model.session.Session;
+import br.com.semesperanca.app.managing.pilates.studios.model.studio.DaysOfWeek;
+import br.com.semesperanca.app.managing.pilates.studios.model.studio.Schedules;
+import br.com.semesperanca.app.managing.pilates.studios.model.studio.Studio;
+import br.com.semesperanca.app.managing.pilates.studios.repository.StudioRepository;
+import br.com.semesperanca.app.managing.pilates.studios.repository.SessionRepository;
+import lombok.AllArgsConstructor;
+
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
+
+>>>>>>> origin/felps-session
 @AllArgsConstructor
 @Service
 public class SessionService {
@@ -92,6 +111,7 @@ public class SessionService {
     }
 
     public SessionOutputDTO openSession(SessionInputDTO sessionInputDTO) {
+<<<<<<< HEAD
         // if (!checkMaxOfStudents(sessionInputDTO)) {
         //     throw new RuntimeException("caguei no mato");
         // }
@@ -104,11 +124,26 @@ public class SessionService {
         // if (!checkIfSheduleIsAvaliable(sessionInputDTO)) {
         //     throw new RuntimeException("suruba no acre");
         // }
+=======
+        if (!checkMaxOfStudents(sessionInputDTO)) {
+            throw new RuntimeException("caguei no mato");
+        }
+        if (!checkIfInstructorIsAvalible(sessionInputDTO)) {
+            throw new RuntimeException("xereca mole");
+        }
+        if (!checkIfStudioIsInOperatingDay(sessionInputDTO)) {
+            throw new RuntimeException("pinto molenga");
+        }
+        if (!checkIfSheduleIsAvaliable(sessionInputDTO)) {
+            throw new RuntimeException("suruba no acre");
+        }
+>>>>>>> origin/felps-session
         return assemblerSessionOutputDTO(sessionRepository.save(assemblerSessionEntity(sessionInputDTO)));
     }
 
     public SessionOutputDTO updateSessionById(String id, SessionInputDTO sessionInputDTO) {
         Optional<Session> optionalsession = sessionRepository.findById(id);
+<<<<<<< HEAD
         // if (optionalsession.isEmpty()) {
         //     throw new RuntimeException("Session não encontrada");
         // }
@@ -124,6 +159,23 @@ public class SessionService {
         // if (!checkIfSheduleIsAvaliable(sessionInputDTO)) {
         //     throw new RuntimeException("suruba no acre");
         // }
+=======
+        if (optionalsession.isEmpty()) {
+            throw new RuntimeException("Session não encontrada");
+        }
+        if (!checkMaxOfStudents(sessionInputDTO)) {
+            throw new RuntimeException("caguei no mato");
+        }
+        if (!checkIfInstructorIsAvalible(sessionInputDTO)) {
+            throw new RuntimeException("xereca mole");
+        }
+        if (!checkIfStudioIsInOperatingDay(sessionInputDTO)) {
+            throw new RuntimeException("pinto molenga");
+        }
+        if (!checkIfSheduleIsAvaliable(sessionInputDTO)) {
+            throw new RuntimeException("suruba no acre");
+        }
+>>>>>>> origin/felps-session
 
         Session session = optionalsession.get();
         Schedules hours = Schedules.fromHorario(sessionInputDTO.hours());
@@ -135,6 +187,10 @@ public class SessionService {
         session.setDay(sessionInputDTO.day());
         session.setHours(hours);
         session.setStatus(status);
+<<<<<<< HEAD
+=======
+        session.setPresences(sessionInputDTO.presences());
+>>>>>>> origin/felps-session
         session.setType(sessionInputDTO.type());
         session.setIsActive(sessionInputDTO.isActive());
 
@@ -176,6 +232,45 @@ public class SessionService {
         return assemblerSessionOutputDTO(updated);
     }
 
+<<<<<<< HEAD
+=======
+    public SessionOutputDTO registerPresencesInSession(List<String> studentIds, String sessionId) {
+        Optional<Session> optionalsession = sessionRepository.findById(sessionId);
+        Session session = optionalsession.get();
+
+        List<String> currentPresences = session.getPresences();
+
+        for (String id : studentIds) {
+            if (!currentPresences.contains(id)) {
+                currentPresences.add(id);
+            }
+        }
+
+        session.setPresences(currentPresences);
+        Session updated = sessionRepository.save(session);
+        return assemblerSessionOutputDTO(updated);
+
+    }
+
+    public SessionOutputDTO unregisterPresencesInSession(List<String> studentIds, String sessionId) {
+        Optional<Session> optionalsession = sessionRepository.findById(sessionId);
+        Session session = optionalsession.get();
+
+        List<String> currentPresences = session.getPresences();
+
+        for (String id : studentIds) {
+            if (currentPresences.contains(id)) {
+                currentPresences.remove(id);
+            }
+        }
+
+        session.setPresences(currentPresences);
+        Session updated = sessionRepository.save(session);
+        return assemblerSessionOutputDTO(updated);
+
+    }
+
+>>>>>>> origin/felps-session
     public SessionOutputDTO desactiveSessionById(String id) {
         Optional<Session> optionalsession = sessionRepository.findById(id);
         Session session = optionalsession.get();
@@ -270,6 +365,10 @@ public class SessionService {
                 session.getDay(),
                 hours,
                 status,
+<<<<<<< HEAD
+=======
+                session.getPresences(),
+>>>>>>> origin/felps-session
                 session.getType(),
                 session.getIsActive());
     }
@@ -284,8 +383,16 @@ public class SessionService {
                 sessionInputDTO.day(),
                 hours,
                 status,
+<<<<<<< HEAD
+=======
+                sessionInputDTO.presences(),
+>>>>>>> origin/felps-session
                 sessionInputDTO.type(),
                 sessionInputDTO.isActive());
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/felps-session

@@ -12,6 +12,10 @@ public record SessionOutputDTO(
         LocalDate day,
         String hours,
         String status,
+<<<<<<< HEAD
+=======
+        List<String> presences,
+>>>>>>> origin/felps-session
         String type,
         Boolean isActive
 

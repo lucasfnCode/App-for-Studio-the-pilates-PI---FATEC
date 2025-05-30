@@ -13,7 +13,10 @@ import br.com.semesperanca.app.managing.pilates.studios.model.session.Session;
 public interface SessionRepository extends MongoRepository<Session, String> {
     List<Session> findByStudents(String studentId);
     List<Session> findByDay(LocalDate day);
+<<<<<<< HEAD
     List<Session> findByDayGreaterThanEqual(LocalDate day);
+=======
+>>>>>>> origin/felps-session
     List<Session> findByIsActive(Boolean isActive);
 
 }
