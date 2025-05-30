@@ -9,4 +9,6 @@
     show collections
 
 # simular role:
+    simular role:
+
     localStorage.setItem("usuarioLogado", JSON.stringify({role: "aluno"}));
