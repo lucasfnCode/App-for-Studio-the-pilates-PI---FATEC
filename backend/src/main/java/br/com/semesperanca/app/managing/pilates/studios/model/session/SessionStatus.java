@@ -5,8 +5,8 @@ import lombok.Getter;
 @Getter
 public enum SessionStatus {
 
-    ABERTA(1,"aberta"),
-    AGENDADA(2,"agendada"),
+    ABERTA(1, "aberta"),
+    AGENDADA(2, "agendada"),
     FECHADA(3, "fechada");
 
     private final int valor;
@@ -18,17 +18,17 @@ public enum SessionStatus {
     }
 
     public static SessionStatus fromValor(int valor) {
-        for(SessionStatus status : SessionStatus.values()) {
-            if(status.getValor() == valor) {
+        for (SessionStatus status : SessionStatus.values()) {
+            if (status.getValor() == valor) {
                 return status;
             }
         }
         throw new IllegalArgumentException("Valor inválido para status: " + valor);
     }
 
-    public static SessionStatus fromDescricao(String descricao){
-        for (SessionStatus status : SessionStatus.values()){
-            if(status.getDescricao().equalsIgnoreCase(descricao)) {
+    public static SessionStatus fromDescricao(String descricao) {
+        for (SessionStatus status : SessionStatus.values()) {
+            if (status.getDescricao().equalsIgnoreCase(descricao)) {
                 return status;
             }
         }
