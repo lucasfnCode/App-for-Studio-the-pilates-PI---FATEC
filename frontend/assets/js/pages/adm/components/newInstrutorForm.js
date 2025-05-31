@@ -1,4 +1,6 @@
 import { getOrCreateMainElement } from "../../../components/main"
+import { clearBody } from "../../../function/clearbody";
+import { createlistinstrutor } from "../services/instrutor";
 
 //modal
 export function callFormInstrutor(){
@@ -9,7 +11,7 @@ export function callFormInstrutor(){
              
                  <div class="mb-3">
                         <label class="form-label">ID:</label>
-                        <input type="text" class="form-control"  name="id">
+                        <input type="text" class="form-control"  name="id" readonly>
                   </div>
                 
                     <div class="mb-3">
@@ -34,22 +36,24 @@ export function callFormInstrutor(){
 
                     <div class="mb-3">
                         <label class="form-label">Contato:</label>
-                        <input type="tel" class="form-control"  name="contract">
+                        <input type="tel" class="form-control"  name="contact">
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Foto:</label>
-                        <input type="file" accept="image/*" class="form-control" name="photo">
-                    </div>
+                    
+                        <div class="mb-3">
+                            <label class="form-label">Foto:</label>
+                            <input type="file" accept="image/*" class="form-control" name="photo" value="null">
+                        </div>
+                    
 
                     <div class="mb-3">
                         <label class="form-label">Formação:</label>
-                        <input type="text" class="form-control"  name="formation">
+                        <input type="text" class="form-control" name="formation">
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Conselho:</label>
-                        <textarea class="form-control" name="adivice"></textarea>
+                        <textarea class="form-control" name="advice"></textarea>
                     </div>
 
                     <div class="mb-3">
@@ -76,6 +80,20 @@ export function callFormInstrutor(){
             </section>
         
     `
+     async function createInstructo(bodyrequest){
+        console.log(bodyrequest);
+        
+            try{
+                fetch("http://localhost:8080/instructors",{
+                    method : "POST",
+                    headers : { 'Content-Type': 'application/json'},
+                    body : JSON.stringify(bodyrequest)
+                })
+            }catch(error){
+               
+                return error
+            }
+        }
     const main = getOrCreateMainElement();
     main.insertAdjacentHTML("afterbegin",$form)
 
@@ -88,10 +106,15 @@ export function callFormInstrutor(){
         const formdata = Object.fromEntries(formrawdata.entries())
         formdata.permissions = permissions;
       
-        const test= JSON.stringify(formdata)
-        console.log(test);
-        
-        console.log(formdata);
-    // todo fazer o post e criar novo instrutor
+        if(formdata.photo.size === 0 ){
+            formdata.photo = "null"
+        }else{
+            // todo transoformar a imagem em base64, por enquanto vou passar o url da imagem so para poder criar o objeto no backend
+            formdata.photo = formdata.photo.name
+        }
+
+        createInstructo(formdata)
+        clearBody()
+        createlistinstrutor()
     })
 }

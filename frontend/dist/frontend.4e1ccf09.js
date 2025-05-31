@@ -4430,6 +4430,8 @@ parcelHelpers.defineInteropFlag(exports);
 //modal
 parcelHelpers.export(exports, "callFormInstrutor", ()=>callFormInstrutor);
 var _main = require("../../../components/main");
+var _clearbody = require("../../../function/clearbody");
+var _instrutor = require("../services/instrutor");
 function callFormInstrutor() {
     const $form = `
             <section class="position-absolute bg-warning top-0  w-50">
@@ -4437,7 +4439,7 @@ function callFormInstrutor() {
              
                  <div class="mb-3">
                         <label class="form-label">ID:</label>
-                        <input type="text" class="form-control"  name="id">
+                        <input type="text" class="form-control"  name="id" readonly>
                   </div>
                 
                     <div class="mb-3">
@@ -4462,22 +4464,24 @@ function callFormInstrutor() {
 
                     <div class="mb-3">
                         <label class="form-label">Contato:</label>
-                        <input type="tel" class="form-control"  name="contract">
+                        <input type="tel" class="form-control"  name="contact">
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Foto:</label>
-                        <input type="file" accept="image/*" class="form-control" name="photo">
-                    </div>
+                    
+                        <div class="mb-3">
+                            <label class="form-label">Foto:</label>
+                            <input type="file" accept="image/*" class="form-control" name="photo" value="null">
+                        </div>
+                    
 
                     <div class="mb-3">
                         <label class="form-label">Forma\xe7\xe3o:</label>
-                        <input type="text" class="form-control"  name="formation">
+                        <input type="text" class="form-control" name="formation">
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Conselho:</label>
-                        <textarea class="form-control" name="adivice"></textarea>
+                        <textarea class="form-control" name="advice"></textarea>
                     </div>
 
                     <div class="mb-3">
@@ -4504,6 +4508,20 @@ function callFormInstrutor() {
             </section>
         
     `;
+    async function createInstructo(bodyrequest) {
+        console.log(bodyrequest);
+        try {
+            fetch("http://localhost:8080/instructors", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bodyrequest)
+            });
+        } catch (error) {
+            return error;
+        }
+    }
     const main = (0, _main.getOrCreateMainElement)();
     main.insertAdjacentHTML("afterbegin", $form);
     window.addEventListener("submit", (e)=>{
@@ -4513,13 +4531,15 @@ function callFormInstrutor() {
         const permissions = formrawdata.getAll("permissions");
         const formdata = Object.fromEntries(formrawdata.entries());
         formdata.permissions = permissions;
-        const test = JSON.stringify(formdata);
-        console.log(test);
-        console.log(formdata);
-    // todo fazer o post e criar novo instrutor
+        if (formdata.photo.size === 0) formdata.photo = "null";
+        else // todo transoformar a imagem em base64, por enquanto vou passar o url da imagem so para poder criar o objeto no backend
+        formdata.photo = formdata.photo.name;
+        createInstructo(formdata);
+        (0, _clearbody.clearBody)();
+        (0, _instrutor.createlistinstrutor)();
     });
 }
 
-},{"../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
+},{"../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../../function/clearbody":"h6N02","../services/instrutor":"d7UTX"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
 
 //# sourceMappingURL=frontend.4e1ccf09.js.map
