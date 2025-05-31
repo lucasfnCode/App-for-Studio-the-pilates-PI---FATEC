@@ -672,7 +672,12 @@ var _home = require("./pages/home/home");
 var _header = require("./components/header");
 var _footer = require("./components/footer");
 var _schedulling = require("./pages/schedulling/schedulling");
+var _admpage = require("./pages/adm/admpage");
+var _clearbody = require("./function/clearbody");
+var _alunos = require("./pages/adm/services/alunos");
+var _instrutor = require("./pages/adm/services/instrutor");
 function renderContentBasedOnHash() {
+    (0, _clearbody.clearBody)();
     switch(location.hash){
         case "":
         case "#home":
@@ -682,12 +687,21 @@ function renderContentBasedOnHash() {
         case "#agendamento":
             (0, _schedulling.renderAgendamentoPage)();
             break;
+        case "#gerencia":
+            (0, _admpage.admpage)();
+            break;
+        case "#alunos-lista":
+            (0, _alunos.createlistalunos)();
+            break;
+        case "#instrutor-lista":
+            (0, _instrutor.createlistinstrutor)();
+            break;
     }
 }
 renderContentBasedOnHash();
 window.addEventListener("hashchange", renderContentBasedOnHash);
 
-},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp"}],"joWv1":[function(require,module,exports,__globalThis) {
+},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp","./pages/adm/admpage":"eIH1s","./function/clearbody":"h6N02","./pages/adm/services/alunos":"l2YNC","./pages/adm/services/instrutor":"d7UTX"}],"joWv1":[function(require,module,exports,__globalThis) {
 /*!
   * Bootstrap v5.3.6 (https://getbootstrap.com/)
   * Copyright 2011-2025 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
@@ -3849,7 +3863,8 @@ const headerHtml = `
     <a class="nav-link m-1 text-secondary" aria-current="page" href="#home">Home</a>
     <a class="nav-link m-1 text-secondary" href="#agendamento">Agendamento</a>
     <a class="nav-link m-1 text-secondary" href="#">Aulas</a>
-  </div>
+    <a class="nav-link m-1 text-secondary" href="#gerencia">adm</a>
+    </div>
 
   <div class="nav">
     <a class="nav-link m-1 text-secondary" href="#">
@@ -4242,6 +4257,269 @@ function criarModalCadastroAlunoHTML() {
 }
 function modalSalvarAltera\u00e7\u00e3o() {}
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"eIH1s":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "admpage", ()=>admpage);
+var _main = require("../../components/main");
+var _alunos = require("./services/alunos");
+function admpage() {
+    const $admpage = `
+    <a href="#alunos-lista">
+        <section>
+            alunos
+        </section>
+    </a>
+
+    <a href="#instrutor-lista">
+        <section>
+            instrutor
+        </section>
+    </a>
+    `;
+    const main = (0, _main.getOrCreateMainElement)();
+    main.insertAdjacentHTML("afterbegin", $admpage);
+}
+
+},{"../../components/main":"5zsxX","./services/alunos":"l2YNC","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"l2YNC":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "createlistalunos", ()=>createlistalunos);
+var _main = require("../../../components/main");
+function createlistalunos() {
+    const $list = `
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>email</th>
+                    <th>id</th>
+                    <th>a\xe7oes</th>
+                </tr>
+            </thead>
+            <tbody id="tr">
+                <tr>
+                
+                </tr>
+            </tbody>
+        </table>
+        <button> criar novo aluno </button>
+    `;
+    //adm cria novo aluno, ou aluno cria aluno?
+    const main = (0, _main.getOrCreateMainElement)();
+    main.insertAdjacentHTML("afterbegin", $list);
+    listadealunos();
+}
+async function listadealunos() {
+    const response = await fetch("http://localhost:8080/alunos", {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        }
+    });
+    const result = await response.json();
+    result.forEach((element)=>{
+        insertinlist(element);
+    });
+}
+function insertinlist(aluno) {
+    const tr = document.getElementById("tr");
+    const $aluno = `
+    <tr>
+        <td>${aluno.nome}</td>
+        <td>${aluno.email}</td>
+        <td>${aluno.id}</td>
+        <td>
+            <button class="btn btn-sm btn-primary">Editar</button>
+            <button class="btn btn-sm btn-info">Ver</button>
+            <button class="btn btn-sm btn-danger">Excluir</button>
+        </td>
+    </tr>
+    `;
+    tr.insertAdjacentHTML("afterbegin", $aluno);
+}
+
+},{"../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"h6N02":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "clearBody", ()=>clearBody);
+function clearBody() {
+    const main = document.getElementById("main");
+    if (main) {
+        main.innerHTML = '';
+        main.classList = null;
+        const body = document.getElementsByTagName('body');
+        body[0].classList = "";
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"d7UTX":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "createlistinstrutor", ()=>createlistinstrutor);
+var _main = require("../../../components/main");
+var _newInstrutorForm = require("../components/newInstrutorForm");
+function createlistinstrutor() {
+    const $list = `
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>---</th>
+                    <th>instrutor</th>
+                    <th>telefone</th>
+                    <th>a\xe7oes</th>
+                </tr>
+            </thead>
+            <tbody id="tr">
+                <tr>
+                
+                </tr>
+            </tbody>
+        </table>
+            <button id="new"> novo instrutor</button>
+    `;
+    const main = (0, _main.getOrCreateMainElement)();
+    main.insertAdjacentHTML("afterbegin", $list);
+    listarInstrutores();
+    const $newbtn = document.getElementById("new");
+    $newbtn.addEventListener("click", ()=>(0, _newInstrutorForm.callFormInstrutor)());
+// todo ta podendo criar varios forms de mesma coisa tem q ver isso ai
+}
+async function listarInstrutores() {
+    const response = await fetch("http://localhost:8080/instructors", {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        }
+    });
+    const result = await response.json();
+    result.forEach((element)=>{
+        insertinlist(element);
+    });
+}
+function insertinlist(aluno) {
+    const tr = document.getElementById("tr");
+    const $aluno = `
+    <tr>
+        <td>
+            <img src="${aluno.photo}">
+        </td>
+        <td>
+             nome :${aluno.name} 
+            <br>
+            email: ${aluno.email}
+            <br>
+            id: ${aluno.id}
+        </td>
+        <td>${aluno.contact}</td>
+        <td>
+            <button class="btn btn-sm btn-primary">Editar</button>
+            <button class="btn btn-sm btn-info">Ver</button>
+            <button class="btn btn-sm btn-danger">Excluir</button>
+        </td>
+    </tr>
+    `;
+    tr.insertAdjacentHTML("afterbegin", $aluno);
+}
+
+},{"../../../components/main":"5zsxX","../components/newInstrutorForm":"1LOpB","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"1LOpB":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+//modal
+parcelHelpers.export(exports, "callFormInstrutor", ()=>callFormInstrutor);
+var _main = require("../../../components/main");
+function callFormInstrutor() {
+    const $form = `
+            <section class="position-absolute bg-warning top-0  w-50">
+                <form class="container mt-4 " id="form">
+             
+                 <div class="mb-3">
+                        <label class="form-label">ID:</label>
+                        <input type="text" class="form-control"  name="id">
+                  </div>
+                
+                    <div class="mb-3">
+                        <label class="form-label">Nome:</label>
+                        <input type="text" class="form-control" name="name">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">fun\xe7ao:</label>
+                        <input type="text" class="form-control" name="type"> 
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Data de Contrata\xe7\xe3o:</label>
+                        <input type="date" class="form-control" name="hiringDate" >
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email:</label>
+                        <input type="email" class="form-control" name="email">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Contato:</label>
+                        <input type="tel" class="form-control"  name="contract">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Foto:</label>
+                        <input type="file" accept="image/*" class="form-control" name="photo">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Forma\xe7\xe3o:</label>
+                        <input type="text" class="form-control"  name="formation">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Conselho:</label>
+                        <textarea class="form-control" name="adivice"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Permiss\xf5es:</label>
+                        <ul class="list-group">
+                            <li class="list-group-item">Aprovar Or\xe7amentos
+                                <input type="checkbox" name="permissions" value="aprovar_orcamentos">
+                            </li>
+
+                            <li class="list-group-item" id="gerenciaEquipe">
+                            Gerenciar Equipe
+                             <input type="checkbox" name="permissions" value="gerenciar_equipe">
+                            </li>
+
+                            <li class="list-group-item" id="acessototal">
+                            Acesso Total
+                             <input type="checkbox" name="permissions" value="acesso_total"">
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Salvar Altera\xe7\xf5es</button>
+                </form>
+            </section>
+        
+    `;
+    const main = (0, _main.getOrCreateMainElement)();
+    main.insertAdjacentHTML("afterbegin", $form);
+    window.addEventListener("submit", (e)=>{
+        e.preventDefault();
+        const form = document.getElementById("form");
+        const formrawdata = new FormData(form);
+        const permissions = formrawdata.getAll("permissions");
+        const formdata = Object.fromEntries(formrawdata.entries());
+        formdata.permissions = permissions;
+        const test = JSON.stringify(formdata);
+        console.log(test);
+        console.log(formdata);
+    // todo fazer o post e criar novo instrutor
+    });
+}
+
+},{"../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
 
 //# sourceMappingURL=frontend.4e1ccf09.js.map

@@ -12,7 +12,8 @@ export const headerHtml = `
     <a class="nav-link m-1 text-secondary" aria-current="page" href="#home">Home</a>
     <a class="nav-link m-1 text-secondary" href="#agendamento">Agendamento</a>
     <a class="nav-link m-1 text-secondary" href="#">Aulas</a>
-  </div>
+    <a class="nav-link m-1 text-secondary" href="#gerencia">adm</a>
+    </div>
 
   <div class="nav">
     <a class="nav-link m-1 text-secondary" href="#">
