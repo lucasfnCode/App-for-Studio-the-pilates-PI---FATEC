@@ -71,6 +71,23 @@ export function criarModalCadastroAlunoHTML() {
   `;
 }
 
-export function modalSalvarAlteração() {
-
+export function criarModalConfirmacaoHTML() {
+  return `
+    <div id="modalConfirmacao" class="modal fade" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmação</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p id="mensagemConfirmacao">Ação concluída com sucesso.</p>
+          </div>
+          <div class="modal-footer d-flex justify-content-end">
+            <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 }

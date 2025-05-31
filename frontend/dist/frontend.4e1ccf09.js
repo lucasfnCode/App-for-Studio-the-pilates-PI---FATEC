@@ -3948,18 +3948,24 @@ async function renderAgendamentoPage() {
     const user = getUserLoggedData();
     // Atualiza a tabela de aulas
     async function atualizarTabela() {
+        // console.log("Usuário logado:", user);
         const aulas = await fetchAulas();
         const tableBody = document.querySelector("tbody.table-group-divider");
         if (!tableBody) return;
         const tableRows = aulas.map((aula)=>{
             const aulaId = aula.id || aula._id?.$oid || aula._id;
             let acoes = "";
-            const jaAgendado = Array.isArray(aula.students) && aula.students.includes(user.name);
+            // console.log("Aula:", aula);
+            // console.log("Students na aula:", aula.students);
+            // console.log("User ID:", user.id);
+            const jaAgendado = Array.isArray(aula.students) && aula.students.includes(user.id);
+            // console.log("Status da aula:", aula.status);
+            // console.log("Já agendado:", jaAgendado);
             if (role === "aluno") {
-                if (aula.status === "aberta" && !jaAgendado) acoes = `<button class="btn btn-sm btn-success" onclick="agendarAula('${aulaId}')">Agendar</button>`;
-                else if (aula.status === "confirmada" && jaAgendado) acoes = `<button class="btn btn-sm btn-danger" onclick="cancelarAula('${aulaId}')">Cancelar</button>`;
+                if (!jaAgendado && aula.status === "aberta") acoes = `<button class="btn btn-sm btn-success" onclick="agendarAula('${aulaId}')">Agendar</button>`;
+                else if (jaAgendado) acoes = `<button class="btn btn-sm btn-danger" onclick="cancelarAula('${aulaId}')">Cancelar</button>`;
             } else if (role === "recepcionista") acoes = `<button class="btn btn-sm btn-outline-success" onclick="abrirModalAlunos('${aulaId}')">Ver</button>`;
-            else if (role === "instrutor") acoes = `<button class="btn btn-sm btn-secondary" onclick="verAlunosInstrutor('${aulaId}')">Visualizar</button>`;
+            else if (role === "instrutor") acoes = `<button class="btn btn-sm btn-secondary" onclick="abrirModalAlunos('${aulaId}')">Visualizar</button>`;
             return `
         <tr>
           <td>${aula.instructor}</td>
@@ -3995,6 +4001,7 @@ async function renderAgendamentoPage() {
     </div>
     ${(0, _modais.criarModalListaAlunosHTML)()}
     ${(0, _modais.criarModalCadastroAlunoHTML)()}
+    ${(0, _modais.criarModalConfirmacaoHTML)()}
   `;
     await atualizarTabela();
     // Atualiza a listagem a cada 5s
@@ -4006,16 +4013,16 @@ window.agendarAula = async function(id) {
     try {
         const user = getUserLoggedData();
         const response = await fetch(`/api/sessions/register/${id}`, {
-            method: "PUT",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                aluno: user.name
+                studentId: user.id
             })
         });
         if (response.ok) {
-            alert("Agendado com sucesso!");
+            mostrarModalConfirmacao("Aula agendada com sucesso!");
             renderAgendamentoPage();
         } else {
             const erro = await response.json();
@@ -4026,7 +4033,6 @@ window.agendarAula = async function(id) {
         alert("Erro de conex\xe3o ao tentar agendar a aula.");
     }
 };
-// Cancela o agendamento do aluno logado
 window.cancelarAula = async function(id) {
     try {
         const user = getUserLoggedData();
@@ -4036,11 +4042,11 @@ window.cancelarAula = async function(id) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                aluno: user.name
+                studentId: user.id
             })
         });
         if (response.ok) {
-            alert("Agendamento cancelado.");
+            mostrarModalConfirmacao("Agendamento cancelado.");
             renderAgendamentoPage();
         } else alert("Erro ao cancelar a aula.");
     } catch (error) {
@@ -4141,6 +4147,13 @@ window.fecharModalAlunos = function() {
         window.alunoModalInterval = null;
     }
 };
+// Mostra o modal de confirmação de ação
+window.mostrarModalConfirmacao = function(mensagem) {
+    const el = document.getElementById("mensagemConfirmacao");
+    if (el) el.textContent = mensagem;
+    const modal = new bootstrap.Modal(document.getElementById("modalConfirmacao"));
+    modal.show();
+};
 // Abre o modal de cadastro de aluno (falta implementar a lógica de cadastro)
 window.adicionarAluno = function() {
     const modalCadastro = new bootstrap.Modal(document.getElementById("modalCadastroAluno"));
@@ -4169,7 +4182,7 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "criarModalListaAlunosHTML", ()=>criarModalListaAlunosHTML);
 parcelHelpers.export(exports, "criarModalCadastroAlunoHTML", ()=>criarModalCadastroAlunoHTML);
-parcelHelpers.export(exports, "modalSalvarAltera\xe7\xe3o", ()=>modalSalvarAltera\u00e7\u00e3o);
+parcelHelpers.export(exports, "criarModalConfirmacaoHTML", ()=>criarModalConfirmacaoHTML);
 function criarModalListaAlunosHTML(alunos = []) {
     const alunosRows = alunos.map((alunoId, index)=>`
     <tr>
@@ -4240,7 +4253,26 @@ function criarModalCadastroAlunoHTML() {
     </div>
   `;
 }
-function modalSalvarAltera\u00e7\u00e3o() {}
+function criarModalConfirmacaoHTML() {
+    return `
+    <div id="modalConfirmacao" class="modal fade" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirma\xe7\xe3o</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p id="mensagemConfirmacao">A\xe7\xe3o conclu\xedda com sucesso.</p>
+          </div>
+          <div class="modal-footer d-flex justify-content-end">
+            <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
 

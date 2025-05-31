@@ -9,6 +9,11 @@
     show collections
 
 # simular role:
-    simular role:
+    Aluno:
+    localStorage.setItem("usuarioLogado", JSON.stringify({id: "Aluno123", role: "aluno"}));
 
-    localStorage.setItem("usuarioLogado", JSON.stringify({role: "aluno"}));
+    Recepcionista:
+    localStorage.setItem("usuarioLogado", JSON.stringify({role: "recepcionista"}));
+
+    Instrutor:
+    localStorage.setItem("usuarioLogado", JSON.stringify({role: "instrutor"}));

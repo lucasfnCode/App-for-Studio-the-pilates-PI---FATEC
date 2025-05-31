@@ -2,6 +2,7 @@ import { getOrCreateMainElement } from "../../components/main";
 import {
   criarModalCadastroAlunoHTML,
   criarModalListaAlunosHTML,
+  criarModalConfirmacaoHTML,
 } from "../../components/modais";
 
 // Retorna a role do usuário logado (padrão: aluno)
@@ -44,28 +45,37 @@ export async function renderAgendamentoPage() {
 
   // Atualiza a tabela de aulas
   async function atualizarTabela() {
+    // console.log("Usuário logado:", user);
     const aulas = await fetchAulas();
     const tableBody = document.querySelector("tbody.table-group-divider");
     if (!tableBody) return;
 
-    const tableRows = aulas.map((aula) => {
-      const aulaId = aula.id || aula._id?.$oid || aula._id;
-      let acoes = "";
-      const jaAgendado = Array.isArray(aula.students) && aula.students.includes(user.name);
+    const tableRows = aulas
+      .map((aula) => {
+        const aulaId = aula.id || aula._id?.$oid || aula._id;
+        let acoes = "";
+        // console.log("Aula:", aula);
+        // console.log("Students na aula:", aula.students);
+        // console.log("User ID:", user.id);
 
-      if (role === "aluno") {
-        if (aula.status === "aberta" && !jaAgendado) {
-          acoes = `<button class="btn btn-sm btn-success" onclick="agendarAula('${aulaId}')">Agendar</button>`;
-        } else if (aula.status === "confirmada" && jaAgendado) {
-          acoes = `<button class="btn btn-sm btn-danger" onclick="cancelarAula('${aulaId}')">Cancelar</button>`;
+        const jaAgendado =
+          Array.isArray(aula.students) && aula.students.includes(user.id);
+        // console.log("Status da aula:", aula.status);
+        // console.log("Já agendado:", jaAgendado);
+
+        if (role === "aluno") {
+          if (!jaAgendado && aula.status === "aberta") {
+            acoes = `<button class="btn btn-sm btn-success" onclick="agendarAula('${aulaId}')">Agendar</button>`;
+          } else if (jaAgendado) {
+            acoes = `<button class="btn btn-sm btn-danger" onclick="cancelarAula('${aulaId}')">Cancelar</button>`;
+          }
+        } else if (role === "recepcionista") {
+          acoes = `<button class="btn btn-sm btn-outline-success" onclick="abrirModalAlunos('${aulaId}')">Ver</button>`;
+        } else if (role === "instrutor") {
+          acoes = `<button class="btn btn-sm btn-secondary" onclick="abrirModalAlunos('${aulaId}')">Visualizar</button>`;
         }
-      } else if (role === "recepcionista") {
-        acoes = `<button class="btn btn-sm btn-outline-success" onclick="abrirModalAlunos('${aulaId}')">Ver</button>`;
-      } else if (role === "instrutor") {
-        acoes = `<button class="btn btn-sm btn-secondary" onclick="verAlunosInstrutor('${aulaId}')">Visualizar</button>`;
-      }
 
-      return `
+        return `
         <tr>
           <td>${aula.instructor}</td>
           <td>${aula.day}</td>
@@ -75,7 +85,8 @@ export async function renderAgendamentoPage() {
           <td>${acoes}</td>
         </tr>
       `;
-    }).join("");
+      })
+      .join("");
 
     tableBody.innerHTML = tableRows;
   }
@@ -102,6 +113,7 @@ export async function renderAgendamentoPage() {
     </div>
     ${criarModalListaAlunosHTML()}
     ${criarModalCadastroAlunoHTML()}
+    ${criarModalConfirmacaoHTML()}
   `;
 
   await atualizarTabela();
@@ -116,13 +128,13 @@ window.agendarAula = async function (id) {
   try {
     const user = getUserLoggedData();
     const response = await fetch(`/api/sessions/register/${id}`, {
-      method: "PUT",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ aluno: user.name }),
+      body: JSON.stringify({ studentId: user.id }),
     });
 
     if (response.ok) {
-      alert("Agendado com sucesso!");
+      mostrarModalConfirmacao("Aula agendada com sucesso!");
       renderAgendamentoPage();
     } else {
       const erro = await response.json();
@@ -134,18 +146,17 @@ window.agendarAula = async function (id) {
   }
 };
 
-// Cancela o agendamento do aluno logado
 window.cancelarAula = async function (id) {
   try {
     const user = getUserLoggedData();
     const response = await fetch(`/api/sessions/unregister/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ aluno: user.name }),
+      body: JSON.stringify({ studentId: user.id }),
     });
 
     if (response.ok) {
-      alert("Agendamento cancelado.");
+      mostrarModalConfirmacao("Agendamento cancelado.");
       renderAgendamentoPage();
     } else {
       alert("Erro ao cancelar a aula.");
@@ -165,7 +176,7 @@ window.abrirModalAlunos = async function (id) {
     const existingInstance = bootstrap.Modal.getInstance(modalEl);
     if (existingInstance) existingInstance.hide();
     document.body.classList.remove("modal-open");
-    document.querySelectorAll(".modal-backdrop").forEach(el => el.remove());
+    document.querySelectorAll(".modal-backdrop").forEach((el) => el.remove());
 
     const response = await fetch(`/api/sessions/${id}`);
     if (!response.ok) throw new Error("Falha ao buscar aula");
@@ -174,14 +185,18 @@ window.abrirModalAlunos = async function (id) {
     const alunos = aula.students || [];
 
     const tbody = document.querySelector("#modalListaAlunos tbody");
-    tbody.innerHTML = alunos.map((alunoId) => `
+    tbody.innerHTML = alunos
+      .map(
+        (alunoId) => `
       <tr>
         <td>${alunoId}</td>
         <td>—</td>
         <td>—</td>
         <td><button class="btn btn-sm btn-danger" onclick="removerAluno('${alunoId}')">Remover</button></td>
       </tr>
-    `).join("");
+    `
+      )
+      .join("");
 
     const modal = new bootstrap.Modal(modalEl);
     modal.show();
@@ -189,11 +204,12 @@ window.abrirModalAlunos = async function (id) {
     // Atualiza a lista de alunos a cada 5s com o modal aberto
     if (window.alunoModalInterval) clearInterval(window.alunoModalInterval);
     window.alunoModalInterval = setInterval(async () => {
-      const isOpen = document.getElementById("modalListaAlunos")?.classList.contains("show");
+      const isOpen = document
+        .getElementById("modalListaAlunos")
+        ?.classList.contains("show");
       if (!isOpen) return;
       await atualizarModalAlunos(aulaSelecionadaId);
     }, 5000);
-
   } catch (error) {
     console.error("Erro ao abrir modal de alunos:", error);
     alert("Não foi possível carregar os alunos da aula.");
@@ -212,14 +228,18 @@ async function atualizarModalAlunos(aulaId) {
     const modalBody = document.querySelector("#modalListaAlunos tbody");
     if (!modalBody) return;
 
-    modalBody.innerHTML = alunos.map((alunoId) => `
+    modalBody.innerHTML = alunos
+      .map(
+        (alunoId) => `
       <tr>
         <td>${alunoId}</td>
         <td>—</td>
         <td>—</td>
         <td><button class="btn btn-sm btn-danger" onclick="removerAluno('${alunoId}')">Remover</button></td>
       </tr>
-    `).join("");
+    `
+      )
+      .join("");
   } catch (error) {
     console.error("Erro ao atualizar modal:", error);
     alert("Não foi possível atualizar os alunos da aula.");
@@ -234,11 +254,14 @@ window.removerAluno = async function (studentId) {
   }
 
   try {
-    const response = await fetch(`/api/sessions/unregister/${aulaSelecionadaId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ studentId })
-    });
+    const response = await fetch(
+      `/api/sessions/unregister/${aulaSelecionadaId}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ studentId }),
+      }
+    );
 
     if (response.ok) {
       await atualizarModalAlunos(aulaSelecionadaId);
@@ -264,6 +287,16 @@ window.fecharModalAlunos = function () {
     window.alunoModalInterval = null;
   }
 };
+
+// Mostra o modal de confirmação de ação
+window.mostrarModalConfirmacao = function (mensagem) {
+  const el = document.getElementById("mensagemConfirmacao");
+  if (el) el.textContent = mensagem;
+
+  const modal = new bootstrap.Modal(document.getElementById("modalConfirmacao"));
+  modal.show();
+};
+
 
 // Abre o modal de cadastro de aluno (falta implementar a lógica de cadastro)
 window.adicionarAluno = function () {
