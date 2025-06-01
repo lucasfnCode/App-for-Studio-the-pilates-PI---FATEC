@@ -4008,7 +4008,6 @@ async function renderAgendamentoPage() {
     if (intervalId) clearInterval(intervalId);
     intervalId = setInterval(atualizarTabela, 5000);
 }
-// Agenda o aluno logado na aula
 window.agendarAula = async function(id) {
     try {
         const user = getUserLoggedData();
@@ -4090,6 +4089,12 @@ window.abrirModalAlunos = async function(id) {
         alert("N\xe3o foi poss\xedvel carregar os alunos da aula.");
     }
 };
+window.mostrarModalConfirmacao = function(mensagem) {
+    const el = document.getElementById("mensagemConfirmacao");
+    if (el) el.textContent = mensagem;
+    const modal = new bootstrap.Modal(document.getElementById("modalConfirmacao"));
+    modal.show();
+};
 // Atualiza a lista de alunos no modal
 async function atualizarModalAlunos(aulaId) {
     try {
@@ -4146,13 +4151,6 @@ window.fecharModalAlunos = function() {
         clearInterval(window.alunoModalInterval);
         window.alunoModalInterval = null;
     }
-};
-// Mostra o modal de confirmação de ação
-window.mostrarModalConfirmacao = function(mensagem) {
-    const el = document.getElementById("mensagemConfirmacao");
-    if (el) el.textContent = mensagem;
-    const modal = new bootstrap.Modal(document.getElementById("modalConfirmacao"));
-    modal.show();
 };
 // Abre o modal de cadastro de aluno (falta implementar a lógica de cadastro)
 window.adicionarAluno = function() {

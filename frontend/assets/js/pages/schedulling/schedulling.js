@@ -2,7 +2,7 @@ import { getOrCreateMainElement } from "../../components/main";
 import {
   criarModalCadastroAlunoHTML,
   criarModalListaAlunosHTML,
-  criarModalConfirmacaoHTML,
+  criarModalConfirmacaoHTML
 } from "../../components/modais";
 
 // Retorna a role do usuário logado (padrão: aluno)
@@ -123,7 +123,6 @@ export async function renderAgendamentoPage() {
   intervalId = setInterval(atualizarTabela, 5000);
 }
 
-// Agenda o aluno logado na aula
 window.agendarAula = async function (id) {
   try {
     const user = getUserLoggedData();
@@ -165,6 +164,7 @@ window.cancelarAula = async function (id) {
     console.error("Erro ao cancelar:", error);
   }
 };
+
 
 // Abre modal com alunos na aula
 window.abrirModalAlunos = async function (id) {
@@ -214,6 +214,14 @@ window.abrirModalAlunos = async function (id) {
     console.error("Erro ao abrir modal de alunos:", error);
     alert("Não foi possível carregar os alunos da aula.");
   }
+};
+
+window.mostrarModalConfirmacao = function (mensagem) {
+  const el = document.getElementById("mensagemConfirmacao");
+  if (el) el.textContent = mensagem;
+
+  const modal = new bootstrap.Modal(document.getElementById("modalConfirmacao"));
+  modal.show();
 };
 
 // Atualiza a lista de alunos no modal
@@ -287,16 +295,6 @@ window.fecharModalAlunos = function () {
     window.alunoModalInterval = null;
   }
 };
-
-// Mostra o modal de confirmação de ação
-window.mostrarModalConfirmacao = function (mensagem) {
-  const el = document.getElementById("mensagemConfirmacao");
-  if (el) el.textContent = mensagem;
-
-  const modal = new bootstrap.Modal(document.getElementById("modalConfirmacao"));
-  modal.show();
-};
-
 
 // Abre o modal de cadastro de aluno (falta implementar a lógica de cadastro)
 window.adicionarAluno = function () {
