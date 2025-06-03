@@ -13,7 +13,7 @@ public record StudentOutputDTO (
     String photo,
     AssessmentOutputDTO assessment,
     String progress,
-    PlanOutputDTO plan,
+    PlanStudentOutputDTO plan,
     ClientAreaOutputDTO clientArea,
     Boolean isActive
 ) {}

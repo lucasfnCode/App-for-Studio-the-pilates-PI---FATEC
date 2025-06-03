@@ -11,12 +11,12 @@ import br.com.semesperanca.app.managing.pilates.studios.application.model.studen
 import br.com.semesperanca.app.managing.pilates.studios.application.model.studentOutputDTO.UpComingClassOutputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.studentOutputDTO.ClientAreaOutputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.studentOutputDTO.AssessmentOutputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.studentOutputDTO.PlanOutputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.studentOutputDTO.PlanStudentOutputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.model.student.Student;
 import br.com.semesperanca.app.managing.pilates.studios.model.student.UpComingClass;
 import br.com.semesperanca.app.managing.pilates.studios.model.student.ClientArea;
 import br.com.semesperanca.app.managing.pilates.studios.model.student.Assessment;
-import br.com.semesperanca.app.managing.pilates.studios.model.student.Plan;
+import br.com.semesperanca.app.managing.pilates.studios.model.student.PlanStudent;
 import br.com.semesperanca.app.managing.pilates.studios.repository.StudentRepository;
 import lombok.AllArgsConstructor;
 
@@ -99,9 +99,8 @@ public class StudentService {
                                         }
 
                                         if (dto.plan() != null) {
-                                                existingStudent.setPlan(new Plan(
-                                                                dto.plan().modality(),
-                                                                dto.plan().frequency(),
+                                                existingStudent.setPlan(new PlanStudent(
+                                                                dto.plan().idPlan(),
                                                                 dto.plan().duration(),
                                                                 dto.plan().startDate(),
                                                                 dto.plan().paymentMethod(),
@@ -135,9 +134,8 @@ public class StudentService {
                                 input.assessment().posturalPhoto(),
                                 input.assessment().relevantData());
 
-                Plan plan = new Plan(
-                                input.plan().modality(),
-                                input.plan().frequency(),
+                PlanStudent plan = new PlanStudent(
+                                input.plan().idPlan(),
                                 input.plan().duration(),
                                 input.plan().startDate(),
                                 input.plan().paymentMethod(),
@@ -189,11 +187,10 @@ public class StudentService {
                                         student.getAssessment().getRelevantData());
                 }
 
-                PlanOutputDTO planDTO = null;
+                PlanStudentOutputDTO planDTO = null;
                 if (student.getPlan() != null) {
-                        planDTO = new PlanOutputDTO(
-                                        student.getPlan().getModality(),
-                                        student.getPlan().getFrequency(),
+                        planDTO = new PlanStudentOutputDTO(
+                                        student.getPlan().getIdPlan(),
                                         student.getPlan().getDuration(),
                                         student.getPlan().getStartDate(),
                                         student.getPlan().getPaymentMethod(),

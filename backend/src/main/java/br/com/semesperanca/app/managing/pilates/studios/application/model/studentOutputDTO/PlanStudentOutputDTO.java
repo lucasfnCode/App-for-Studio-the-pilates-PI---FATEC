@@ -2,9 +2,9 @@ package br.com.semesperanca.app.managing.pilates.studios.application.model.stude
 
 import java.time.LocalDate;
 
-public record PlanOutputDTO(
-    String modality,
-    String frequency,
+public record PlanStudentOutputDTO(
+
+    String idPlan,
     String duration,
     LocalDate startDate,
     String paymentMethod,

@@ -15,13 +15,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class Plan {
+public class PlanStudent {
 
     @NonNull
-    private String modality;
-
-    @NonNull
-    private String frequency;
+    private String idPlan;
 
     @NonNull
     private String duration;
