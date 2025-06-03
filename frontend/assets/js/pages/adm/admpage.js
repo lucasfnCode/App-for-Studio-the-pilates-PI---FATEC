@@ -14,6 +14,11 @@ export function admpage(){
             instrutor
         </section>
     </a>
+     <a href="#studio-lista">
+        <section>
+            studio
+        </section>
+    </a>
     `   
     const main = getOrCreateMainElement();
     main.insertAdjacentHTML("afterbegin",$admpage)

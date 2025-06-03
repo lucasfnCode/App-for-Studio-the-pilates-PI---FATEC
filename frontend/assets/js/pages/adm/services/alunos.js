@@ -1,4 +1,5 @@
 import { getOrCreateMainElement } from "../../../components/main";
+import { callformsAlunos } from "../components/newalunoForm";
 
 export function createlistalunos(){
     const $list = `
@@ -17,12 +18,15 @@ export function createlistalunos(){
                 </tr>
             </tbody>
         </table>
-        <button> criar novo aluno </button>
+        <button id="new"> criar novo aluno </button>
     `
     //adm cria novo aluno, ou aluno cria aluno?
     const main = getOrCreateMainElement()
     main.insertAdjacentHTML("afterbegin",$list)
     listadealunos();
+      const $newbtn = document.getElementById("new")
+    
+    $newbtn.addEventListener("click",() => callformsAlunos())
 }
 
 async function listadealunos(){
@@ -40,6 +44,10 @@ async function listadealunos(){
 }
 function insertinlist(aluno){
     const tr = document.getElementById("tr")
+    console.log(aluno);
+    
+    console.log(aluno.id);
+    
     const $aluno = `
     <tr>
         <td>${aluno.nome}</td>

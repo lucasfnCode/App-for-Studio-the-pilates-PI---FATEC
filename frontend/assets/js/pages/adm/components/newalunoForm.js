@@ -1,15 +1,14 @@
 import { getOrCreateMainElement } from "../../../components/main"
 import { clearBody } from "../../../function/clearbody";
-import { createlistinstrutor } from "../services/instrutor";
+import { createlistalunos } from "../services/alunos";
 
 //modal
-export function callFormInstrutor(){
+export function callformsAlunos(){
   
          const $form = `
             <section class="position-absolute bg-warning top-0  w-50">
                 <form class="container mt-4 " id="form">
-             
-         
+          
                 
                     <div class="mb-3">
                         <label class="form-label">Nome:</label>
@@ -78,7 +77,7 @@ export function callFormInstrutor(){
         
     `
     // POST
-     async function createalunos(bodyrequest){
+     async function createaluno(bodyrequest){
             try{
                 fetch("http://localhost:8080/alunos",{
                     method : "POST",
@@ -93,13 +92,14 @@ export function callFormInstrutor(){
     const main = getOrCreateMainElement();
     main.insertAdjacentHTML("afterbegin",$form)
     //DELET
-    async function deletalunos(bodyrequest) {
+    async function deletalunor(bodyrequest) {
          try{
                 fetch(`http://localhost:8080/alunos/${bodyrequest.id}`,{
                     method : "DELET",
                     headers : { 'Content-Type': 'application/json'},
                     body : JSON.stringify(bodyrequest)
                 })
+
             }catch(error){
                 console.log(error);
                 return error
@@ -115,7 +115,7 @@ export function callFormInstrutor(){
         const permissions = formrawdata.getAll("permissions")
         const formdata = Object.fromEntries(formrawdata.entries())
         formdata.permissions = permissions;
-        console.log(formdata);
+      console.log(permissions);
       
         if(formdata.photo.size === 0 ){
             formdata.photo = "null"
@@ -124,8 +124,8 @@ export function callFormInstrutor(){
             formdata.photo = formdata.photo.name
         }
 
-        createalunos(formdata)
+        createaluno(formdata)
         clearBody()
-        createalunos()
+        createlistalunos();
     })
 }

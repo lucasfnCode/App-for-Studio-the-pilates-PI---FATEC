@@ -55,12 +55,11 @@ function insertinlist(aluno){
             <br>
             email: ${aluno.email}
             <br>
-            id: ${aluno.id}
+            id:${aluno.id}
         </td>
         <td>${aluno.contact}</td>
         <td>
             <button class="btn btn-sm btn-primary">Editar</button>
-            <button class="btn btn-sm btn-info">Ver</button>
             <button class="btn btn-sm btn-danger">Excluir</button>
         </td>
     </tr>

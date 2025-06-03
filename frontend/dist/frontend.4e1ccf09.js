@@ -4276,6 +4276,11 @@ function admpage() {
             instrutor
         </section>
     </a>
+     <a href="#studio-lista">
+        <section>
+            studio
+        </section>
+    </a>
     `;
     const main = (0, _main.getOrCreateMainElement)();
     main.insertAdjacentHTML("afterbegin", $admpage);
@@ -4286,6 +4291,7 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "createlistalunos", ()=>createlistalunos);
 var _main = require("../../../components/main");
+var _newalunoForm = require("../components/newalunoForm");
 function createlistalunos() {
     const $list = `
         <table class="table table-striped table-bordered">
@@ -4303,12 +4309,14 @@ function createlistalunos() {
                 </tr>
             </tbody>
         </table>
-        <button> criar novo aluno </button>
+        <button id="new"> criar novo aluno </button>
     `;
     //adm cria novo aluno, ou aluno cria aluno?
     const main = (0, _main.getOrCreateMainElement)();
     main.insertAdjacentHTML("afterbegin", $list);
     listadealunos();
+    const $newbtn = document.getElementById("new");
+    $newbtn.addEventListener("click", ()=>(0, _newalunoForm.callformsAlunos)());
 }
 async function listadealunos() {
     const response = await fetch("http://localhost:8080/alunos", {
@@ -4325,6 +4333,8 @@ async function listadealunos() {
 }
 function insertinlist(aluno) {
     const tr = document.getElementById("tr");
+    console.log(aluno);
+    console.log(aluno.id);
     const $aluno = `
     <tr>
         <td>${aluno.nome}</td>
@@ -4340,7 +4350,136 @@ function insertinlist(aluno) {
     tr.insertAdjacentHTML("afterbegin", $aluno);
 }
 
-},{"../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"h6N02":[function(require,module,exports,__globalThis) {
+},{"../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../components/newalunoForm":"gLR1t"}],"gLR1t":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+//modal
+parcelHelpers.export(exports, "callformsAlunos", ()=>callformsAlunos);
+var _main = require("../../../components/main");
+var _clearbody = require("../../../function/clearbody");
+var _alunos = require("../services/alunos");
+function callformsAlunos() {
+    const $form = `
+            <section class="position-absolute bg-warning top-0  w-50">
+                <form class="container mt-4 " id="form">
+          
+                
+                    <div class="mb-3">
+                        <label class="form-label">Nome:</label>
+                        <input type="text" class="form-control" name="name">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">fun\xe7ao:</label>
+                        <input type="text" class="form-control" name="type"> 
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Data de Contrata\xe7\xe3o:</label>
+                        <input type="date" class="form-control" name="hiringDate" >
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email:</label>
+                        <input type="email" class="form-control" name="email">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Contato:</label>
+                        <input type="tel" class="form-control"  name="contact">
+                    </div>
+
+                    
+                        <div class="mb-3">
+                            <label class="form-label">Foto:</label>
+                            <input type="file" accept="image/*" class="form-control" name="photo" value="null">
+                        </div>
+                    
+
+                    <div class="mb-3">
+                        <label class="form-label">Forma\xe7\xe3o:</label>
+                        <input type="text" class="form-control" name="formation">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Conselho:</label>
+                        <textarea class="form-control" name="advice"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Permiss\xf5es:</label>
+                        <ul class="list-group">
+                            <li class="list-group-item">Aprovar Or\xe7amentos
+                                <input type="checkbox" name="permissions" value="aprovar_orcamentos">
+                            </li>
+
+                            <li class="list-group-item" id="gerenciaEquipe">
+                            Gerenciar Equipe
+                             <input type="checkbox" name="permissions" value="gerenciar_equipe">
+                            </li>
+
+                            <li class="list-group-item" id="acessototal">
+                            Acesso Total
+                             <input type="checkbox" name="permissions" value="acesso_total"">
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Salvar Altera\xe7\xf5es</button>
+                </form>
+            </section>
+        
+    `;
+    // POST
+    async function createaluno(bodyrequest) {
+        try {
+            fetch("http://localhost:8080/alunos", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bodyrequest)
+            });
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+    }
+    const main = (0, _main.getOrCreateMainElement)();
+    main.insertAdjacentHTML("afterbegin", $form);
+    //DELET
+    async function deletalunor(bodyrequest) {
+        try {
+            fetch(`http://localhost:8080/alunos/${bodyrequest.id}`, {
+                method: "DELET",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bodyrequest)
+            });
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+    }
+    window.addEventListener("submit", (e)=>{
+        e.preventDefault();
+        const form = document.getElementById("form");
+        const formrawdata = new FormData(form);
+        const permissions = formrawdata.getAll("permissions");
+        const formdata = Object.fromEntries(formrawdata.entries());
+        formdata.permissions = permissions;
+        console.log(permissions);
+        if (formdata.photo.size === 0) formdata.photo = "null";
+        else // todo transoformar a imagem em base64, por enquanto vou passar o url da imagem so para poder criar o objeto no backend
+        formdata.photo = formdata.photo.name;
+        createaluno(formdata);
+        (0, _clearbody.clearBody)();
+        (0, _alunos.createlistalunos)();
+    });
+}
+
+},{"../../../components/main":"5zsxX","../../../function/clearbody":"h6N02","../services/alunos":"l2YNC","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"h6N02":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "clearBody", ()=>clearBody);
@@ -4411,12 +4550,11 @@ function insertinlist(aluno) {
             <br>
             email: ${aluno.email}
             <br>
-            id: ${aluno.id}
+            id:${aluno.id}
         </td>
         <td>${aluno.contact}</td>
         <td>
             <button class="btn btn-sm btn-primary">Editar</button>
-            <button class="btn btn-sm btn-info">Ver</button>
             <button class="btn btn-sm btn-danger">Excluir</button>
         </td>
     </tr>
@@ -4437,10 +4575,7 @@ function callFormInstrutor() {
             <section class="position-absolute bg-warning top-0  w-50">
                 <form class="container mt-4 " id="form">
              
-                 <div class="mb-3">
-                        <label class="form-label">ID:</label>
-                        <input type="text" class="form-control"  name="id" readonly>
-                  </div>
+         
                 
                     <div class="mb-3">
                         <label class="form-label">Nome:</label>
@@ -4508,10 +4643,10 @@ function callFormInstrutor() {
             </section>
         
     `;
-    async function createInstructo(bodyrequest) {
-        console.log(bodyrequest);
+    // POST
+    async function createalunos(bodyrequest) {
         try {
-            fetch("http://localhost:8080/instructors", {
+            fetch("http://localhost:8080/alunos", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -4519,11 +4654,27 @@ function callFormInstrutor() {
                 body: JSON.stringify(bodyrequest)
             });
         } catch (error) {
+            console.log(error);
             return error;
         }
     }
     const main = (0, _main.getOrCreateMainElement)();
     main.insertAdjacentHTML("afterbegin", $form);
+    //DELET
+    async function deletalunos(bodyrequest) {
+        try {
+            fetch(`http://localhost:8080/alunos/${bodyrequest.id}`, {
+                method: "DELET",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bodyrequest)
+            });
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+    }
     window.addEventListener("submit", (e)=>{
         e.preventDefault();
         const form = document.getElementById("form");
@@ -4531,12 +4682,13 @@ function callFormInstrutor() {
         const permissions = formrawdata.getAll("permissions");
         const formdata = Object.fromEntries(formrawdata.entries());
         formdata.permissions = permissions;
+        console.log(formdata);
         if (formdata.photo.size === 0) formdata.photo = "null";
         else // todo transoformar a imagem em base64, por enquanto vou passar o url da imagem so para poder criar o objeto no backend
         formdata.photo = formdata.photo.name;
-        createInstructo(formdata);
+        createalunos(formdata);
         (0, _clearbody.clearBody)();
-        (0, _instrutor.createlistinstrutor)();
+        createalunos();
     });
 }
 
