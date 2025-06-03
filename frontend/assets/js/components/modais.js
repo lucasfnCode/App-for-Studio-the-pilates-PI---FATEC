@@ -1,14 +1,44 @@
-export function criarModalListaAlunosHTML(alunos = []) {
-  const alunosRows = alunos.map((alunoId, index) => `
-    <tr>
-      <td>${alunoId}</td>
-      <td>—</td>
-      <td>—</td>
-      <td><button class="btn btn-sm btn-danger" onclick="removerAluno('${alunoId}')">Remover</button></td>
-    </tr>
-  `).join("");
+export function criarModalListaAlunosHTML(
+  alunos = [],
+  role = "aluno",
+  presences = []
+) {
+  const alunosRows = alunos
+    .map((alunoId) => {
+      const isPresent = presences.includes(alunoId);
 
-  return `
+      if (role === "instrutor") {
+        return `
+        <tr>
+          <td>${alunoId}</td>
+          <td>—</td>
+          <td>—</td>
+          <td>
+            <input type="checkbox" class="form-check-input presence-checkbox" data-aluno-id="${alunoId}" ${
+          isPresent ? "checked" : ""
+        }>
+          </td>
+        </tr>
+      `;
+      }
+
+      return `
+      <tr>
+        <td>${alunoId}</td>
+        <td>—</td>
+        <td>—</td>
+        <td>
+          <button class="btn btn-sm btn-danger" onclick="removerAluno('${alunoId}')">Remover</button>
+        </td>
+      </tr>
+    `;
+    })
+    .join("");
+
+  const modalExistente = document.getElementById("modalListaAlunos");
+  if (modalExistente) modalExistente.remove();
+
+  const modalHTML = `
     <div class="modal fade" id="modalListaAlunos" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content p-4">
@@ -27,13 +57,26 @@ export function criarModalListaAlunosHTML(alunos = []) {
             </table>
           </div>
           <div class="modal-footer d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>
+            ${
+              role !== "instrutor"
+                ? `<button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>`
+                : ""
+            }
+            ${
+              role === "instrutor"
+                ? `<button type="button" class="btn btn-outline-primary" onclick="salvarPresencas()">Salvar Presenças</button>`
+                : ""
+            }
             <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
       </div>
     </div>
   `;
+
+  document.body.insertAdjacentHTML("beforeend", modalHTML);
+
+  return "";
 }
 
 export function criarModalCadastroAlunoHTML() {
@@ -91,3 +134,35 @@ export function criarModalConfirmacaoHTML() {
     </div>
   `;
 }
+
+document.addEventListener("atualizarListaAlunos", async function () {
+  if (!aulaSelecionadaId) return;
+
+  try {
+    const response = await fetch(`/api/sessions/${aulaSelecionadaId}`);
+    if (!response.ok) throw new Error("Falha ao buscar aula");
+
+    const aula = await response.json();
+    const alunos = aula.students || [];
+
+    const tbody = document.querySelector("#modalListaAlunos tbody");
+    tbody.innerHTML = alunos
+      .map(
+        (alunoId) => `
+      <tr>
+        <td>${alunoId}</td>
+        <td>—</td>
+        <td>—</td>
+        <td>
+          <button class="btn btn-sm btn-danger" onclick="removerAluno('${alunoId}')">Remover</button>
+        </td>
+      </tr>
+    `
+      )
+      .join("");
+
+    console.log("Lista de alunos atualizada!");
+  } catch (error) {
+    console.error("Erro ao atualizar lista de alunos:", error);
+  }
+});
