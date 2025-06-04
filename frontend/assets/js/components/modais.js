@@ -85,17 +85,17 @@ export function criarModalInstrutoresHTML() {
           </div>
           <div class="modal-body row g-4">
             <div class="col-md-4 text-center">
-              <img src="https://images.unsplash.com/photo-1605296867304-46d5465a13f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="img-fluid rounded-3 shadow-sm" alt="Ana Clara">
+              <img src="https://placehold.co/600x400?text=Ana" class="img-fluid rounded-3 shadow-sm" alt="Ana Clara">
               <h5 class="mt-3">Ana Clara</h5>
               <p>Especialista em Pilates Solo e Alongamento</p>
             </div>
             <div class="col-md-4 text-center">
-              <img src="https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="img-fluid rounded-3 shadow-sm" alt="Bruno Silva">
+              <img src="https://placehold.co/600x400?text=Bruno" class="img-fluid rounded-3 shadow-sm" alt="Bruno Silva">
               <h5 class="mt-3">Bruno Silva</h5>
               <p>Reabilitação e Pilates para Idosos</p>
             </div>
             <div class="col-md-4 text-center">
-              <img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="img-fluid rounded-3 shadow-sm" alt="Camila Torres">
+              <img src="https://placehold.co/600x400?text=Camila" class="img-fluid rounded-3 shadow-sm" alt="Camila Torres">
               <h5 class="mt-3">Camila Torres</h5>
               <p>Pilates com foco em respiração e relaxamento</p>
             </div>
@@ -148,7 +148,7 @@ export function criarModalSobreHTML() {
           </div>
           <div class="modal-body row g-4 align-items-center">
             <div class="col-md-6">
-              <img src="https://images.unsplash.com/photo-1615647004010-6d3b5f5d7c02?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="img-fluid rounded-3 shadow-sm" alt="Pilates Studio">
+              <img src="https://placehold.co/600x400?text=Pilates" class="img-fluid rounded-3 shadow-sm" alt="Pilates Studio">
             </div>
             <div class="col-md-6">
               <p class="fs-5">
