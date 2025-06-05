@@ -4319,22 +4319,16 @@ function createlistalunos() {
     $newbtn.addEventListener("click", ()=>(0, _newalunoForm.callformsAlunos)());
 }
 async function listadealunos() {
-    const response = await fetch("http://localhost:8080/alunos", {
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-        }
-    });
+    const response = await fetch("http://localhost:8080/alunos");
     const result = await response.json();
     result.forEach((element)=>{
+        const alunos = element;
+        console.log(element);
         insertinlist(element);
     });
 }
-function insertinlist(aluno) {
+async function insertinlist(aluno) {
     const tr = document.getElementById("tr");
-    console.log(aluno);
-    console.log(aluno.id);
     const $aluno = `
     <tr>
         <td>${aluno.nome}</td>
@@ -4347,10 +4341,16 @@ function insertinlist(aluno) {
         </td>
     </tr>
     `;
+    function excloiraluno() {
+        const $deletbtn = document.querySelectorAll(".btn-danger").forEach((btn)=>{
+            btn.addEventListener("click", ()=>console.log(btn.closest("tr").innerHTML));
+        });
+    }
+    excloiraluno();
     tr.insertAdjacentHTML("afterbegin", $aluno);
 }
 
-},{"../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../components/newalunoForm":"gLR1t"}],"gLR1t":[function(require,module,exports,__globalThis) {
+},{"../../../components/main":"5zsxX","../components/newalunoForm":"gLR1t","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"gLR1t":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 //modal
@@ -4366,64 +4366,16 @@ function callformsAlunos() {
                 
                     <div class="mb-3">
                         <label class="form-label">Nome:</label>
-                        <input type="text" class="form-control" name="name">
+                        <input type="text" class="form-control" name="nome">
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">fun\xe7ao:</label>
-                        <input type="text" class="form-control" name="type"> 
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Data de Contrata\xe7\xe3o:</label>
-                        <input type="date" class="form-control" name="hiringDate" >
-                    </div>
 
                     <div class="mb-3">
                         <label class="form-label">Email:</label>
-                        <input type="email" class="form-control" name="email">
+                        <input type="text" class="form-control" name="email">
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Contato:</label>
-                        <input type="tel" class="form-control"  name="contact">
-                    </div>
 
-                    
-                        <div class="mb-3">
-                            <label class="form-label">Foto:</label>
-                            <input type="file" accept="image/*" class="form-control" name="photo" value="null">
-                        </div>
-                    
-
-                    <div class="mb-3">
-                        <label class="form-label">Forma\xe7\xe3o:</label>
-                        <input type="text" class="form-control" name="formation">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Conselho:</label>
-                        <textarea class="form-control" name="advice"></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Permiss\xf5es:</label>
-                        <ul class="list-group">
-                            <li class="list-group-item">Aprovar Or\xe7amentos
-                                <input type="checkbox" name="permissions" value="aprovar_orcamentos">
-                            </li>
-
-                            <li class="list-group-item" id="gerenciaEquipe">
-                            Gerenciar Equipe
-                             <input type="checkbox" name="permissions" value="gerenciar_equipe">
-                            </li>
-
-                            <li class="list-group-item" id="acessototal">
-                            Acesso Total
-                             <input type="checkbox" name="permissions" value="acesso_total"">
-                            </li>
-                        </ul>
-                    </div>
 
                     <button type="submit" class="btn btn-primary">Salvar Altera\xe7\xf5es</button>
                 </form>
@@ -4466,13 +4418,7 @@ function callformsAlunos() {
         e.preventDefault();
         const form = document.getElementById("form");
         const formrawdata = new FormData(form);
-        const permissions = formrawdata.getAll("permissions");
         const formdata = Object.fromEntries(formrawdata.entries());
-        formdata.permissions = permissions;
-        console.log(permissions);
-        if (formdata.photo.size === 0) formdata.photo = "null";
-        else // todo transoformar a imagem em base64, por enquanto vou passar o url da imagem so para poder criar o objeto no backend
-        formdata.photo = formdata.photo.name;
         createaluno(formdata);
         (0, _clearbody.clearBody)();
         (0, _alunos.createlistalunos)();
@@ -4644,9 +4590,9 @@ function callFormInstrutor() {
         
     `;
     // POST
-    async function createalunos(bodyrequest) {
+    async function createInstructors(bodyrequest) {
         try {
-            fetch("http://localhost:8080/alunos", {
+            fetch("http://localhost:8080/instructors", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -4661,9 +4607,9 @@ function callFormInstrutor() {
     const main = (0, _main.getOrCreateMainElement)();
     main.insertAdjacentHTML("afterbegin", $form);
     //DELET
-    async function deletalunos(bodyrequest) {
+    async function deletInstructors(bodyrequest) {
         try {
-            fetch(`http://localhost:8080/alunos/${bodyrequest.id}`, {
+            fetch(`http://localhost:8080/instructors/${bodyrequest.id}`, {
                 method: "DELET",
                 headers: {
                     'Content-Type': 'application/json'
@@ -4686,12 +4632,12 @@ function callFormInstrutor() {
         if (formdata.photo.size === 0) formdata.photo = "null";
         else // todo transoformar a imagem em base64, por enquanto vou passar o url da imagem so para poder criar o objeto no backend
         formdata.photo = formdata.photo.name;
-        createalunos(formdata);
+        createInstructors(formdata);
         (0, _clearbody.clearBody)();
-        createalunos();
+        (0, _instrutor.createlistinstrutor)();
     });
 }
 
-},{"../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../../function/clearbody":"h6N02","../services/instrutor":"d7UTX"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
+},{"../../../components/main":"5zsxX","../../../function/clearbody":"h6N02","../services/instrutor":"d7UTX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
 
 //# sourceMappingURL=frontend.4e1ccf09.js.map

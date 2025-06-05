@@ -78,9 +78,9 @@ export function callFormInstrutor(){
         
     `
     // POST
-     async function createalunos(bodyrequest){
+     async function createInstructors(bodyrequest){
             try{
-                fetch("http://localhost:8080/alunos",{
+                fetch("http://localhost:8080/instructors",{
                     method : "POST",
                     headers : { 'Content-Type': 'application/json'},
                     body : JSON.stringify(bodyrequest)
@@ -93,9 +93,9 @@ export function callFormInstrutor(){
     const main = getOrCreateMainElement();
     main.insertAdjacentHTML("afterbegin",$form)
     //DELET
-    async function deletalunos(bodyrequest) {
+    async function deletInstructors(bodyrequest) {
          try{
-                fetch(`http://localhost:8080/alunos/${bodyrequest.id}`,{
+                fetch(`http://localhost:8080/instructors/${bodyrequest.id}`,{
                     method : "DELET",
                     headers : { 'Content-Type': 'application/json'},
                     body : JSON.stringify(bodyrequest)
@@ -124,8 +124,8 @@ export function callFormInstrutor(){
             formdata.photo = formdata.photo.name
         }
 
-        createalunos(formdata)
+        createInstructors(formdata)
         clearBody()
-        createalunos()
+        createlistinstrutor()
     })
 }

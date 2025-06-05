@@ -30,24 +30,17 @@ export function createlistalunos(){
 }
 
 async function listadealunos(){
-    const response = await fetch("http://localhost:8080/alunos",{
-        method:"GET",
-        headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin':'*'
-        }
-    })
+    const response = await fetch("http://localhost:8080/alunos")
     const result = await response.json();
     result.forEach(element => {
+        const alunos =  element
+        console.log(element);
         insertinlist(element)
     });
 }
-function insertinlist(aluno){
+async function insertinlist(aluno){
     const tr = document.getElementById("tr")
-    console.log(aluno);
-    
-    console.log(aluno.id);
-    
+
     const $aluno = `
     <tr>
         <td>${aluno.nome}</td>
@@ -60,5 +53,11 @@ function insertinlist(aluno){
         </td>
     </tr>
     `
+
+    function excloiraluno(){
+        const $deletbtn = document.querySelectorAll(".btn-danger").forEach(btn =>{
+            btn.addEventListener("click", ()=>console.log(btn.closest("tr").innerHTML))
+        })
+    }excloiraluno();
     tr.insertAdjacentHTML("afterbegin",$aluno)
 }

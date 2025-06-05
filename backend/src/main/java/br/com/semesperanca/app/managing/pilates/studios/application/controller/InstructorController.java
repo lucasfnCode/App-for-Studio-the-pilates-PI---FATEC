@@ -14,7 +14,9 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/instructors")
+
 public class InstructorController {
     
     private final InstructorService service;
@@ -23,17 +25,17 @@ public class InstructorController {
     public ResponseEntity<List<InstructorOutputDTO>> listAllActive() {
         return ResponseEntity.ok(service.listAllActiveInstructors());
     }
-
+    
     @GetMapping()
     public ResponseEntity<List<InstructorOutputDTO>> listAll() {
         return ResponseEntity.ok(service.listAllInstructors());
     }
-
+    @CrossOrigin(origins = "*")
     @GetMapping("/{id}")
     public ResponseEntity<InstructorOutputDTO> getById(@PathVariable String id) {
         return ResponseEntity.ok(service.getInstructorById(id));
     }
-    
+    @CrossOrigin(origins = "*")
     @PostMapping()
     public ResponseEntity<InstructorOutputDTO> register(@RequestBody InstructorInputDTO instructor) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.registerInstructor(instructor));
