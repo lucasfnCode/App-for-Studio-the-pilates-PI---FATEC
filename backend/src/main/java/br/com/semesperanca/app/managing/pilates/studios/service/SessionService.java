@@ -89,8 +89,8 @@ public class SessionService {
                 .toList();
     }
 
-    public List<SessionOutputDTO> listSessionByInstructor(String instructorId) {
-        List<Session> sessions = sessionRepository.findByInstructor(instructorId);
+    public List<SessionOutputDTO> listSessionByInstructor(String id) {
+        List<Session> sessions = sessionRepository.findByInstructor(id);
         return sessions.stream()
                 .map(this::assemblerSessionOutputDTO)
                 .toList();

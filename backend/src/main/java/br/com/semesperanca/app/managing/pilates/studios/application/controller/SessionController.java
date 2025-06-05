@@ -52,8 +52,8 @@ public class SessionController {
     }
 
     @GetMapping("/instructor/{id}")
-    public ResponseEntity<List<SessionOutputDTO>> listAllByInstructor(@PathVariable String instructorId) {
-        return ResponseEntity.ok(service.listSessionByInstructor(instructorId));
+    public ResponseEntity<List<SessionOutputDTO>> listAllByInstructor(@PathVariable String id) {
+        return ResponseEntity.ok(service.listSessionByInstructor(id));
     }
     
 

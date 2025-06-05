@@ -1,7 +1,6 @@
 package br.com.semesperanca.app.managing.pilates.studios.model;
 
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.Id;
 import lombok.NonNull;
 import java.time.LocalDate;
 import lombok.Getter;
@@ -13,9 +12,6 @@ import lombok.Setter;
 @SuperBuilder
 @NoArgsConstructor
 public abstract class User {
-
-    @Id
-    private String id;
 
     @NonNull
     private String name;
