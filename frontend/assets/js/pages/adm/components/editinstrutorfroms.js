@@ -8,8 +8,6 @@ import {  createlistinstrutor, listarInstrutores } from "../services/people/inst
  * @param {Object} instrutor - Dados atuais do instrutor
  */
 export function editForm(instrutor) {
-    console.log(instrutor);
-    
     // Cria o formulário de edição
     const formHTML = `
         <form class="position-absolute bg-warning top-0 end-0 w-50" id="edit-instrutor-form">
@@ -93,7 +91,7 @@ export function editForm(instrutor) {
     
 }
 async function submitEditForm(instrutor) {
-    console.log(instrutor);
+    console.log("submit",instrutor);
     
     try {
         const response = await fetch(`http://localhost:8080/instructors/${instrutor.id}`, {

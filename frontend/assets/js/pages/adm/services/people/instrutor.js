@@ -37,6 +37,7 @@ export function createlistinstrutor() {
     // Configura o evento de clique no botão "novo instrutor"
     document.getElementById("new").addEventListener("click", () => callFormInstrutor());
     // TODO: Verificar duplicação de forms (possível bug)
+    
 }
 
 /**
@@ -59,11 +60,19 @@ export async function listarInstrutores() {
         console.error("Erro ao listar instrutores:", error);
     }
 }
-    function setupEditarButton(instrutor) {
+    
+function setupEditarButton(instrutor) {
     document.querySelectorAll('.btn-primary').forEach(btn => {
-        btn.addEventListener('click', ()=> editForm(instrutor))
+            btn.addEventListener('click', ()=> {
+                const tr = btn.closest("tr"); // Encontra a <tr> pai do botão
+                const pId = tr.querySelector("p.id").dataset.id; // Busca o <p class="id"> dentro da <tr>
+                if(instrutor.id == pId){
+                  editForm(instrutor)
+                }
+            })
     })
     }
+    
 /**
  * Insere um instrutor na tabela
  * @param {Object} instrutor - Objeto com os dados do instrutor
@@ -72,6 +81,7 @@ export async function listarInstrutores() {
  */
 function insertinlist(instrutor) {
     const tr = document.getElementById("tr");
+
     
     // Template da linha do instrutor
     const $instrutor = `
@@ -81,7 +91,7 @@ function insertinlist(instrutor) {
                 nome ${instrutor.name}<br>
                 email ${instrutor.email}<br>
    
-                <p class="id">id ${instrutor.id}</p>
+                <p class="id" data-id="${instrutor.id}">id ${instrutor.id}</p>
             </td>
             <td>${instrutor.contact}</td>
             <td>
@@ -132,8 +142,6 @@ function setupDesativarButton(instrutor) {
  */
 async function desativainstrutor(id, bodyrequest) {
     bodyrequest.isActive = false;
-    console.log(bodyrequest);
-    
     try {
         await fetch(`http://localhost:8080/instructors/${id}`, {
             method: "PUT",
@@ -145,5 +153,6 @@ async function desativainstrutor(id, bodyrequest) {
         console.error("Erro ao desativar instrutor:", error);
         return error;
     }
-
+    
+    
 }
