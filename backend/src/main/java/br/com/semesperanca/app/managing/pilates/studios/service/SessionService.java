@@ -89,6 +89,13 @@ public class SessionService {
                 .toList();
     }
 
+    public List<SessionOutputDTO> listSessionByInstructor(String instructorId) {
+        List<Session> sessions = sessionRepository.findByInstructor(instructorId);
+        return sessions.stream()
+                .map(this::assemblerSessionOutputDTO)
+                .toList();
+    }
+
     public SessionOutputDTO openSession(SessionInputDTO sessionInputDTO) {
         if (!checkMaxOfStudents(sessionInputDTO)) {
             throw new RuntimeException("caguei no mato");
