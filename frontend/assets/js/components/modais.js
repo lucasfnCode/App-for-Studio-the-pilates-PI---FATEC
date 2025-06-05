@@ -166,3 +166,145 @@ export function criarModalSobreHTML() {
     </div>
   `;
 }
+
+export function modalSalvarAlteracaoHTML() {
+  return `
+    <div class="modal fade" id="modalSalvarAlteracao" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h5 class="modal-title">Confirmar Alterações</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p class="fs-5">Você tem certeza de que deseja salvar as alterações feitas?</p>
+          </div>
+          <div class="modal-footer d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-outline-primary" onclick="confirmarSalvarAlteracoes()">Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+export function criarModalDetalhesInstrutorHTML(instrutor = {}) {
+  return `
+    <div class="modal fade" id="modalDetalhesInstrutor" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h4 class="modal-title">${instrutor.nome}</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body row g-4">
+            <div class="col-md-5 text-center">
+              <img src="${instrutor.foto || 'https://placehold.co/300x300'}" class="img-fluid rounded-circle shadow-sm" alt="${instrutor.nome}">
+            </div>
+            <div class="col-md-7">
+              <p class="fs-5">${instrutor.descricao}</p>
+              <p><strong>Especialidades:</strong> ${instrutor.especialidades?.join(", ") || "Pilates Geral"}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+export function criarModalConfirmarAssinaturaHTML(plano = {}) {
+  return `
+    <div class="modal fade" id="modalConfirmarAssinatura" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h5 class="modal-title">Confirmar Assinatura</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p class="fs-5">Você está prestes a assinar o plano <strong>${plano.nome || "Selecionado"}</strong> por <strong>${plano.valor || "R$ XX,XX"}</strong>.</p>
+            <p class="text-muted">Deseja continuar?</p>
+          </div>
+          <div class="modal-footer d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-outline-success" onclick="confirmarPlano('${plano.nome}')">Assinar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+
+export function criarModalAulasInstrutorHTML() {
+  return `
+    <div class="modal fade" id="modalAulasInstrutor" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h4 class="modal-title">Aulas do Instrutor</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p class="fs-5">Lista de aulas, horários ou qualquer conteúdo relacionado ao instrutor selecionado.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+export function criarModalPerfilInstrutorHTML() {
+  return `
+    <div class="modal fade" id="modalPerfilInstrutor" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h4 class="modal-title">Perfil do Instrutor</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p class="fs-5">Detalhes completos sobre o instrutor, como experiência, certificações, especialidades etc.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+export function criarModalAgendaRecepcaoHTML() {
+  return `
+    <div class="modal fade" id="modalAgendaRecepcao" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h4 class="modal-title">Agenda da Recepção</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p class="fs-5">Visualização da agenda diária, semanal ou mensal dos atendimentos agendados.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+export function criarModalCadastroClientesHTML() {
+  return `
+    <div class="modal fade" id="modalCadastroClientes" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h4 class="modal-title">Cadastro de Clientes</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p class="fs-5">Formulário ou painel para cadastro de novos clientes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
