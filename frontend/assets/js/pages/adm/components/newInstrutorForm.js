@@ -101,7 +101,7 @@ export function callFormInstrutor(){
         const permissions = formrawdata.getAll("permissions")
         const formdata = Object.fromEntries(formrawdata.entries())
         formdata.permissions = permissions;
-        console.log(formdata);
+ 
         formdata.isActive = true
         if(formdata.photo.size === 0 ){
             formdata.photo = "null"
@@ -109,17 +109,14 @@ export function callFormInstrutor(){
             // todo transoformar a imagem em base64, por enquanto vou passar o url da imagem so para poder criar o objeto no backend
             formdata.photo = formdata.photo.name
         }
-
+        
+        window.addEventListener("DOMContentLoaded",restarttabel())
+        function restarttabel() {
+            
         createInstructors(formdata)
         clearBody()
         createlistinstrutor()
-    })
-    // "isActive": false
-    const botoesDeletar = document.querySelectorAll(".btn-danger");
-
-        botoesDeletar.forEach(botao => {
-        botao.addEventListener("click", function() {
-            console.log("Botão clicado:", this);
-        });
+        }
+        
     })
 }

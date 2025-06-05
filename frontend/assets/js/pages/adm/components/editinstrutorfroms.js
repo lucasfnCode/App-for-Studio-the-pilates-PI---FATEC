@@ -11,6 +11,12 @@ export function editForm(instrutor) {
     // Cria o formulário de edição
     const formHTML = `
         <form class="position-absolute bg-warning top-0 end-0 w-50" id="edit-instrutor-form">
+
+            <div class="mb-3">
+                <label class="isActive">esta ativo:</label>
+                <input type="checkbox" name="isActive" value="on">
+            </div>
+
             <div class="mb-3">
                 <label class="form-label">Nome:</label>
                 <input type="text" class="form-control" name="name" value="${instrutor.name }">
@@ -91,8 +97,12 @@ export function editForm(instrutor) {
     
 }
 async function submitEditForm(instrutor) {
-    console.log("submit",instrutor);
-    
+    if( instrutor.isActive == "on"){
+        instrutor.isActive = true
+    }else{
+        instrutor.isActive = false
+    }
+   
     try {
         const response = await fetch(`http://localhost:8080/instructors/${instrutor.id}`, {
             method: 'PUT',

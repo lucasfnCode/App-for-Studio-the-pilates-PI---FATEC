@@ -4477,7 +4477,9 @@ async function listarInstrutores() {
             }
         });
         const result = await response.json();
-        result.forEach((element)=>insertinlist(element));
+        result.forEach((element)=>{
+            insertinlist(element);
+        });
     } catch (error) {
         console.error("Erro ao listar instrutores:", error);
     }
@@ -4499,8 +4501,9 @@ function setupEditarButton(instrutor) {
  */ function insertinlist(instrutor) {
     const tr = document.getElementById("tr");
     // Template da linha do instrutor
+    console.log(instrutor.isActive);
     const $instrutor = `
-        <tr>
+        <tr class="${instrutor.isActive}">
             <td><img src="${instrutor.photo}"></td>
             <td>
                 nome ${instrutor.name}<br>
@@ -4576,6 +4579,12 @@ function editForm(instrutor) {
     // Cria o formulário de edição
     const formHTML = `
         <form class="position-absolute bg-warning top-0 end-0 w-50" id="edit-instrutor-form">
+
+            <div class="mb-3">
+                <label class="isActive">esta ativo:</label>
+                <input type="checkbox" name="isActive" value="on">
+            </div>
+
             <div class="mb-3">
                 <label class="form-label">Nome:</label>
                 <input type="text" class="form-control" name="name" value="${instrutor.name}">
@@ -4652,7 +4661,8 @@ function editForm(instrutor) {
     });
 }
 async function submitEditForm(instrutor) {
-    console.log("submit", instrutor);
+    if (instrutor.isActive == "on") instrutor.isActive = true;
+    else instrutor.isActive = false;
     try {
         const response = await fetch(`http://localhost:8080/instructors/${instrutor.id}`, {
             method: 'PUT',
@@ -4775,21 +4785,16 @@ function callFormInstrutor() {
         const permissions = formrawdata.getAll("permissions");
         const formdata = Object.fromEntries(formrawdata.entries());
         formdata.permissions = permissions;
-        console.log(formdata);
         formdata.isActive = true;
         if (formdata.photo.size === 0) formdata.photo = "null";
         else // todo transoformar a imagem em base64, por enquanto vou passar o url da imagem so para poder criar o objeto no backend
         formdata.photo = formdata.photo.name;
-        createInstructors(formdata);
-        (0, _clearbody.clearBody)();
-        (0, _instrutor.createlistinstrutor)();
-    });
-    // "isActive": false
-    const botoesDeletar = document.querySelectorAll(".btn-danger");
-    botoesDeletar.forEach((botao)=>{
-        botao.addEventListener("click", function() {
-            console.log("Bot\xe3o clicado:", this);
-        });
+        window.addEventListener("DOMContentLoaded", restarttabel());
+        function restarttabel() {
+            createInstructors(formdata);
+            (0, _clearbody.clearBody)();
+            (0, _instrutor.createlistinstrutor)();
+        }
     });
 }
 

@@ -55,7 +55,8 @@ export async function listarInstrutores() {
             }
         });
         const result = await response.json();
-        result.forEach(element => insertinlist(element));
+        
+        result.forEach(element => {insertinlist(element)});
     } catch (error) {
         console.error("Erro ao listar instrutores:", error);
     }
@@ -81,11 +82,11 @@ function setupEditarButton(instrutor) {
  */
 function insertinlist(instrutor) {
     const tr = document.getElementById("tr");
-
-    
     // Template da linha do instrutor
+    console.log(instrutor.isActive);
+    
     const $instrutor = `
-        <tr>
+        <tr class="${instrutor.isActive}">
             <td><img src="${instrutor.photo}"></td>
             <td>
                 nome ${instrutor.name}<br>
@@ -148,6 +149,7 @@ async function desativainstrutor(id, bodyrequest) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(bodyrequest)
         });
+       
         // TODO: Adicionar feedback visual para o usuário (sucesso/erro)
     } catch (error) {
         console.error("Erro ao desativar instrutor:", error);
