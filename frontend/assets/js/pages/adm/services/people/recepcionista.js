@@ -1,5 +1,4 @@
-import { main } from "@popperjs/core"
-import { getOrCreateMainElement } from "../../../components/main"
+import { getOrCreateMainElement } from "../../../../components/main"
 
 export function createrecepcionistapage(){
     const $recepcionistalist = `

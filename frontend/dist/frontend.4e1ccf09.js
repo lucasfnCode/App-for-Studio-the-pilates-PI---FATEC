@@ -674,8 +674,8 @@ var _footer = require("./components/footer");
 var _schedulling = require("./pages/schedulling/schedulling");
 var _admpage = require("./pages/adm/admpage");
 var _clearbody = require("./function/clearbody");
-var _alunos = require("./pages/adm/services/alunos");
-var _instrutor = require("./pages/adm/services/instrutor");
+var _alunos = require("./pages/adm/services/people/alunos");
+var _instrutor = require("./pages/adm/services/people/instrutor");
 function renderContentBasedOnHash() {
     (0, _clearbody.clearBody)();
     switch(location.hash){
@@ -701,7 +701,7 @@ function renderContentBasedOnHash() {
 renderContentBasedOnHash();
 window.addEventListener("hashchange", renderContentBasedOnHash);
 
-},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp","./pages/adm/admpage":"eIH1s","./function/clearbody":"h6N02","./pages/adm/services/alunos":"l2YNC","./pages/adm/services/instrutor":"d7UTX"}],"joWv1":[function(require,module,exports,__globalThis) {
+},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp","./pages/adm/admpage":"eIH1s","./function/clearbody":"h6N02","./pages/adm/services/people/alunos":"7lrgv","./pages/adm/services/people/instrutor":"g6jI9"}],"joWv1":[function(require,module,exports,__globalThis) {
 /*!
   * Bootstrap v5.3.6 (https://getbootstrap.com/)
   * Copyright 2011-2025 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
@@ -4262,7 +4262,6 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "admpage", ()=>admpage);
 var _main = require("../../components/main");
-var _alunos = require("./services/alunos");
 function admpage() {
     const $admpage = `
     <a href="#alunos-lista">
@@ -4286,12 +4285,26 @@ function admpage() {
     main.insertAdjacentHTML("afterbegin", $admpage);
 }
 
-},{"../../components/main":"5zsxX","./services/alunos":"l2YNC","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"l2YNC":[function(require,module,exports,__globalThis) {
+},{"../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"h6N02":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "clearBody", ()=>clearBody);
+function clearBody() {
+    const main = document.getElementById("main");
+    if (main) {
+        main.innerHTML = '';
+        main.classList = null;
+        const body = document.getElementsByTagName('body');
+        body[0].classList = "";
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"7lrgv":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "createlistalunos", ()=>createlistalunos);
-var _main = require("../../../components/main");
-var _newalunoForm = require("../components/newalunoForm");
+var _main = require("../../../../components/main");
+var _newalunoForm = require("../../components/newalunoForm");
 function createlistalunos() {
     const $list = `
         <table class="table table-striped table-bordered">
@@ -4350,14 +4363,14 @@ async function insertinlist(aluno) {
     tr.insertAdjacentHTML("afterbegin", $aluno);
 }
 
-},{"../../../components/main":"5zsxX","../components/newalunoForm":"gLR1t","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"gLR1t":[function(require,module,exports,__globalThis) {
+},{"../../../../components/main":"5zsxX","../../components/newalunoForm":"gLR1t","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"gLR1t":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 //modal
 parcelHelpers.export(exports, "callformsAlunos", ()=>callformsAlunos);
 var _main = require("../../../components/main");
 var _clearbody = require("../../../function/clearbody");
-var _alunos = require("../services/alunos");
+var _alunos = require("../services/people/alunos");
 function callformsAlunos() {
     const $form = `
             <section class="position-absolute bg-warning top-0  w-50">
@@ -4399,21 +4412,6 @@ function callformsAlunos() {
     }
     const main = (0, _main.getOrCreateMainElement)();
     main.insertAdjacentHTML("afterbegin", $form);
-    //DELET
-    async function deletalunor(bodyrequest) {
-        try {
-            fetch(`http://localhost:8080/alunos/${bodyrequest.id}`, {
-                method: "DELET",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(bodyrequest)
-            });
-        } catch (error) {
-            console.log(error);
-            return error;
-        }
-    }
     window.addEventListener("submit", (e)=>{
         e.preventDefault();
         const form = document.getElementById("form");
@@ -4425,27 +4423,25 @@ function callformsAlunos() {
     });
 }
 
-},{"../../../components/main":"5zsxX","../../../function/clearbody":"h6N02","../services/alunos":"l2YNC","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"h6N02":[function(require,module,exports,__globalThis) {
+},{"../../../components/main":"5zsxX","../../../function/clearbody":"h6N02","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../services/people/alunos":"7lrgv"}],"g6jI9":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "clearBody", ()=>clearBody);
-function clearBody() {
-    const main = document.getElementById("main");
-    if (main) {
-        main.innerHTML = '';
-        main.classList = null;
-        const body = document.getElementsByTagName('body');
-        body[0].classList = "";
-    }
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"d7UTX":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "createlistinstrutor", ()=>createlistinstrutor);
-var _main = require("../../../components/main");
-var _newInstrutorForm = require("../components/newInstrutorForm");
+/**
+ * Função principal que cria e exibe a lista de instrutores
+ * - Cria a estrutura HTML da tabela
+ * - Chama a função para carregar os dados dos instrutores
+ * - Configura o botão de novo instrutor
+ */ parcelHelpers.export(exports, "createlistinstrutor", ()=>createlistinstrutor);
+/**
+ * Busca e exibe a lista de instrutores do servidor
+ * - Faz uma requisição GET para a API
+ * - Para cada instrutor retornado, chama a função de inserção na tabela
+ */ parcelHelpers.export(exports, "listarInstrutores", ()=>listarInstrutores);
+var _main = require("../../../../components/main");
+var _editinstrutorfroms = require("../../components/editinstrutorfroms");
+var _newInstrutorForm = require("../../components/newInstrutorForm");
 function createlistinstrutor() {
+    // Estrutura HTML da tabela de instrutores
     const $list = `
         <table class="table table-striped table-bordered">
             <thead>
@@ -4457,68 +4453,122 @@ function createlistinstrutor() {
                 </tr>
             </thead>
             <tbody id="tr">
-                <tr>
-                
-                </tr>
+                <tr></tr>
             </tbody>
         </table>
-            <button id="new"> novo instrutor</button>
+        <button id="new">novo instrutor</button>
     `;
+    // Insere a tabela no elemento principal da página
     const main = (0, _main.getOrCreateMainElement)();
     main.insertAdjacentHTML("afterbegin", $list);
+    // Carrega a lista de instrutores
     listarInstrutores();
-    const $newbtn = document.getElementById("new");
-    $newbtn.addEventListener("click", ()=>(0, _newInstrutorForm.callFormInstrutor)());
-// todo ta podendo criar varios forms de mesma coisa tem q ver isso ai
+    // Configura o evento de clique no botão "novo instrutor"
+    document.getElementById("new").addEventListener("click", ()=>(0, _newInstrutorForm.callFormInstrutor)());
+// TODO: Verificar duplicação de forms (possível bug)
 }
 async function listarInstrutores() {
-    const response = await fetch("http://localhost:8080/instructors", {
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-        }
-    });
-    const result = await response.json();
-    result.forEach((element)=>{
-        insertinlist(element);
+    try {
+        const response = await fetch("http://localhost:8080/instructors", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }
+        });
+        const result = await response.json();
+        result.forEach((element)=>insertinlist(element));
+    } catch (error) {
+        console.error("Erro ao listar instrutores:", error);
+    }
+}
+function setupEditarButton(instrutor) {
+    document.querySelectorAll('.btn-primary').forEach((btn)=>{
+        btn.addEventListener('click', ()=>(0, _editinstrutorfroms.editForm)(instrutor));
     });
 }
-function insertinlist(aluno) {
+/**
+ * Insere um instrutor na tabela
+ * @param {Object} instrutor - Objeto com os dados do instrutor
+ * - Cria a linha da tabela com os dados do instrutor
+ * - Configura os botões de ação (editar/desativar)
+ */ function insertinlist(instrutor) {
     const tr = document.getElementById("tr");
-    const $aluno = `
-    <tr>
-        <td>
-            <img src="${aluno.photo}">
-        </td>
-        <td>
-             nome :${aluno.name} 
-            <br>
-            email: ${aluno.email}
-            <br>
-            id:${aluno.id}
-        </td>
-        <td>${aluno.contact}</td>
-        <td>
-            <button class="btn btn-sm btn-primary">Editar</button>
-            <button class="btn btn-sm btn-danger">Excluir</button>
-        </td>
-    </tr>
+    // Template da linha do instrutor
+    const $instrutor = `
+        <tr>
+            <td><img src="${instrutor.photo}"></td>
+            <td>
+                nome ${instrutor.name}<br>
+                email ${instrutor.email}<br>
+   
+                <p class="id">id ${instrutor.id}</p>
+            </td>
+            <td>${instrutor.contact}</td>
+            <td>
+                <button class="btn btn-sm btn-primary">Editar</button>
+                <button class="btn btn-sm btn-danger">Desativar</button>
+            </td>
+        </tr>
     `;
-    tr.insertAdjacentHTML("afterbegin", $aluno);
+    // Insere a linha no início da tabela
+    tr.insertAdjacentHTML("afterbegin", $instrutor);
+    // Configura o botão de desativar para este instrutor
+    setupDesativarButton(instrutor);
+    setupEditarButton(instrutor);
+}
+/**
+ * Configura o evento de clique no botão "Desativar"
+ * @param {Object} instrutor - Objeto com os dados do instrutor
+ * - Extrai o ID do elemento HTML
+ * - Chama a função para desativar o instrutor
+ */ function setupDesativarButton(instrutor) {
+    document.querySelectorAll('.btn-danger').forEach((btn)=>{
+        btn.addEventListener('click', function() {
+            // Encontra o elemento que contém o ID
+            const idElement = this.closest('tr').querySelector('.id');
+            // Extrai apenas o valor do ID (remove "id" do início)
+            const id = idElement.textContent.replace('id', '').trim();
+            // Chama a função para desativar o instrutor
+            desativainstrutor(id, instrutor);
+        });
+    });
+}
+/**
+ * Envia requisição para desativar um instrutor
+ * @param {string} id - ID do instrutor a ser desativado
+ * @param {Object} bodyrequest - Objeto com os dados do instrutor
+ * - Altera o status isActive para false
+ * - Envia requisição PUT para a API
+ */ async function desativainstrutor(id, bodyrequest) {
+    bodyrequest.isActive = false;
+    console.log(bodyrequest);
+    try {
+        await fetch(`http://localhost:8080/instructors/${id}`, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(bodyrequest)
+        });
+    // TODO: Adicionar feedback visual para o usuário (sucesso/erro)
+    } catch (error) {
+        console.error("Erro ao desativar instrutor:", error);
+        return error;
+    }
 }
 
-},{"../../../components/main":"5zsxX","../components/newInstrutorForm":"1LOpB","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"1LOpB":[function(require,module,exports,__globalThis) {
+},{"../../../../components/main":"5zsxX","../../components/newInstrutorForm":"1LOpB","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../components/editinstrutorfroms":"7N4Ce"}],"1LOpB":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 //modal
 parcelHelpers.export(exports, "callFormInstrutor", ()=>callFormInstrutor);
 var _main = require("../../../components/main");
 var _clearbody = require("../../../function/clearbody");
-var _instrutor = require("../services/instrutor");
+var _instrutor = require("../services/people/instrutor");
 function callFormInstrutor() {
     const $form = `
-            <section class="position-absolute bg-warning top-0  w-50">
+            <section class=" position-absolute bg-warning top-0  w-50">
                 <form class="container mt-4 " id="form">
              
          
@@ -4606,21 +4656,6 @@ function callFormInstrutor() {
     }
     const main = (0, _main.getOrCreateMainElement)();
     main.insertAdjacentHTML("afterbegin", $form);
-    //DELET
-    async function deletInstructors(bodyrequest) {
-        try {
-            fetch(`http://localhost:8080/instructors/${bodyrequest.id}`, {
-                method: "DELET",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(bodyrequest)
-            });
-        } catch (error) {
-            console.log(error);
-            return error;
-        }
-    }
     window.addEventListener("submit", (e)=>{
         e.preventDefault();
         const form = document.getElementById("form");
@@ -4629,6 +4664,7 @@ function callFormInstrutor() {
         const formdata = Object.fromEntries(formrawdata.entries());
         formdata.permissions = permissions;
         console.log(formdata);
+        formdata.isActive = true;
         if (formdata.photo.size === 0) formdata.photo = "null";
         else // todo transoformar a imagem em base64, por enquanto vou passar o url da imagem so para poder criar o objeto no backend
         formdata.photo = formdata.photo.name;
@@ -4636,8 +4672,125 @@ function callFormInstrutor() {
         (0, _clearbody.clearBody)();
         (0, _instrutor.createlistinstrutor)();
     });
+    // "isActive": false
+    const botoesDeletar = document.querySelectorAll(".btn-danger");
+    botoesDeletar.forEach((botao)=>{
+        botao.addEventListener("click", function() {
+            console.log("Bot\xe3o clicado:", this);
+        });
+    });
 }
 
-},{"../../../components/main":"5zsxX","../../../function/clearbody":"h6N02","../services/instrutor":"d7UTX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
+},{"../../../components/main":"5zsxX","../../../function/clearbody":"h6N02","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../services/people/instrutor":"g6jI9"}],"7N4Ce":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+/**
+ * Exibe formulário de edição para um instrutor
+ * @param {string} id - ID do instrutor
+ * @param {Object} instrutor - Dados atuais do instrutor
+ */ parcelHelpers.export(exports, "editForm", ()=>editForm);
+var _main = require("../../../components/main");
+var _clearbody = require("../../../function/clearbody");
+var _instrutor = require("../services/people/instrutor");
+function editForm(instrutor) {
+    console.log(instrutor);
+    // Cria o formulário de edição
+    const formHTML = `
+        <form class="position-absolute bg-warning top-0 end-0 w-50" id="edit-instrutor-form">
+            <div class="mb-3">
+                <label class="form-label">Nome:</label>
+                <input type="text" class="form-control" name="name" value="${instrutor.name}">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Fun\xe7\xe3o:</label>
+                <input type="text" class="form-control" name="type" value="${instrutor.type}"> 
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Data de Contrata\xe7\xe3o:</label>
+                <input type="date" class="form-control" name="hiringDate" value="${instrutor.hiringDate}">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email:</label>
+                <input type="email" class="form-control" name="email" value="${instrutor.email}">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Contato:</label>
+                <input type="tel" class="form-control" name="contact" value="${instrutor.contact}">
+            </div>
+
+            <!-- <div class="mb-3">
+                <label class="form-label">Foto:</label>
+                <input type="file" accept="image/*" class="form-control" name="photo">
+            </div> -->
+
+            <div class="mb-3">
+                <label class="form-label">Forma\xe7\xe3o:</label>
+                <input type="text" class="form-control" name="formation" value="${instrutor.formation}">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Conselho:</label>
+                <textarea class="form-control" name="advice">${instrutor.advice}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Permiss\xf5es:</label>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        Aprovar Or\xe7amentos
+                        <input type="checkbox" name="permissions" value="aprovar_orcamentos" >
+                    </li>
+                    <li class="list-group-item">
+                        Gerenciar Equipe
+                        <input type="checkbox" name="permissions" value="gerenciar_equipe">
+                    </li>
+                    <li class="list-group-item">
+                        Acesso Total
+                        <input type="checkbox" name="permissions" value="acesso_total">
+                    </li>
+                </ul>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Salvar Altera\xe7\xf5es</button>
+                <button type="button" class="btn btn-secondary" id="cancel-edit">Cancelar</button>
+            </div>
+        </form>
+    `;
+    const main = (0, _main.getOrCreateMainElement)();
+    main.insertAdjacentHTML('beforeend', formHTML);
+    document.getElementById('edit-instrutor-form').addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const form = document.getElementById('edit-instrutor-form');
+        const formrawdata = new FormData(form);
+        const formdata = Object.fromEntries(formrawdata.entries());
+        formdata.id = instrutor.id;
+        submitEditForm(formdata);
+    });
+}
+async function submitEditForm(instrutor) {
+    console.log(instrutor);
+    try {
+        const response = await fetch(`http://localhost:8080/instructors/${instrutor.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(instrutor)
+        });
+        if (response.ok) alert('Instrutor atualizado com sucesso!');
+        (0, _clearbody.clearBody)();
+        (0, _instrutor.createlistinstrutor)();
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao atualizar instrutor: ' + error.message);
+    }
+}
+
+},{"../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../services/people/instrutor":"g6jI9","../../../function/clearbody":"h6N02"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
 
 //# sourceMappingURL=frontend.4e1ccf09.js.map

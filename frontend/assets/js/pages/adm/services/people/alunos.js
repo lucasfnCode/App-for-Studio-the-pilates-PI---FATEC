@@ -1,5 +1,5 @@
-import { getOrCreateMainElement } from "../../../components/main";
-import { callformsAlunos } from "../components/newalunoForm";
+import { getOrCreateMainElement } from "../../../../components/main";
+import { callformsAlunos } from "../../components/newalunoForm";
 
 export function createlistalunos(){
     const $list = `

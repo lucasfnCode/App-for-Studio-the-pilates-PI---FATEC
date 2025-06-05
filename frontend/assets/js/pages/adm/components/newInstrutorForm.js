@@ -1,12 +1,12 @@
 import { getOrCreateMainElement } from "../../../components/main"
 import { clearBody } from "../../../function/clearbody";
-import { createlistinstrutor } from "../services/instrutor";
+import { createlistinstrutor } from "../services/people/instrutor";
 
 //modal
 export function callFormInstrutor(){
   
          const $form = `
-            <section class="position-absolute bg-warning top-0  w-50">
+            <section class=" position-absolute bg-warning top-0  w-50">
                 <form class="container mt-4 " id="form">
              
          
@@ -92,20 +92,6 @@ export function callFormInstrutor(){
         }
     const main = getOrCreateMainElement();
     main.insertAdjacentHTML("afterbegin",$form)
-    //DELET
-    async function deletInstructors(bodyrequest) {
-         try{
-                fetch(`http://localhost:8080/instructors/${bodyrequest.id}`,{
-                    method : "DELET",
-                    headers : { 'Content-Type': 'application/json'},
-                    body : JSON.stringify(bodyrequest)
-                })
-            }catch(error){
-                console.log(error);
-                return error
-            }
-    }
-
 
     window.addEventListener("submit",(e) =>{
         e.preventDefault()
@@ -116,7 +102,7 @@ export function callFormInstrutor(){
         const formdata = Object.fromEntries(formrawdata.entries())
         formdata.permissions = permissions;
         console.log(formdata);
-      
+        formdata.isActive = true
         if(formdata.photo.size === 0 ){
             formdata.photo = "null"
         }else{
@@ -127,5 +113,13 @@ export function callFormInstrutor(){
         createInstructors(formdata)
         clearBody()
         createlistinstrutor()
+    })
+    // "isActive": false
+    const botoesDeletar = document.querySelectorAll(".btn-danger");
+
+        botoesDeletar.forEach(botao => {
+        botao.addEventListener("click", function() {
+            console.log("Botão clicado:", this);
+        });
     })
 }

@@ -5,9 +5,8 @@ import { footerHtml } from './components/footer';
 import { renderAgendamentoPage } from './pages/schedulling/schedulling';
 import { admpage } from "./pages/adm/admpage";
 import { clearBody } from "./function/clearbody";
-import { createlistalunos } from "./pages/adm/services/alunos";
-import { createlistinstrutor } from "./pages/adm/services/instrutor";
-
+import { createlistalunos } from "./pages/adm/services/people/alunos";
+import { createlistinstrutor } from "./pages/adm/services/people/instrutor";
 
 
 

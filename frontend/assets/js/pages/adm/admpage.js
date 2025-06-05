@@ -1,5 +1,4 @@
 import { getOrCreateMainElement } from "../../components/main";
-import { listadealunos } from "./services/alunos";
 
 export function admpage(){
     const $admpage = `
@@ -22,5 +21,6 @@ export function admpage(){
     `   
     const main = getOrCreateMainElement();
     main.insertAdjacentHTML("afterbegin",$admpage)
-    
+   
+
 }

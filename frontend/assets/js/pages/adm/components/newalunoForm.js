@@ -1,6 +1,6 @@
 import { getOrCreateMainElement } from "../../../components/main"
 import { clearBody } from "../../../function/clearbody";
-import { createlistalunos } from "../services/alunos";
+import { createlistalunos } from "../services/people/alunos";
 
 //modal
 export function callformsAlunos(){
@@ -43,20 +43,7 @@ export function callformsAlunos(){
         }
     const main = getOrCreateMainElement();
     main.insertAdjacentHTML("afterbegin",$form)
-    //DELET
-    async function deletalunor(bodyrequest) {
-         try{
-                fetch(`http://localhost:8080/alunos/${bodyrequest.id}`,{
-                    method : "DELET",
-                    headers : { 'Content-Type': 'application/json'},
-                    body : JSON.stringify(bodyrequest)
-                })
-
-            }catch(error){
-                console.log(error);
-                return error
-            }
-    }
+ 
 
 
     window.addEventListener("submit",(e) =>{
