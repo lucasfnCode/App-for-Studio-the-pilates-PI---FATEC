@@ -3,11 +3,20 @@ import {
   criarModalInstrutoresHTML,
   criarModalAssinaturasHTML,
   criarModalSobreHTML,
+  criarModalAulasInstrutorHTML,
+  criarModalPerfilInstrutorHTML,
+  criarModalAgendaRecepcaoHTML,
+  criarModalCadastroClientesHTML,
 } from "../../components/modais";
+
+function getUserRole() {
+  const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+  return user.role || "aluno";
+}
 
 function createCard(title, imageUrl, modalTargetId) {
   return `
-    <div class="col">
+    <div class="col p-3">
       <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
         <img src="${imageUrl}" class="card-img-top" alt="${title}">
         <div class="card-body text-center">
@@ -20,25 +29,53 @@ function createCard(title, imageUrl, modalTargetId) {
 }
 
 export function homeScreen() {
+  const role = getUserRole();
+
+  let titulo = "Bem-vindo ao Estúdio de Pilates";
+  let subtitulo = "Transforme seu corpo e mente com nossas aulas especializadas.";
+  let cards = "";
+  let modais = "";
+
+  if (role === "instrutor") {
+    titulo = "Área do Instrutor";
+    subtitulo = "Gerencie suas aulas e visualize seu perfil profissional.";
+    cards += createCard("Minhas Aulas", "https://placehold.co/600x400?text=Minhas+Aulas", "modalAulasInstrutor");
+    cards += createCard("Meu Perfil", "https://placehold.co/600x400?text=Perfil", "modalPerfilInstrutor");
+    modais += criarModalAulasInstrutorHTML();
+    modais += criarModalPerfilInstrutorHTML();
+  } else if (role === "recepcionista") {
+    titulo = "Área da Recepção";
+    subtitulo = "Organize agendamentos e cadastros de clientes com facilidade.";
+    cards += createCard("Agenda", "https://placehold.co/600x400?text=Agenda", "modalAgendaRecepcao");
+    cards += createCard("Clientes", "https://placehold.co/600x400?text=Clientes", "modalCadastroClientes");
+    modais += criarModalAgendaRecepcaoHTML();
+    modais += criarModalCadastroClientesHTML();
+  } else {
+    // aluno padrão
+    cards += createCard("Instrutores", "https://placehold.co/600x400?text=Instrutores", "modalInstrutores");
+    cards += createCard("Assinaturas", "https://placehold.co/600x400?text=Assinaturas", "modalAssinaturas");
+    modais += criarModalInstrutoresHTML();
+    modais += criarModalAssinaturasHTML();
+  }
+
+  // O modal "Sobre" é comum a todos
+  cards += createCard("Sobre", "https://placehold.co/600x400?text=Sobre", "modalSobre");
+  modais += criarModalSobreHTML();
+
   const homeHTML = `
     <section id="bemVindoSection">
-  <div class="bem-vindo-container text-center">
-    <img src="https://cdn-icons-png.flaticon.com/512/2983/2983094.png" alt="Ícone de Pilates" class="bem-vindo-icone">
-    <h1 class="bem-vindo-titulo">Bem-vindo ao Estúdio de Pilates</h1>
-    <p class="bem-vindo-subtitulo">Transforme seu corpo e mente com nossas aulas especializadas.</p>
-  </div>
-</section>
-
-      <section class="row row-cols-1 row-cols-md-3 g-4 w-100 justify-content-center">
-        ${createCard("Instrutores", "https://placehold.co/600x400?text=Instrutores", "modalInstrutores")}
-        ${createCard("Assinaturas", "https://placehold.co/600x400?text=Assinaturas", "modalAssinaturas")}
-        ${createCard("Sobre", "https://placehold.co/600x400?text=Sobre", "modalSobre")}
-      </section>
-
-      ${criarModalInstrutoresHTML()}
-      ${criarModalAssinaturasHTML()}
-      ${criarModalSobreHTML()}
+      <div class="bem-vindo-container text-center">
+        <img src="https://cdn-icons-png.flaticon.com/512/2983/2983094.png" alt="Ícone de Pilates" class="bem-vindo-icone">
+        <h1 class="bem-vindo-titulo">${titulo}</h1>
+        <p class="bem-vindo-subtitulo">${subtitulo}</p>
+      </div>
     </section>
+
+    <section class="row row-cols-1 row-cols-md-3 g-4 w-100 justify-content-center">
+      ${cards}
+    </section>
+
+    ${modais}
   `;
 
   const main = getOrCreateMainElement();

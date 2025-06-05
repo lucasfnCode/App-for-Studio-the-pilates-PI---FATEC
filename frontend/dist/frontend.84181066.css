@@ -1,44 +1,31 @@
 html, body {
-<<<<<<< HEAD
-  height: 100%;
-=======
   background: linear-gradient(#fff9f0, #ffe8d6);
   height: 100%;
   font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
->>>>>>> origin/rafael-front
   overflow: hidden auto;
 }
 
 #head {
   background-color: #ffcfad;
-<<<<<<< HEAD
-=======
   margin: 0 auto;
   position: relative;
   overflow: hidden;
   box-shadow: 0 10px 25px #00000012;
->>>>>>> origin/rafael-front
 }
 
 #nav {
   background-color: #ffcfad99;
-<<<<<<< HEAD
-=======
   margin: 0 auto;
   font-size: 1.75rem;
   position: relative;
   overflow: hidden;
   box-shadow: 0 10px 25px #00000012;
->>>>>>> origin/rafael-front
 }
 
 #painelHome {
   background-color: #fffbd4;
-<<<<<<< HEAD
-=======
   border: none;
   box-shadow: 0 10px 30px #0000001a;
->>>>>>> origin/rafael-front
 }
 
 footer {
@@ -52,8 +39,6 @@ main {
   display: flex;
   overflow-y: auto;
 }
-<<<<<<< HEAD
-=======
 
 .card {
   transition: transform .2s, box-shadow .2s;
@@ -113,5 +98,4 @@ main {
   color: #5e4a4a;
   font-size: 1.25rem;
 }
->>>>>>> origin/rafael-front
 /*# sourceMappingURL=frontend.84181066.css.map */
