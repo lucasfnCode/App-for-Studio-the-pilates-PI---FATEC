@@ -1,56 +1,46 @@
 import { getOrCreateMainElement } from "../../components/main";
+import {
+  criarModalInstrutoresHTML,
+  criarModalAssinaturasHTML,
+  criarModalSobreHTML,
+} from "../../components/modais";
 
+function createCard(title, imageUrl, modalTargetId) {
+  return `
+    <div class="col">
+      <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
+        <img src="${imageUrl}" class="card-img-top" alt="${title}">
+        <div class="card-body text-center">
+          <h5 class="card-title fw-bold">${title}</h5>
+          <button class="btn btn-dark w-100 rounded-pill mt-2" data-bs-toggle="modal" data-bs-target="#${modalTargetId}">Acessar</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
 
-export function homeScreen(){
-    const homeHTML= `
-    <section class="container d-flex p-5">
-            <section class="container p-4 border border-white rounded" id="painelHome">
-                <h1 class="h1 text-center">
-                    Bem vindo
-                </h1>
-                
-                <p class="fs-5 text-center">
-                    Abubleblé abu abublé abuua
-                </p>
-            </section>
-            
-            
-            </section>
+export function homeScreen() {
+  const homeHTML = `
+    <section id="bemVindoSection">
+  <div class="bem-vindo-container text-center">
+    <img src="https://cdn-icons-png.flaticon.com/512/2983/2983094.png" alt="Ícone de Pilates" class="bem-vindo-icone">
+    <h1 class="bem-vindo-titulo">Bem-vindo ao Estúdio de Pilates</h1>
+    <p class="bem-vindo-subtitulo">Transforme seu corpo e mente com nossas aulas especializadas.</p>
+  </div>
+</section>
 
-            <section class="row row-cols-3 p-4">
+      <section class="row row-cols-1 row-cols-md-3 g-4 w-100 justify-content-center">
+        ${createCard("Instrutores", "https://placehold.co/600x400?text=Instrutores", "modalInstrutores")}
+        ${createCard("Assinaturas", "https://placehold.co/600x400?text=Assinaturas", "modalAssinaturas")}
+        ${createCard("Sobre", "https://placehold.co/600x400?text=Sobre", "modalSobre")}
+      </section>
 
-                <div class="col-sm">
-                <div class="card text-bg-warning text-center w-75" style="width: 20rem;">
-                    <img src="https://placehold.co/10" class="card-img-top" alt="...">
-                        <div class="card-body p-2">
-                            <h5 class="card-title">Planos</h5>
-                                <a href="#" class="btn btn-outline-dark">Go somewhere</a>
-                        </div>
-                </div>
-                </div>
-                
-                <div class="col-sm">
-                <div class="card text-bg-warning text-center w-75" style="width: 20rem;">
-                    <img src="https://placehold.co/10" class="card-img-top" alt="...">
-                        <div class="card-body p-2">
-                            <h5 class="card-title">Card title</h5>
-                                <a href="#" class="btn btn-outline-dark">Go somewhere</a>
-                        </div>
-                </div>
-                </div>
+      ${criarModalInstrutoresHTML()}
+      ${criarModalAssinaturasHTML()}
+      ${criarModalSobreHTML()}
+    </section>
+  `;
 
-                <div class="col-sm">
-                <div class="card text-bg-warning text-center w-75" style="width: 20rem;">
-                    <img src="https://placehold.co/10" class="card-img-top" alt="...">
-                        <div class="card-body p-2">
-                            <h5 class="card-title">Card title</h5>
-                                <a href="#" class="btn btn-outline-dark">Go somewhere</a>
-                        </div>
-                </div>
-                </div>
-            </section>
-`;
-
-    const main = getOrCreateMainElement();
-    main.innerHTML = homeHTML;
+  const main = getOrCreateMainElement();
+  main.innerHTML = homeHTML;
 }
