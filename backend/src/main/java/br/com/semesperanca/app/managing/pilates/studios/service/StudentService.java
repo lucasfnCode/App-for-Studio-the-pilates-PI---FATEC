@@ -1,10 +1,13 @@
 package br.com.semesperanca.app.managing.pilates.studios.service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO.PlanStudentInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO.StudentInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO.UpComingClassInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.studentOutputDTO.StudentOutputDTO;
@@ -15,17 +18,20 @@ import br.com.semesperanca.app.managing.pilates.studios.application.model.studen
 import br.com.semesperanca.app.managing.pilates.studios.model.student.Student;
 import br.com.semesperanca.app.managing.pilates.studios.model.student.UpComingClass;
 import br.com.semesperanca.app.managing.pilates.studios.model.student.ClientArea;
+import br.com.semesperanca.app.managing.pilates.studios.model.Plan;
 import br.com.semesperanca.app.managing.pilates.studios.model.student.Assessment;
 import br.com.semesperanca.app.managing.pilates.studios.model.student.PlanStudent;
+import br.com.semesperanca.app.managing.pilates.studios.repository.PlanRepository;
 import br.com.semesperanca.app.managing.pilates.studios.repository.StudentRepository;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Service
-
 public class StudentService {
 
         private final StudentRepository studentRepository;
+
+        private final PlanRepository planRepository;
 
         public List<StudentOutputDTO> getAllStudentsByRole(String role) {
                 return studentRepository.findByRole(role).stream()
@@ -37,7 +43,6 @@ public class StudentService {
                 return studentRepository.findById(id)
                                 .map(this::assemblerStudentOutputDTO)
                                 .orElse(null);
-
         }
 
         public StudentOutputDTO getStudentByCpf(String cpf) {
@@ -47,16 +52,27 @@ public class StudentService {
         }
 
         public List<StudentOutputDTO> listAllActiveStudent() {
-                List<Student> Students = studentRepository.findAll().stream()
+                List<Student> students = studentRepository.findAll().stream()
                                 .filter(i -> Boolean.TRUE.equals(i.getIsActive()))
                                 .toList();
-                return Students.stream().map(this::assemblerStudentOutputDTO).toList();
+                return students.stream().map(this::assemblerStudentOutputDTO).toList();
         }
 
         public StudentOutputDTO createStudent(StudentInputDTO dto) {
                 Student student = assemblerStudentEntity(dto);
                 Student saved = studentRepository.save(student);
                 return assemblerStudentOutputDTO(saved);
+        }
+
+        public StudentOutputDTO addPlanToStudent(String studentId, PlanStudentInputDTO planDTO) {
+                return studentRepository.findById(studentId)
+                                .map(student -> {
+                                        PlanStudent plan = mergePlanData(planDTO);
+                                        student.setPlan(plan);
+                                        Student updated = studentRepository.save(student);
+                                        return assemblerStudentOutputDTO(updated);
+                                })
+                                .orElseThrow(() -> new RuntimeException("Student not found with ID: " + studentId));
         }
 
         public void desactivateStudent(String id) {
@@ -99,15 +115,7 @@ public class StudentService {
                                         }
 
                                         if (dto.plan() != null) {
-                                                existingStudent.setPlan(new PlanStudent(
-                                                                dto.plan().idPlan(),
-                                                                dto.plan().duration(),
-                                                                dto.plan().startDate(),
-                                                                dto.plan().paymentMethod(),
-                                                                dto.plan().discount(),
-                                                                dto.plan().paymentType(),
-                                                                dto.plan().firstPaymentDate(),
-                                                                dto.plan().dueDate()));
+                                                existingStudent.setPlan(mergePlanData(dto.plan()));
                                         }
 
                                         if (dto.clientArea() != null) {
@@ -117,7 +125,7 @@ public class StudentService {
                                                                 dto.clientArea().paymentProof(),
                                                                 dto.clientArea().fiscalReceipt(),
                                                                 dto.clientArea().contract(),
-                                                                convertToEntityList(dto.clientArea().upComingClasses()), // aqui
+                                                                convertToEntityList(dto.clientArea().upComingClasses()),
                                                                 dto.clientArea().imageAuthorization()));
                                         }
 
@@ -127,6 +135,24 @@ public class StudentService {
                                 .orElse(null);
         }
 
+        public StudentOutputDTO cancelStudentPlan(String studentId) {
+                Student student = studentRepository.findById(studentId)
+                                .orElseThrow(() -> new RuntimeException("Student not found with ID: " + studentId));
+
+                if (student.getPlan() == null) {
+                        throw new RuntimeException("Student does not have an active plan.");
+                }
+
+                if (!canCancelPlan(student)) {
+                        throw new RuntimeException(
+                                        "The plan cannot be canceled at this time. Please check the cancellation rules.");
+                }
+
+                student.setPlan(null);
+                Student updated = studentRepository.save(student);
+                return assemblerStudentOutputDTO(updated);
+        }
+
         private Student assemblerStudentEntity(StudentInputDTO input) {
                 Assessment assessment = new Assessment(
                                 input.assessment().description(),
@@ -134,15 +160,10 @@ public class StudentService {
                                 input.assessment().posturalPhoto(),
                                 input.assessment().relevantData());
 
-                PlanStudent plan = new PlanStudent(
-                                input.plan().idPlan(),
-                                input.plan().duration(),
-                                input.plan().startDate(),
-                                input.plan().paymentMethod(),
-                                input.plan().discount(),
-                                input.plan().paymentType(),
-                                input.plan().firstPaymentDate(),
-                                input.plan().dueDate());
+                PlanStudent plan = null;
+                if (input.plan() != null) {
+                        plan = mergePlanData(input.plan());
+                }
 
                 ClientArea clientArea = new ClientArea(
                                 input.clientArea().paymentDueDate(),
@@ -150,7 +171,7 @@ public class StudentService {
                                 input.clientArea().paymentProof(),
                                 input.clientArea().fiscalReceipt(),
                                 input.clientArea().contract(),
-                                convertToEntityList(input.clientArea().upComingClasses()), // aqui também
+                                convertToEntityList(input.clientArea().upComingClasses()),
                                 input.clientArea().imageAuthorization());
 
                 return Student.builder()
@@ -231,4 +252,35 @@ public class StudentService {
                                 .collect(Collectors.toList());
         }
 
+        private PlanStudent mergePlanData(PlanStudentInputDTO dto) {
+                Plan basePlan = planRepository.findById(dto.idPlan())
+                                .orElseThrow(() -> new RuntimeException(
+                                                "Plan not found with ID: " + dto.idPlan()));
+
+                PlanStudent mergedPlan = new PlanStudent();
+                mergedPlan.setIdPlan(basePlan.getId());
+
+                mergedPlan.setStartDate(dto.startDate());
+                mergedPlan.setPaymentMethod(dto.paymentMethod());
+                mergedPlan.setPaymentType(dto.paymentType());
+                mergedPlan.setDiscount(dto.discount());
+                mergedPlan.setFirstPaymentDate(dto.firstPaymentDate());
+                mergedPlan.setDueDate(dto.dueDate());
+
+                return mergedPlan;
+        }
+
+        private boolean canCancelPlan(Student student) {
+                PlanStudent plan = student.getPlan();
+                if (plan == null || plan.getDueDate() == null)
+                        return false;
+
+                LocalDate today = LocalDate.now();
+                LocalDate dueDate = plan.getDueDate();
+
+                int minimumDaysBeforeCancellation = 2;
+
+                long daysRemaining = ChronoUnit.DAYS.between(today, dueDate);
+                return daysRemaining >= minimumDaysBeforeCancellation;
+        }
 }

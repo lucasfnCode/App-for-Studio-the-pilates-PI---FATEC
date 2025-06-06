@@ -11,15 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/sessions")
-
 public class SessionController {
 
     private final SessionService service;
@@ -48,6 +43,12 @@ public class SessionController {
     public ResponseEntity<List<SessionOutputDTO>> listAllCurrent() {
         return ResponseEntity.ok(service.listAllCurrentSessionsWithDayLimiter());
     }
+
+    @GetMapping("/instructor/{id}")
+    public ResponseEntity<List<SessionOutputDTO>> listAllByInstructor(@PathVariable String id) {
+        return ResponseEntity.ok(service.listSessionByInstructor(id));
+    }
+    
 
     @GetMapping("/day/{day}")
     public ResponseEntity<List<SessionOutputDTO>> listByDay(@PathVariable LocalDate day) {

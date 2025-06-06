@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO.PlanStudentInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO.StudentInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.studentOutputDTO.StudentOutputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.service.StudentService;
@@ -66,6 +67,14 @@ public class StudentController {
     public ResponseEntity<Void> activate(@PathVariable String id) {
         studentService.activateStudent(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/add-plan")
+    public ResponseEntity<StudentOutputDTO> addPlanToStudent(
+            @PathVariable String id,
+            @RequestBody PlanStudentInputDTO planDTO) {
+        StudentOutputDTO updatedStudent = studentService.addPlanToStudent(id, planDTO);
+        return ResponseEntity.ok(updatedStudent);
     }
 
 }
