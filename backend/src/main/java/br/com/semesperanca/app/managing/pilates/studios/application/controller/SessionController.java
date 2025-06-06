@@ -1,8 +1,8 @@
 package br.com.semesperanca.app.managing.pilates.studios.application.controller;
 
-import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.SessionInputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.SessionOutputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.StudentRegisterDTO;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.session.SessionInputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.session.SessionOutputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.session.StudentRegisterDTO;
 import br.com.semesperanca.app.managing.pilates.studios.service.SessionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,17 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.GetMapping;
-
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/sessions")
-
 public class SessionController {
 
     private final SessionService service;
