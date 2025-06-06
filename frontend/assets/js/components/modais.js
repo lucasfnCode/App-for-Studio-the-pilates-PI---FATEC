@@ -80,39 +80,88 @@ export function criarModalListaAlunosHTML(
 }
 
 export function criarModalCadastroAlunoHTML() {
-  return `
+  const modal = document.getElementById("modalCadastroAluno");
+  if (modal) modal.remove();
+
+  const modalHTML = `
     <div id="modalCadastroAluno" class="modal fade" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered ">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content p-4">
           <div class="modal-header">
-            <h3 class="modal-title">Cadastro de Aluno</h3>
+            <h3 class="modal-title">Adicionar Alunos</h3>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form class="d-flex flex-column gap-3">
-              <div class="mb-3">
-                <label class="form-label" for="nomeAluno">Nome:</label>
-                <input type="text" class="form-control" id="nomeAluno">
-              </div>
-              <div class="mb-3">
-                <label class="form-label" for="cpfAluno">CPF:</label>
-                <input type="text" class="form-control" id="cpfAluno">
-              </div>
-              <div class="mb-3">
-                <label class="form-label" for="dataNascimento">Data de Nascimento:</label>
-                <input type="date" class="form-control" id="dataNascimento">
-              </div>
-            </form>
+            <div id="listaAlunosDisponiveis" class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Selecionar</th>
+                    <th>ID</th>
+                    <th>Data de Nascimento</th>
+                  </tr>
+                </thead>
+                <tbody id="alunosDisponiveisTabela">
+                  <tr><td colspan="3">Carregando alunos...</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
           <div class="modal-footer d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-outline-success" onclick="salvarAluno()">Salvar</button>
-            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-outline-success" onclick="salvarAlunosSelecionados()">Adicionar Selecionados</button>
+            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
       </div>
     </div>
   `;
+
+  document.body.insertAdjacentHTML("beforeend", modalHTML);
+  carregarAlunosDisponiveis();
+
+  return "";
 }
+
+window.adicionarAluno = function () {
+  const modalAnterior = bootstrap.Modal.getInstance(document.getElementById("modalListaAlunos"));
+    if (modalAnterior) modalAnterior.hide();
+
+  const modalCadastro = new bootstrap.Modal(document.getElementById("modalCadastroAluno"));
+  modalCadastro.show();
+};
+
+window.carregarAlunosDisponiveis = async function () {
+  try {
+    const response = await fetch("/students/actives");
+    if (!response.ok) throw new Error("Erro ao buscar alunos");
+    const alunos = await response.json();
+
+    const tbody = document.getElementById("alunosDisponiveisTabela");
+    tbody.innerHTML = alunos.map((aluno) => `
+      <tr>
+        <td><input type="checkbox" class="form-check-input" data-id="${student.id}"></td>
+        <td>${student.id}</td>
+        <td>${student.birthDate || "—"}</td>
+      </tr>
+    `).join("");
+  } catch (error) {
+    console.error("Erro ao carregar alunos disponíveis:", error);
+    const tbody = document.getElementById("alunosDisponiveisTabela");
+    tbody.innerHTML = `<tr><td colspan="3">Erro ao carregar alunos</td></tr>`;
+  }
+};
+
+window.salvarAlunosSelecionados = async function () {
+  const checkboxes = document.querySelectorAll("#alunosDisponiveisTabela input[type='checkbox']:checked");
+  const alunosSelecionados = Array.from(checkboxes).map((cb) => cb.dataset.id);
+
+  for (const studentId of alunosSelecionados) {
+    await window.registrarAluno(window.aulaSelecionadaId, studentId);
+  }
+
+  const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastroAluno"));
+  modal.hide();
+};
 
 export function criarModalConfirmacaoHTML() {
   return `
