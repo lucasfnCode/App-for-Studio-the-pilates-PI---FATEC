@@ -1,6 +1,7 @@
 package br.com.semesperanca.app.managing.pilates.studios.model.student;
 
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import br.com.semesperanca.app.managing.pilates.studios.model.User;
@@ -18,6 +19,9 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 
 public class Student extends User {
+
+    @Id
+    private String id;
 
     @NonNull
     private Assessment assessment;

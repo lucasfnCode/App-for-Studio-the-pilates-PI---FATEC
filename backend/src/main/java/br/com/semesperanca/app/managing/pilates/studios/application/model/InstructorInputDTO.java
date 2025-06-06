@@ -6,13 +6,15 @@ import java.util.List;
 public record InstructorInputDTO(
 
     String name,
-    String type,
-    LocalDate hiringDate,
+    String role,
+    String cpf,
+    LocalDate birthDate,
     String email,
     String contact,
     String photo,
     String formation,
     String advice,
+    LocalDate hiringDate,
     List<String> permissions,
     Boolean isActive
 

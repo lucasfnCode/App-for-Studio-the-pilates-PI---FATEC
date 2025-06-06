@@ -7,13 +7,15 @@ public record InstructorOutputDTO(
 
     String id,
     String name,
-    String type,
-    LocalDate hiringDate,
+    String role,
+    String cpf,
+    LocalDate birthDate,
     String email,
     String contact,
     String photo,
     String formation,
     String advice,
+    LocalDate hiringDate,
     List<String> permissions
 
 ) {}

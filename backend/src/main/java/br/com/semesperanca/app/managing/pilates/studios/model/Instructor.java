@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -25,6 +26,7 @@ public class Instructor extends User {
    
     private String formation;
     private String advice;
+    private LocalDate hiringDate;
     private List<String> permissions;
 
 }
