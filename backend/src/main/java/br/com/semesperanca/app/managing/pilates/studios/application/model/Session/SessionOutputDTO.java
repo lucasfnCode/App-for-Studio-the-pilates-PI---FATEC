@@ -1,4 +1,4 @@
-package br.com.semesperanca.app.managing.pilates.studios.application.model.Session;
+package br.com.semesperanca.app.managing.pilates.studios.application.model.session;
 
 import java.time.LocalDate;
 import java.util.List;
