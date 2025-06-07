@@ -55,8 +55,8 @@ export async function listarInstrutores() {
             }
         });
         const result = await response.json();
-        
         result.forEach(element => {insertinlist(element)});
+        return result
     } catch (error) {
         console.error("Erro ao listar instrutores:", error);
     }
@@ -80,11 +80,12 @@ function setupEditarButton(instrutor) {
  * - Cria a linha da tabela com os dados do instrutor
  * - Configura os botões de ação (editar/desativar)
  */
+
+
+
 function insertinlist(instrutor) {
     const tr = document.getElementById("tr");
     // Template da linha do instrutor
-    console.log(instrutor.isActive);
-    
     const $instrutor = `
         <tr class="${instrutor.isActive}">
             <td><img src="${instrutor.photo}"></td>

@@ -7,11 +7,12 @@ import { admpage } from "./pages/adm/admpage";
 import { clearBody } from "./function/clearbody";
 import { createlistalunos } from "./pages/adm/services/people/alunos";
 import { createlistinstrutor } from "./pages/adm/services/people/instrutor";
-
-
+import { createviewStudio, getStudioById, loadAndRenderStudio } from "./pages/adm/services/things/studio/functions/viewstudioinfo";
+import { getallstudio } from "./pages/adm/services/things/studio/Studio";
 
 function renderContentBasedOnHash() {
-clearBody();
+  const id =location.hash.split("-")[1]
+  clearBody();
   switch (location.hash) {
     case "":
     case "#home":
@@ -30,7 +31,12 @@ clearBody();
                     case "#instrutor-lista":
                       createlistinstrutor()
                       break;
+                    case `#studio-${id}`:
+                      const studioid =location.hash.split("-")[1]
+                      getStudioById(studioid)
+                      break;
   } 
 }
+
 renderContentBasedOnHash();
 window.addEventListener("hashchange", renderContentBasedOnHash);

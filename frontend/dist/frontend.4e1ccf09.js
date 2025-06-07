@@ -676,7 +676,10 @@ var _admpage = require("./pages/adm/admpage");
 var _clearbody = require("./function/clearbody");
 var _alunos = require("./pages/adm/services/people/alunos");
 var _instrutor = require("./pages/adm/services/people/instrutor");
+var _viewstudioinfo = require("./pages/adm/services/things/studio/functions/viewstudioinfo");
+var _studio = require("./pages/adm/services/things/studio/Studio");
 function renderContentBasedOnHash() {
+    const id = location.hash.split("-")[1];
     (0, _clearbody.clearBody)();
     switch(location.hash){
         case "":
@@ -696,12 +699,16 @@ function renderContentBasedOnHash() {
         case "#instrutor-lista":
             (0, _instrutor.createlistinstrutor)();
             break;
+        case `#studio-${id}`:
+            const studioid = location.hash.split("-")[1];
+            (0, _viewstudioinfo.getStudioById)(studioid);
+            break;
     }
 }
 renderContentBasedOnHash();
 window.addEventListener("hashchange", renderContentBasedOnHash);
 
-},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp","./pages/adm/admpage":"eIH1s","./function/clearbody":"h6N02","./pages/adm/services/people/alunos":"7lrgv","./pages/adm/services/people/instrutor":"g6jI9"}],"joWv1":[function(require,module,exports,__globalThis) {
+},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp","./pages/adm/admpage":"eIH1s","./function/clearbody":"h6N02","./pages/adm/services/people/alunos":"7lrgv","./pages/adm/services/people/instrutor":"g6jI9","./pages/adm/services/things/studio/functions/viewstudioinfo":"lyRiD","./pages/adm/services/things/studio/Studio":"lpEJ1"}],"joWv1":[function(require,module,exports,__globalThis) {
 /*!
   * Bootstrap v5.3.6 (https://getbootstrap.com/)
   * Copyright 2011-2025 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
@@ -4262,6 +4269,7 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "admpage", ()=>admpage);
 var _main = require("../../components/main");
+var _studio = require("./services/things/studio/Studio");
 function admpage() {
     const $admpage = `
     <a href="#alunos-lista">
@@ -4275,17 +4283,51 @@ function admpage() {
             instrutor
         </section>
     </a>
-     <a href="#studio-lista">
-        <section>
-            studio
-        </section>
-    </a>
+    
+    
+    <section id="studios-row">
+
+    </section>
     `;
     const main = (0, _main.getOrCreateMainElement)();
     main.insertAdjacentHTML("afterbegin", $admpage);
+    (0, _studio.getallstudio)();
 }
 
-},{"../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"h6N02":[function(require,module,exports,__globalThis) {
+},{"../../components/main":"5zsxX","./services/things/studio/Studio":"lpEJ1","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"lpEJ1":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getallstudio", ()=>getallstudio);
+var _main = require("../../../../../components/main");
+async function getallstudio() {
+    try {
+        const response = await fetch("http://localhost:8080/studios");
+        const result = await response.json();
+        result.forEach((element)=>{
+            createstudio(element);
+        });
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+}
+function createstudio(studio) {
+    const $section = document.querySelector("#studios-row");
+    if ($section) {
+        const $studicard = `
+        <a href="#studio-${studio.id}">
+            <section class="d-inline-flex">
+            <p class="bg-secondary   p-5">
+                        ${studio.name}
+            </p>
+            </section>
+        </a>
+        `;
+        $section.insertAdjacentHTML("afterbegin", $studicard);
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../../../../components/main":"5zsxX"}],"h6N02":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "clearBody", ()=>clearBody);
@@ -4336,7 +4378,6 @@ async function listadealunos() {
     const result = await response.json();
     result.forEach((element)=>{
         const alunos = element;
-        console.log(element);
         insertinlist(element);
     });
 }
@@ -4417,9 +4458,12 @@ function callformsAlunos() {
         const form = document.getElementById("form");
         const formrawdata = new FormData(form);
         const formdata = Object.fromEntries(formrawdata.entries());
-        createaluno(formdata);
-        (0, _clearbody.clearBody)();
-        (0, _alunos.createlistalunos)();
+        window.addEventListener("DOMContentLoaded", restarttabel());
+        function restarttabel() {
+            createaluno(formdata);
+            (0, _clearbody.clearBody)();
+            (0, _alunos.createlistalunos)();
+        }
     });
 }
 
@@ -4480,6 +4524,7 @@ async function listarInstrutores() {
         result.forEach((element)=>{
             insertinlist(element);
         });
+        return result;
     } catch (error) {
         console.error("Erro ao listar instrutores:", error);
     }
@@ -4501,7 +4546,6 @@ function setupEditarButton(instrutor) {
  */ function insertinlist(instrutor) {
     const tr = document.getElementById("tr");
     // Template da linha do instrutor
-    console.log(instrutor.isActive);
     const $instrutor = `
         <tr class="${instrutor.isActive}">
             <td><img src="${instrutor.photo}"></td>
@@ -4798,6 +4842,89 @@ function callFormInstrutor() {
     });
 }
 
-},{"../../../components/main":"5zsxX","../../../function/clearbody":"h6N02","../services/people/instrutor":"g6jI9","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
+},{"../../../components/main":"5zsxX","../../../function/clearbody":"h6N02","../services/people/instrutor":"g6jI9","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"lyRiD":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getStudioById", ()=>getStudioById);
+var _main = require("../../../../../../components/main");
+var _editStudioPage = require("../components/editStudioPage");
+var _deletStudio = require("./deletStudio");
+async function getStudioById(id) {
+    const response = await fetch(`http://localhost:8080/studios/${id}`);
+    const result = await response.json();
+    createviewStudio(result);
+}
+async function createviewStudio(studio) {
+    await studio;
+    if (!studio) return `
+            <section class="container">
+                <h1>Studio n\xe3o encontrado</h1>
+                <p>N\xe3o foi poss\xedvel carregar as informa\xe7\xf5es do studio.</p>
+            </section>
+        `;
+    const $studioabout = `
+    <section class="${studio.id}">
+        <section class="container">
+            <section class="position-relative start-100">
+                <button class="btn btn-info" id="editar"> editar </button>
+                <button class="btn btn-danger" id="delet"> excluir</button>
+            </section>
+            <h1>${studio.name || "Nome n\xe3o dispon\xedvel"}</h1>
+          
+            <h2>${studio.address || "Endere\xe7o n\xe3o dispon\xedvel"}</h2>
+            <p>Abre \xe0s: ${studio.openingHours || "Hor\xe1rio n\xe3o dispon\xedvel"}</p>
+            <p>Capacidade m\xe1xima de pessoas: ${studio.limitStudentsPerClass || "N\xe3o informado"}</p>
+        </section>
+
+        <section class="container">
+            <h2>Dias de opera\xe7\xe3o</h2>
+            <section>
+                ${studio.daysOperation ? studio.daysOperation.join(', ') : "N\xe3o informado"}
+            </section>
+
+            <h3>Dias que n\xe3o abre</h3>
+            <p>${studio.holidays || "N\xe3o informado"}</p>
+            <p>${studio.recesses || "N\xe3o informado"}</p>
+            <h6 class="h6 small" id="id">
+                ${studio.id}
+            </h6>
+        </section>
+      
+    </section>
+    `;
+    const $main = (0, _main.getOrCreateMainElement)();
+    $main.insertAdjacentHTML("afterbegin", $studioabout);
+    (0, _editStudioPage.editStudio)();
+    (0, _deletStudio.deletStudio)();
+}
+
+},{"../../../../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../components/editStudioPage":"fNyxz","./deletStudio":"kOCCl"}],"fNyxz":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "editStudio", ()=>editStudio);
+function editStudio() {
+    const $btn = document.querySelector("#editar");
+    const $id = document.querySelector("#id").textContent.trim("");
+    $btn.addEventListener("click", ()=>alert(`rapaziada do back, vamo estar fazendo o PUT de estudio ai o caba quer editar o: ${$id}`));
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"kOCCl":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "deletStudio", ()=>deletStudio);
+function deletStudio() {
+    const $btn = document.querySelector("#delet");
+    const $id = document.querySelector("#id").textContent.trim("");
+    $btn.addEventListener("click", async ()=>{
+        fetch(`http://localhost:8080/studios/${$id}`, {
+            method: "DELETE",
+            redirect: "follow"
+        });
+        alert("estudio excluido");
+        location.hash = "#gerencia";
+    });
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
 
 //# sourceMappingURL=frontend.4e1ccf09.js.map

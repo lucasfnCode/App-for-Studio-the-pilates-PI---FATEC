@@ -1,4 +1,5 @@
 import { getOrCreateMainElement } from "../../components/main";
+import { createstudio, getallstudio } from "./services/things/studio/Studio";
 
 export function admpage(){
     const $admpage = `
@@ -13,14 +14,15 @@ export function admpage(){
             instrutor
         </section>
     </a>
-     <a href="#studio-lista">
-        <section>
-            studio
-        </section>
-    </a>
+    
+    
+    <section id="studios-row">
+
+    </section>
     `   
+    
     const main = getOrCreateMainElement();
     main.insertAdjacentHTML("afterbegin",$admpage)
-   
-
+    
+    getallstudio()  
 }

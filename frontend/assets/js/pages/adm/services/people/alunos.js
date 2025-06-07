@@ -34,7 +34,6 @@ async function listadealunos(){
     const result = await response.json();
     result.forEach(element => {
         const alunos =  element
-        console.log(element);
         insertinlist(element)
     });
 }

@@ -52,8 +52,12 @@ export function callformsAlunos(){
         const formrawdata = new FormData(form)
         const formdata = Object.fromEntries(formrawdata.entries())
      
-        createaluno(formdata)
-        clearBody()
-        createlistalunos();
+        
+        window.addEventListener("DOMContentLoaded",restarttabel())
+            function restarttabel() {       
+                createaluno(formdata)
+                clearBody()
+                createlistalunos();
+            }
     })
 }
