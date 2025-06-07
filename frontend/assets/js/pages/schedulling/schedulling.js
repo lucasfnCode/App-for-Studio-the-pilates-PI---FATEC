@@ -109,8 +109,15 @@ export async function renderAgendamentoPage() {
 }
 
 window.registrarAluno = async function (sessionId, studentId) {
+  const id = sessionId || aulaSelecionadaId; // usa aulaSelecionadaId se sessionId for undefined
+
+  if (!id) {
+    alert("ID da aula não foi definido.");
+    return;
+  }
+
   try {
-    const response = await fetch(`/api/sessions/register/${sessionId}`, {
+    const response = await fetch(`/api/sessions/register/${id}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ studentId }),
@@ -128,6 +135,7 @@ window.registrarAluno = async function (sessionId, studentId) {
     alert("Erro de conexão ao tentar registrar aluno.");
   }
 };
+
 
 let ultimaListaAlunos = []; // Guarda o estado atual
 

@@ -3862,28 +3862,33 @@ parcelHelpers.export(exports, "criarModalPerfilInstrutorHTML", ()=>criarModalPer
 parcelHelpers.export(exports, "criarModalAgendaRecepcaoHTML", ()=>criarModalAgendaRecepcaoHTML);
 parcelHelpers.export(exports, "criarModalCadastroClientesHTML", ()=>criarModalCadastroClientesHTML);
 function criarModalListaAlunosHTML(alunos = [], role = "aluno", presences = []) {
-    const alunosRows = alunos.map((alunoId)=>{
+    const alunosRows = alunos.map((aluno)=>{
+        const alunoId = aluno.id || aluno._id || "\u2014";
+        const nome = aluno.name || "\u2014";
+        const cpf = aluno.cpf || "\u2014";
+        const nascimento = aluno.birthDate || "\u2014";
         const isPresent = presences.includes(alunoId);
         if (role === "instrutor") return `
+          <tr>
+            <td>${nome}</td>
+            <td>${cpf}</td>
+            <td>${nascimento}</td>
+            <td>
+              <input type="checkbox" class="form-check-input presence-checkbox" 
+                     data-aluno-id="${alunoId}" ${isPresent ? "checked" : ""}>
+            </td>
+          </tr>
+        `;
+        return `
         <tr>
-          <td>${alunoId}</td>
-          <td>\u{2014}</td>
-          <td>\u{2014}</td>
+          <td>${nome}</td>
+          <td>${cpf}</td>
+          <td>${nascimento}</td>
           <td>
-            <input type="checkbox" class="form-check-input presence-checkbox" data-aluno-id="${alunoId}" ${isPresent ? "checked" : ""}>
+            <button class="btn btn-sm btn-danger" onclick="removerAluno('${alunoId}')">Remover</button>
           </td>
         </tr>
       `;
-        return `
-      <tr>
-        <td>${alunoId}</td>
-        <td>\u{2014}</td>
-        <td>\u{2014}</td>
-        <td>
-          <button class="btn btn-sm btn-danger" onclick="removerAluno('${alunoId}')">Remover</button>
-        </td>
-      </tr>
-    `;
     }).join("");
     const modalExistente = document.getElementById("modalListaAlunos");
     if (modalExistente) modalExistente.remove();
@@ -3898,7 +3903,7 @@ function criarModalListaAlunosHTML(alunos = [], role = "aluno", presences = []) 
           <div class="modal-body">
             <table class="table text-center">
               <thead>
-                <tr><th>Nome (ID)</th><th>CPF</th><th>Nascimento</th><th>A\xe7\xf5es</th></tr>
+                <tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>A\xe7\xf5es</th></tr>
               </thead>
               <tbody>
                 ${alunosRows}
@@ -3906,8 +3911,7 @@ function criarModalListaAlunosHTML(alunos = [], role = "aluno", presences = []) 
             </table>
           </div>
           <div class="modal-footer d-flex justify-content-end gap-2">
-            ${role !== "instrutor" ? `<button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>` : ""}
-            ${role === "instrutor" ? `<button type="button" class="btn btn-outline-primary" onclick="salvarPresencas()">Salvar Presen\xe7as</button>` : ""}
+            ${role !== "instrutor" ? `<button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>` : `<button type="button" class="btn btn-outline-primary" onclick="salvarPresencas()">Salvar Presen\xe7as</button>`}
             <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
@@ -3964,15 +3968,15 @@ window.adicionarAluno = function() {
 };
 window.carregarAlunosDisponiveis = async function() {
     try {
-        const response = await fetch("/students/actives");
+        const response = await fetch("/api/students/actives");
         if (!response.ok) throw new Error("Erro ao buscar alunos");
         const alunos = await response.json();
         const tbody = document.getElementById("alunosDisponiveisTabela");
         tbody.innerHTML = alunos.map((aluno)=>`
       <tr>
-        <td><input type="checkbox" class="form-check-input" data-id="${student.id}"></td>
-        <td>${student.id}</td>
-        <td>${student.birthDate || "\u2014"}</td>
+        <td><input type="checkbox" class="form-check-input" data-id="${aluno.id}"></td>
+        <td>${aluno.name || aluno.id}</td>
+        <td>${aluno.birthDate || "\u2014"}</td>
       </tr>
     `).join("");
     } catch (error) {
@@ -4422,8 +4426,13 @@ async function renderAgendamentoPage() {
     await atualizarTabela();
 }
 window.registrarAluno = async function(sessionId, studentId) {
+    const id = sessionId || aulaSelecionadaId; // usa aulaSelecionadaId se sessionId for undefined
+    if (!id) {
+        alert("ID da aula n\xe3o foi definido.");
+        return;
+    }
     try {
-        const response = await fetch(`/api/sessions/register/${sessionId}`, {
+        const response = await fetch(`/api/sessions/register/${id}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

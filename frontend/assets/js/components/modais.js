@@ -4,34 +4,37 @@ export function criarModalListaAlunosHTML(
   presences = []
 ) {
   const alunosRows = alunos
-    .map((alunoId) => {
+    .map((aluno) => {
+      const alunoId = aluno.id || aluno._id || "—";
+      const nome = aluno.name || "—";
+      const cpf = aluno.cpf || "—";
+      const nascimento = aluno.birthDate || "—";
       const isPresent = presences.includes(alunoId);
 
       if (role === "instrutor") {
         return `
-        <tr>
-          <td>${alunoId}</td>
-          <td>—</td>
-          <td>—</td>
-          <td>
-            <input type="checkbox" class="form-check-input presence-checkbox" data-aluno-id="${alunoId}" ${
-          isPresent ? "checked" : ""
-        }>
-          </td>
-        </tr>
-      `;
+          <tr>
+            <td>${nome}</td>
+            <td>${cpf}</td>
+            <td>${nascimento}</td>
+            <td>
+              <input type="checkbox" class="form-check-input presence-checkbox" 
+                     data-aluno-id="${alunoId}" ${isPresent ? "checked" : ""}>
+            </td>
+          </tr>
+        `;
       }
 
       return `
-      <tr>
-        <td>${alunoId}</td>
-        <td>—</td>
-        <td>—</td>
-        <td>
-          <button class="btn btn-sm btn-danger" onclick="removerAluno('${alunoId}')">Remover</button>
-        </td>
-      </tr>
-    `;
+        <tr>
+          <td>${nome}</td>
+          <td>${cpf}</td>
+          <td>${nascimento}</td>
+          <td>
+            <button class="btn btn-sm btn-danger" onclick="removerAluno('${alunoId}')">Remover</button>
+          </td>
+        </tr>
+      `;
     })
     .join("");
 
@@ -49,7 +52,7 @@ export function criarModalListaAlunosHTML(
           <div class="modal-body">
             <table class="table text-center">
               <thead>
-                <tr><th>Nome (ID)</th><th>CPF</th><th>Nascimento</th><th>Ações</th></tr>
+                <tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>Ações</th></tr>
               </thead>
               <tbody>
                 ${alunosRows}
@@ -57,16 +60,9 @@ export function criarModalListaAlunosHTML(
             </table>
           </div>
           <div class="modal-footer d-flex justify-content-end gap-2">
-            ${
-              role !== "instrutor"
-                ? `<button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>`
-                : ""
-            }
-            ${
-              role === "instrutor"
-                ? `<button type="button" class="btn btn-outline-primary" onclick="salvarPresencas()">Salvar Presenças</button>`
-                : ""
-            }
+            ${role !== "instrutor"
+              ? `<button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>`
+              : `<button type="button" class="btn btn-outline-primary" onclick="salvarPresencas()">Salvar Presenças</button>`}
             <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
@@ -75,9 +71,9 @@ export function criarModalListaAlunosHTML(
   `;
 
   document.body.insertAdjacentHTML("beforeend", modalHTML);
-
   return "";
 }
+
 
 export function criarModalCadastroAlunoHTML() {
   const modal = document.getElementById("modalCadastroAluno");
@@ -132,16 +128,17 @@ window.adicionarAluno = function () {
 
 window.carregarAlunosDisponiveis = async function () {
   try {
-    const response = await fetch("/students/actives");
+    const response = await fetch("/api/students/actives");
     if (!response.ok) throw new Error("Erro ao buscar alunos");
+
     const alunos = await response.json();
 
     const tbody = document.getElementById("alunosDisponiveisTabela");
     tbody.innerHTML = alunos.map((aluno) => `
       <tr>
-        <td><input type="checkbox" class="form-check-input" data-id="${student.id}"></td>
-        <td>${student.id}</td>
-        <td>${student.birthDate || "—"}</td>
+        <td><input type="checkbox" class="form-check-input" data-id="${aluno.id}"></td>
+        <td>${aluno.name || aluno.id}</td>
+        <td>${aluno.birthDate || "—"}</td>
       </tr>
     `).join("");
   } catch (error) {
@@ -150,6 +147,7 @@ window.carregarAlunosDisponiveis = async function () {
     tbody.innerHTML = `<tr><td colspan="3">Erro ao carregar alunos</td></tr>`;
   }
 };
+
 
 window.salvarAlunosSelecionados = async function () {
   const checkboxes = document.querySelectorAll("#alunosDisponiveisTabela input[type='checkbox']:checked");
