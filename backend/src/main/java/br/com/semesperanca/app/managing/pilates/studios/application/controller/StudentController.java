@@ -69,12 +69,21 @@ public class StudentController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}/add-plan")
-    public ResponseEntity<StudentOutputDTO> addPlanToStudent(
-            @PathVariable String id,
+    @PostMapping("/{id}/add-plan")
+    public ResponseEntity<StudentOutputDTO> addPlanToStudent(@PathVariable String id,
             @RequestBody PlanStudentInputDTO planDTO) {
         StudentOutputDTO updatedStudent = studentService.addPlanToStudent(id, planDTO);
         return ResponseEntity.ok(updatedStudent);
+    }
+
+    @PutMapping("/{id}/cancel-plan")
+    public ResponseEntity<String> cancelPlan(@PathVariable String id) {
+        try {
+            studentService.cancelStudentPlan(id);
+            return new ResponseEntity<>("Student's plan canceled successfully.", HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

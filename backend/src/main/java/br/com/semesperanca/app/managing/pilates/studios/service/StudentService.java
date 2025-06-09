@@ -1,11 +1,11 @@
 package br.com.semesperanca.app.managing.pilates.studios.service;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO.PlanStudentInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO.StudentInputDTO;
@@ -72,7 +72,8 @@ public class StudentService {
                                         Student updated = studentRepository.save(student);
                                         return assemblerStudentOutputDTO(updated);
                                 })
-                                .orElseThrow(() -> new RuntimeException("Student not found with ID: " + studentId));
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                "Student not found with ID: " + studentId));
         }
 
         public void desactivateStudent(String id) {
@@ -114,9 +115,6 @@ public class StudentService {
                                                                 dto.assessment().relevantData()));
                                         }
 
-                                        if (dto.plan() != null) {
-                                                existingStudent.setPlan(mergePlanData(dto.plan()));
-                                        }
 
                                         if (dto.clientArea() != null) {
                                                 existingStudent.setClientArea(new ClientArea(
@@ -139,17 +137,18 @@ public class StudentService {
                 Student student = studentRepository.findById(studentId)
                                 .orElseThrow(() -> new RuntimeException("Student not found with ID: " + studentId));
 
-                if (student.getPlan() == null) {
+                if (student.getPlan() == null || Boolean.FALSE.equals(student.getPlan().getIsActive())) {
                         throw new RuntimeException("Student does not have an active plan.");
                 }
 
-                if (!canCancelPlan(student)) {
+                if (!cancelPlan(student)) {
                         throw new RuntimeException(
                                         "The plan cannot be canceled at this time. Please check the cancellation rules.");
                 }
 
-                student.setPlan(null);
+                student.getPlan().setIsActive(false);
                 Student updated = studentRepository.save(student);
+
                 return assemblerStudentOutputDTO(updated);
         }
 
@@ -159,11 +158,6 @@ public class StudentService {
                                 input.assessment().professional(),
                                 input.assessment().posturalPhoto(),
                                 input.assessment().relevantData());
-
-                PlanStudent plan = null;
-                if (input.plan() != null) {
-                        plan = mergePlanData(input.plan());
-                }
 
                 ClientArea clientArea = new ClientArea(
                                 input.clientArea().paymentDueDate(),
@@ -184,7 +178,6 @@ public class StudentService {
                                 .photo(input.photo())
                                 .isActive(input.isActive())
                                 .assessment(assessment)
-                                .plan(plan)
                                 .clientArea(clientArea)
                                 .progress(input.progress())
                                 .build();
@@ -218,7 +211,8 @@ public class StudentService {
                                         student.getPlan().getDiscount(),
                                         student.getPlan().getPaymentType(),
                                         student.getPlan().getFirstPaymentDate(),
-                                        student.getPlan().getDueDate());
+                                        student.getPlan().getDueDate(),
+                                        student.getPlan().getIsActive());
                 }
 
                 ClientAreaOutputDTO clientAreaDTO = new ClientAreaOutputDTO(
@@ -260,27 +254,21 @@ public class StudentService {
                 PlanStudent mergedPlan = new PlanStudent();
                 mergedPlan.setIdPlan(basePlan.getId());
 
+                mergedPlan.setDuration(dto.duration());
                 mergedPlan.setStartDate(dto.startDate());
                 mergedPlan.setPaymentMethod(dto.paymentMethod());
                 mergedPlan.setPaymentType(dto.paymentType());
                 mergedPlan.setDiscount(dto.discount());
                 mergedPlan.setFirstPaymentDate(dto.firstPaymentDate());
                 mergedPlan.setDueDate(dto.dueDate());
+                mergedPlan.setIsActive(dto.isActive() != null ? dto.isActive() : true);
 
                 return mergedPlan;
         }
 
-        private boolean canCancelPlan(Student student) {
+        private boolean cancelPlan(Student student) {
                 PlanStudent plan = student.getPlan();
-                if (plan == null || plan.getDueDate() == null)
-                        return false;
-
-                LocalDate today = LocalDate.now();
-                LocalDate dueDate = plan.getDueDate();
-
-                int minimumDaysBeforeCancellation = 2;
-
-                long daysRemaining = ChronoUnit.DAYS.between(today, dueDate);
-                return daysRemaining >= minimumDaysBeforeCancellation;
+                return plan != null;
         }
+
 }

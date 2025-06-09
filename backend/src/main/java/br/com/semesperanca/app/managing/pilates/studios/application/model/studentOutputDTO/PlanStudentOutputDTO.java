@@ -11,5 +11,6 @@ public record PlanStudentOutputDTO(
     String discount,
     String paymentType,
     LocalDate firstPaymentDate,
-    LocalDate dueDate
+    LocalDate dueDate,
+    Boolean isActive
 ) {}

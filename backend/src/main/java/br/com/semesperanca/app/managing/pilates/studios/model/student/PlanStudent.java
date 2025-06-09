@@ -6,6 +6,7 @@ import lombok.NonNull;
 
 import java.time.LocalDate;
 
+import org.springframework.data.annotation.Id;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +18,7 @@ import lombok.Setter;
 
 public class PlanStudent {
 
-    @NonNull
+    @Id
     private String idPlan;
 
     @NonNull
@@ -40,5 +41,7 @@ public class PlanStudent {
 
     @NonNull
     private LocalDate dueDate;
+
+    private Boolean isActive;
 
 }
