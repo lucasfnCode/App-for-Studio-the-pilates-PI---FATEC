@@ -27,7 +27,7 @@ async function fetchAulas() {
   }
 }
 
-let aulaSelecionadaId = null;
+window.aulaSelecionadaId = null;
 const eventoAtualizarAlunos = new Event("atualizarListaAlunos");
 
 export async function renderAgendamentoPage() {
@@ -200,7 +200,7 @@ window.cancelarAula = async function (id) {
 // Abre modal com alunos na aula
 window.abrirModalAlunos = async function (id) {
   try {
-    aulaSelecionadaId = id;
+    window.aulaSelecionadaId = id;
     const role = getUserRole();
 
     // Fecha modal aberto anteriormente
@@ -211,6 +211,7 @@ window.abrirModalAlunos = async function (id) {
     document.querySelectorAll(".modal-backdrop").forEach((el) => el.remove());
 
     const response = await fetch(`/api/sessions/${id}`);
+    // console.log("ID da aula recebido:", id);
     if (!response.ok) throw new Error("Falha ao buscar aula");
 
     const aula = await response.json();
