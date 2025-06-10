@@ -4269,6 +4269,8 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "admpage", ()=>admpage);
 var _main = require("../../components/main");
+var _saveforminput = require("./services/things/studio/functions/formfunctions/saveforminput");
+var _fromNewStudio = require("./services/things/studio/functions/FromNewStudio");
 var _studio = require("./services/things/studio/Studio");
 function admpage() {
     const $admpage = `
@@ -4284,21 +4286,147 @@ function admpage() {
         </section>
     </a>
     
-    
-    <section id="studios-row">
+     <section class="container d-flex m-2">
+                <h1> Estudios </h1>
+                <button id="new"> criar novo estudio </button> 
+            </section>
+    <section id="studios-row" class="container d-flex">
 
     </section>
     `;
     const main = (0, _main.getOrCreateMainElement)();
     main.insertAdjacentHTML("afterbegin", $admpage);
+    (0, _fromNewStudio.NewStudiForm)();
     (0, _studio.getallstudio)();
+    (0, _saveforminput.savePOSTform)();
 }
 
-},{"../../components/main":"5zsxX","./services/things/studio/Studio":"lpEJ1","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"lpEJ1":[function(require,module,exports,__globalThis) {
+},{"../../components/main":"5zsxX","./services/things/studio/functions/formfunctions/saveforminput":"ePlTU","./services/things/studio/functions/FromNewStudio":"dYqbl","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","./services/things/studio/Studio":"lpEJ1"}],"ePlTU":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "savePOSTform", ()=>savePOSTform);
+async function POST(params) {
+    try {
+        console.log(params);
+        fetch("http://localhost:8080/studios", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: params
+        });
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+}
+function savePOSTform() {
+    window.addEventListener("submit", (e)=>{
+        e.preventDefault();
+        const $form = document.querySelector("#form");
+        const form = new FormData($form);
+        const data = Object.fromEntries(form.entries());
+        data.unavailableTimes = [];
+        data.instructorsByTime = {};
+        data.daysOperation = form.getAll("daysOperation");
+        data.openingHours = data.openingHours.split("\n");
+        data.holidays = data.holidays.split("\n");
+        data.recesses = data.recesses.split("\n");
+        data.isActive = true;
+        console.log(data);
+        const $bnt = document.querySelector("#save");
+        $bnt.addEventListener("click", POST(data));
+    });
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"dYqbl":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "NewStudiForm", ()=>NewStudiForm);
+var _main = require("../../../../../../components/main");
+function NewStudiForm() {
+    const $Form = `
+    <section class="studio-form position-absolute  start-50 translate-middle w-100 bg-warning" id="formsec"> 
+        <button> X </button>
+            <form id="form">
+                <section class="container">
+                    <div class="form-group">
+                        <label>Nome do Est\xfadio:</label>
+                        <input type="text" class="form-control"  name="name" />
+                    </div>
+                    <div class="form-group">
+                        <label>Endere\xe7o:</label>
+                        <input type="text" class="form-control"  name="address" />
+                    </div>
+                    
+                    <h2>Dias de Opera\xe7\xe3o</h2>
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" name="daysOperation" value="Segunda-feira" /> Segunda-feira
+                            </label>
+                            <label>
+                                <input type="checkbox" name="daysOperation" value="Ter\xe7a-feira" /> Ter\xe7a-feira
+                            </label>
+                            <label>
+                                <input type="checkbox" name="daysOperation" value="Quarta-feira" /> Quarta-feira
+                            </label>
+                            <label>
+                                <input type="checkbox" name="daysOperation" value="Quinta-feira" /> Quinta-feira
+                            </label>
+                            <label>
+                                <input type="checkbox" name="daysOperation" value="Sexta-feira" /> Sexta-feira
+                            </label>
+                            <label>
+                                <input type="checkbox" name="daysOperation" value="S\xe1bado" /> S\xe1bado
+                            </label>
+                            <label>
+                                <input type="checkbox" name="daysOperation" value="Domingo" /> Domingo
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Hor\xe1rio de funcionamento:</label>
+                        <textarea type="text" class="form-control" name="openingHours"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Capacidade M\xe1xima:</label>
+                        <input type="text" class="form-control" name="limitStudentsPerClass" />
+                    </div>
+
+                    <h3>Dias que n\xe3o abre</h3>
+                    <div class="form-group">
+                        <label>Feriados:</label>
+                        <textarea class="form-control" name="holidays"></textarea> 
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Recessos:</label>
+                        <textarea type="date" class="form-control" name="recesses" ></textarea> 
+                    </div>
+                    
+                    <input type="hidden" id="studioId" name="id" value="" />
+            </section>
+                <button id="save"> salvar </button>
+                
+        </form>
+        
+    </section>
+            `;
+    const main = (0, _main.getOrCreateMainElement)();
+    document.querySelector("#new").addEventListener("click", ()=>{
+        if (!document.querySelector("#formsec")) main.insertAdjacentHTML("afterend", $Form);
+    });
+}
+
+},{"../../../../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"lpEJ1":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getallstudio", ()=>getallstudio);
-var _main = require("../../../../../components/main");
+var _saveforminput = require("./functions/formfunctions/saveforminput");
+var _fromNewStudio = require("./functions/FromNewStudio");
 async function getallstudio() {
     try {
         const response = await fetch("http://localhost:8080/studios");
@@ -4315,19 +4443,22 @@ function createstudio(studio) {
     const $section = document.querySelector("#studios-row");
     if ($section) {
         const $studicard = `
-        <a href="#studio-${studio.id}">
-            <section class="d-inline-flex">
-            <p class="bg-secondary   p-5">
-                        ${studio.name}
-            </p>
-            </section>
-        </a>
+        <section class="m-2" >
+            <a href="#studio-${studio.id}">
+                <section class="d-flex">
+                <p class="bg-secondary   p-5">
+                            ${studio.name}
+                </p>
+                </section>
+            </a>
+        </section>
         `;
         $section.insertAdjacentHTML("afterbegin", $studicard);
+        (0, _fromNewStudio.NewStudiForm)();
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../../../../components/main":"5zsxX"}],"h6N02":[function(require,module,exports,__globalThis) {
+},{"./functions/formfunctions/saveforminput":"ePlTU","./functions/FromNewStudio":"dYqbl","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"h6N02":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "clearBody", ()=>clearBody);
@@ -4898,7 +5029,7 @@ async function createviewStudio(studio) {
     (0, _deletStudio.deletStudio)();
 }
 
-},{"../../../../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../components/editStudioPage":"fNyxz","./deletStudio":"kOCCl"}],"fNyxz":[function(require,module,exports,__globalThis) {
+},{"../../../../../../components/main":"5zsxX","../components/editStudioPage":"fNyxz","./deletStudio":"kOCCl","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"fNyxz":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "editStudio", ()=>editStudio);

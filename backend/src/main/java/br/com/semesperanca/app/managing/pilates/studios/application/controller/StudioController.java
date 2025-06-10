@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @AllArgsConstructor
-@RestController
 @CrossOrigin(origins = "*")
+@RestController
 @RequestMapping("/studios")
 public class StudioController {
 
     private final StudioService service;
 
+    @CrossOrigin(origins =  "*")
     @PostMapping
     public ResponseEntity<StudioOutputDTO> create(@RequestBody StudioInputDTO studio) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createStudio(studio));

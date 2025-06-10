@@ -1,5 +1,9 @@
 import { getOrCreateMainElement } from "../../components/main";
-import { createstudio, getallstudio } from "./services/things/studio/Studio";
+import { savePOSTform } from "./services/things/studio/functions/formfunctions/saveforminput";
+import { NewStudiForm } from "./services/things/studio/functions/FromNewStudio";
+import { getallstudio } from "./services/things/studio/Studio";
+
+
 
 export function admpage(){
     const $admpage = `
@@ -15,14 +19,20 @@ export function admpage(){
         </section>
     </a>
     
-    
-    <section id="studios-row">
+     <section class="container d-flex m-2">
+                <h1> Estudios </h1>
+                <button id="new"> criar novo estudio </button> 
+            </section>
+    <section id="studios-row" class="container d-flex">
 
     </section>
     `   
     
     const main = getOrCreateMainElement();
-    main.insertAdjacentHTML("afterbegin",$admpage)
-    
-    getallstudio()  
+    main.insertAdjacentHTML("afterbegin",$admpage);
+
+ 
+    NewStudiForm()
+    getallstudio();
+    savePOSTform();
 }
