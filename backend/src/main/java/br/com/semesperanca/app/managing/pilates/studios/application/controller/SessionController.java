@@ -1,8 +1,8 @@
 package br.com.semesperanca.app.managing.pilates.studios.application.controller;
 
-import br.com.semesperanca.app.managing.pilates.studios.application.model.session.SessionInputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.session.SessionOutputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.session.StudentRegisterDTO;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.SessionInputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.SessionOutputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.StudentRegisterDTO;
 import br.com.semesperanca.app.managing.pilates.studios.service.SessionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
