@@ -5003,7 +5003,6 @@ async function createviewStudio(studio) {
     <section class="${studio.id}">
         <section class="container">
             <section class="position-relative start-100">
-                <button class="btn btn-info" id="editar"> editar </button>
                 <button class="btn btn-danger" id="delet"> excluir</button>
             </section>
             <h1>${studio.name || "Nome n\xe3o dispon\xedvel"}</h1>
