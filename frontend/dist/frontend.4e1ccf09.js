@@ -4305,16 +4305,19 @@ function admpage() {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "savePOSTform", ()=>savePOSTform);
-async function POST(params) {
+async function POST(bodyrequest) {
     try {
-        console.log(params);
+        const $form = document.querySelector("#formsec");
         fetch("http://localhost:8080/studios", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: params
+            body: JSON.stringify(bodyrequest)
         });
+        location.hash = "#home";
+        alert("studio criado com sucesso");
+        $form.remove();
     } catch (error) {
         console.log(error);
         return error;
@@ -4333,7 +4336,6 @@ function savePOSTform() {
         data.holidays = data.holidays.split("\n");
         data.recesses = data.recesses.split("\n");
         data.isActive = true;
-        console.log(data);
         const $bnt = document.querySelector("#save");
         $bnt.addEventListener("click", POST(data));
     });
@@ -4346,9 +4348,10 @@ parcelHelpers.export(exports, "NewStudiForm", ()=>NewStudiForm);
 var _main = require("../../../../../../components/main");
 function NewStudiForm() {
     const $Form = `
-    <section class="studio-form position-absolute  start-50 translate-middle w-100 bg-warning" id="formsec"> 
-        <button> X </button>
+    <section class="studio-form position-absolute top-50  start-50 translate-middle w-100 bg-warning h-100 p-5" id="formsec"> 
+  
             <form id="form">
+            <button class="btn btn-danger" id="close" type="button"> X </button>
                 <section class="container">
                     <div class="form-group">
                         <label>Nome do Est\xfadio:</label>
@@ -4408,16 +4411,21 @@ function NewStudiForm() {
                     </div>
                     
                     <input type="hidden" id="studioId" name="id" value="" />
+                     <button class="btn btn-success  w-100" id="save"> salvar </button>
             </section>
-                <button id="save"> salvar </button>
+               
                 
         </form>
         
     </section>
             `;
     const main = (0, _main.getOrCreateMainElement)();
-    document.querySelector("#new").addEventListener("click", ()=>{
+    document.querySelector("#new").addEventListener("click", (e)=>{
+        e.preventDefault();
         if (!document.querySelector("#formsec")) main.insertAdjacentHTML("afterend", $Form);
+        const Dform = document.querySelector("#formsec");
+        const $close = document.querySelector("#close");
+        $close.addEventListener("click", ()=>Dform.remove());
     });
 }
 
@@ -4425,7 +4433,6 @@ function NewStudiForm() {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getallstudio", ()=>getallstudio);
-var _saveforminput = require("./functions/formfunctions/saveforminput");
 var _fromNewStudio = require("./functions/FromNewStudio");
 async function getallstudio() {
     try {
@@ -4454,11 +4461,10 @@ function createstudio(studio) {
         </section>
         `;
         $section.insertAdjacentHTML("afterbegin", $studicard);
-        (0, _fromNewStudio.NewStudiForm)();
     }
 }
 
-},{"./functions/formfunctions/saveforminput":"ePlTU","./functions/FromNewStudio":"dYqbl","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"h6N02":[function(require,module,exports,__globalThis) {
+},{"./functions/FromNewStudio":"dYqbl","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"h6N02":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "clearBody", ()=>clearBody);

@@ -1,5 +1,4 @@
 
-import {  savePOSTform } from "./functions/formfunctions/saveforminput";
 import { NewStudiForm } from "./functions/FromNewStudio";
 
 export async function getallstudio(){
@@ -29,6 +28,5 @@ function createstudio(studio){
         </section>
         `
         $section.insertAdjacentHTML("afterbegin",$studicard)
-        NewStudiForm()
     }
 }

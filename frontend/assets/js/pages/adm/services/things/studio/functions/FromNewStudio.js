@@ -2,9 +2,10 @@ import { getOrCreateMainElement } from "../../../../../../components/main"
 
 export function NewStudiForm(){
     const $Form = `
-    <section class="studio-form position-absolute  start-50 translate-middle w-100 bg-warning" id="formsec"> 
-        <button> X </button>
+    <section class="studio-form position-absolute top-50  start-50 translate-middle w-100 bg-warning h-100 p-5" id="formsec"> 
+  
             <form id="form">
+            <button class="btn btn-danger" id="close" type="button"> X </button>
                 <section class="container">
                     <div class="form-group">
                         <label>Nome do Estúdio:</label>
@@ -64,8 +65,9 @@ export function NewStudiForm(){
                     </div>
                     
                     <input type="hidden" id="studioId" name="id" value="" />
+                     <button class="btn btn-success  w-100" id="save"> salvar </button>
             </section>
-                <button id="save"> salvar </button>
+               
                 
         </form>
         
@@ -73,13 +75,15 @@ export function NewStudiForm(){
             `
 
     const main = getOrCreateMainElement()
-  
-   document.querySelector("#new").addEventListener("click", () => {
-       if (!document.querySelector("#formsec")) {
-           main.insertAdjacentHTML("afterend",$Form);
-          
-       }
-   });
     
-     
+    document.querySelector("#new").addEventListener("click", (e) => {
+        e.preventDefault()
+        if (!document.querySelector("#formsec")){
+            main.insertAdjacentHTML("afterend",$Form);
+        }
+        const Dform = document.querySelector("#formsec")
+         const $close = document.querySelector("#close")
+        $close.addEventListener("click", () => Dform.remove())
+    });
+   
 }
