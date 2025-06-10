@@ -672,6 +672,7 @@ var _home = require("./pages/home/home");
 var _header = require("./components/header");
 var _footer = require("./components/footer");
 var _schedulling = require("./pages/schedulling/schedulling");
+var _loginScreen = require("./pages/loginScreen/loginScreen");
 function renderContentBasedOnHash() {
     switch(location.hash){
         case "":
@@ -682,12 +683,15 @@ function renderContentBasedOnHash() {
         case "#agendamento":
             (0, _schedulling.renderAgendamentoPage)();
             break;
+        case "#login":
+            (0, _loginScreen.loginScreen)();
+            break;
     }
 }
 renderContentBasedOnHash();
 window.addEventListener("hashchange", renderContentBasedOnHash);
 
-},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp"}],"joWv1":[function(require,module,exports,__globalThis) {
+},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp","./pages/loginScreen/loginScreen":"9vJvL"}],"joWv1":[function(require,module,exports,__globalThis) {
 /*!
   * Bootstrap v5.3.6 (https://getbootstrap.com/)
   * Copyright 2011-2025 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
@@ -4281,7 +4285,7 @@ const headerHtml = `
   </div>
 
   <div class="nav">
-    <a class="nav-link m-1 text-secondary" href="#">
+    <a class="nav-link m-1 text-secondary" href="#login">
       <i class="bi bi-people-fill"></i>
     </a>
   </div>
@@ -4656,6 +4660,41 @@ window.salvarPresencas = async function() {
     }
 };
 
-},{"../../components/main":"5zsxX","../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
+},{"../../components/main":"5zsxX","../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"9vJvL":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "loginScreen", ()=>loginScreen);
+var _main = require("../../components/main");
+function loginScreen() {
+    const mainElement = (0, _main.getOrCreateMainElement)();
+    mainElement.innerHTML = `
+    <section class="d-flex justify-content-center align-items-center vh-100">
+      <div class="card p-4 w-25">
+        <h2 class="text-center mb-4">Login</h2>
+        <form id="loginForm">
+          <div class="mb-3">
+            <label for="email" class="form-label">Usu\xe1rio</label>
+            <input type="email" class="form-control" id="username" required>
+          </div>
+          <div class="mb-3">
+            <label for="senha" class="form-label">Senha</label>
+            <input type="password" class="form-control" id="password" required>
+          </div>
+          <button type="submit" class="btn btn-secondary w-100">Login</button>
+        </form>
+      </div>
+    </section>
+  `;
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', (event)=>{
+        event.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        // Redirecionamento
+        location.hash = '#home';
+    });
+}
+
+},{"../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
 
 //# sourceMappingURL=frontend.4e1ccf09.js.map
