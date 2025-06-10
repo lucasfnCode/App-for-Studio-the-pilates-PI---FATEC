@@ -14,5 +14,6 @@ public interface SessionRepository extends MongoRepository<Session, String> {
     List<Session> findByStudents(String studentId);
     List<Session> findByDay(LocalDate day);
     List<Session> findByIsActive(Boolean isActive);
+    List<Session> findByInstructor(String instructor);
 
 }

@@ -2,9 +2,9 @@ package br.com.semesperanca.app.managing.pilates.studios.service;
 
 import org.springframework.stereotype.Service;
 
-import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.SessionInputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.SessionOutputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.model.session.SessionStatus;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.session.SessionInputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.session.SessionOutputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.model.session.Session;
 import br.com.semesperanca.app.managing.pilates.studios.model.studio.DaysOfWeek;
 import br.com.semesperanca.app.managing.pilates.studios.model.studio.Schedules;
@@ -41,8 +41,8 @@ public class SessionService {
 
     public SessionOutputDTO listSessionById(String id) {
         Optional<Session> optionalsession = sessionRepository.findById(id);
-        Session sesseion = optionalsession.get();
-        return assemblerSessionOutputDTO(sesseion);
+        Session session = optionalsession.get();
+        return assemblerSessionOutputDTO(session);
     }
 
     /*
@@ -84,6 +84,13 @@ public class SessionService {
 
     public List<SessionOutputDTO> listSessionByStudentId(String studentId) {
         List<Session> sessions = sessionRepository.findByStudents(studentId);
+        return sessions.stream()
+                .map(this::assemblerSessionOutputDTO)
+                .toList();
+    }
+
+    public List<SessionOutputDTO> listSessionByInstructor(String id) {
+        List<Session> sessions = sessionRepository.findByInstructor(id);
         return sessions.stream()
                 .map(this::assemblerSessionOutputDTO)
                 .toList();
