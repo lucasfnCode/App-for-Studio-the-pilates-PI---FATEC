@@ -25,19 +25,19 @@ import br.com.semesperanca.app.managing.pilates.studios.repository.PlanRepositor
 import br.com.semesperanca.app.managing.pilates.studios.repository.StudentRepository;
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 @Service
+@AllArgsConstructor
 public class StudentService {
 
     private final StudentRepository studentRepository;
 
     private final PlanRepository planRepository;
 
-    public List<StudentOutputDTO> getAllStudentsByRole(String role) {
+    /*public List<StudentOutputDTO> getAllStudentsByRole(String role) {
         return studentRepository.findByRole(role).stream()
                 .map(this::assemblerStudentOutputDTO)
                 .collect(Collectors.toList());
-    }
+    }*/
 
     public StudentOutputDTO getStudentById(String id) {
         return studentRepository.findById(id)

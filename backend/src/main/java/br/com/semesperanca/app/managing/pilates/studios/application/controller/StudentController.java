@@ -2,6 +2,7 @@ package br.com.semesperanca.app.managing.pilates.studios.application.controller;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,14 +14,14 @@ import br.com.semesperanca.app.managing.pilates.studios.service.StudentService;
 
 @RestController
 @RequestMapping("/users/students")
-
+@AllArgsConstructor
 public class StudentController {
 
     private final StudentService studentService;
 
-    public StudentController(StudentService studentService) {
+    /*public StudentController(StudentService studentService) {
         this.studentService = studentService;
-    }
+    }*/
 
     @PostMapping
     public ResponseEntity<StudentOutputDTO> create(@RequestBody StudentInputDTO dto) {
@@ -28,11 +29,11 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @GetMapping
+   /* @GetMapping
     public ResponseEntity<List<StudentOutputDTO>> getAll() {
         List<StudentOutputDTO> students = studentService.getAllStudentsByRole("aluno");
         return ResponseEntity.ok(students);
-    }
+    }*/
 
     @GetMapping("/{id}")
     public ResponseEntity<StudentOutputDTO> getById(@PathVariable String id) {
