@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @NoArgsConstructor
 @Data
-@Document(collection = "Aulas")
+@Document(collection = "Planos")
 
 public class Plan {
 

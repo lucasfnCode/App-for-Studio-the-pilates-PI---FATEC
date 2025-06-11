@@ -26,8 +26,7 @@ public class Student extends User {
     @NonNull
     private Assessment assessment;
 
-    @NonNull
-    private Plan plan;
+    private PlanStudent plan;
 
     private ClientArea clientArea;
 

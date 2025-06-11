@@ -16,6 +16,7 @@ public record InstructorOutputDTO(
     String formation,
     String advice,
     LocalDate hiringDate,
-    List<String> permissions
+    List<String> permissions,
+    Boolean isActive
 
 ) {}
