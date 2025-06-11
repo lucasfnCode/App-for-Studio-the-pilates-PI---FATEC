@@ -6,7 +6,7 @@ import java.util.List;
 public record InstructorInputDTO(
 
     String name,
-    String role,
+    List<String> roles,
     String cpf,
     LocalDate birthDate,
     String email,
@@ -15,7 +15,6 @@ public record InstructorInputDTO(
     String formation,
     String advice,
     LocalDate hiringDate,
-    List<String> permissions,
     Boolean isActive
 
 ) {}

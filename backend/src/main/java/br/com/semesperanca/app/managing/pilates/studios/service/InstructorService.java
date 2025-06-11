@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -49,7 +50,7 @@ public class InstructorService {
         Instructor instructor = optionalInstructor.get();
 
         instructor.setName(instructorInputDTO.name());
-        instructor.setRole(instructorInputDTO.role());
+        instructor.setRoles(instructorInputDTO.roles().stream().collect(Collectors.toSet()));
         instructor.setCpf(instructorInputDTO.cpf());
         instructor.setBirthDate(instructorInputDTO.birthDate());
         instructor.setEmail(instructorInputDTO.email());
@@ -57,7 +58,6 @@ public class InstructorService {
         instructor.setFormation(instructorInputDTO.formation());
         instructor.setAdvice(instructorInputDTO.advice());
         instructor.setHiringDate(instructorInputDTO.hiringDate());
-        instructor.setPermissions(instructorInputDTO.permissions());
         instructor.setIsActive(instructorInputDTO.isActive());
 
         Instructor updated = instructorRepository.save(instructor);
@@ -94,7 +94,7 @@ public class InstructorService {
         return new InstructorOutputDTO(
                 instructor.getId(),
                 instructor.getName(),
-                instructor.getRole(),
+                instructor.getRoles(),
                 instructor.getCpf(),
                 instructor.getBirthDate(),
                 instructor.getEmail(),
@@ -103,28 +103,13 @@ public class InstructorService {
                 instructor.getFormation(),
                 instructor.getAdvice(),
                 instructor.getHiringDate(),
-                instructor.getPermissions(),
                 instructor.getIsActive());
     }
 
     private Instructor assemblerInstructorEntity(InstructorInputDTO dto) {
-        /*
-         * Instructor instructor = new Instructor();
-         * instructor.setName(dto.name());
-         * instructor.setType(dto.type());
-         * instructor.setEmail(dto.email());
-         * instructor.setContact(dto.contact());
-         * instructor.setPhoto(dto.photo());
-         * instructor.setHiringDate(dto.hiringDate());
-         * instructor.setIsActive(dto.isActive());
-         * instructor.setFormation(dto.formation());
-         * instructor.setAdvice(dto.advice());
-         * instructor.setPermissions(dto.permissions());
-         * return instructor;
-         */
         return Instructor.builder()
                 .name(dto.name())
-                .role(dto.role())
+                .roles(dto.roles().stream().collect(Collectors.toSet()))
                 .cpf(dto.cpf())
                 .birthDate(dto.birthDate())
                 .email(dto.email())
@@ -134,7 +119,6 @@ public class InstructorService {
                 .formation(dto.formation())
                 .advice(dto.advice())
                 .hiringDate(dto.hiringDate())
-                .permissions(dto.permissions())
                 .build();
 
     }

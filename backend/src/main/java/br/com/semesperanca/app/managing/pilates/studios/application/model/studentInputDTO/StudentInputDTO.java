@@ -1,10 +1,11 @@
 package br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public record StudentInputDTO(
     String name,
-    String role,
+    List<String> role,
     String cpf,
     LocalDate birthDate,
     String email,

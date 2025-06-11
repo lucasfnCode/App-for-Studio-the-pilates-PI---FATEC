@@ -12,7 +12,7 @@ import br.com.semesperanca.app.managing.pilates.studios.application.model.studen
 import br.com.semesperanca.app.managing.pilates.studios.service.StudentService;
 
 @RestController
-@RequestMapping("/students")
+@RequestMapping("/users/students")
 
 public class StudentController {
 
