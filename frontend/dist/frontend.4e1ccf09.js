@@ -3865,6 +3865,7 @@ parcelHelpers.export(exports, "criarModalAulasInstrutorHTML", ()=>criarModalAula
 parcelHelpers.export(exports, "criarModalPerfilInstrutorHTML", ()=>criarModalPerfilInstrutorHTML);
 parcelHelpers.export(exports, "criarModalAgendaRecepcaoHTML", ()=>criarModalAgendaRecepcaoHTML);
 parcelHelpers.export(exports, "criarModalCadastroClientesHTML", ()=>criarModalCadastroClientesHTML);
+parcelHelpers.export(exports, "buscarDadosCompletosDosAlunos", ()=>buscarDadosCompletosDosAlunos);
 function criarModalListaAlunosHTML(alunos = [], role = "aluno", presences = []) {
     const alunosRows = alunos.map((aluno)=>{
         const alunoId = aluno.id || aluno._id || "\u2014";
@@ -4240,6 +4241,18 @@ function criarModalCadastroClientesHTML() {
     </div>
   `;
 }
+async function buscarDadosCompletosDosAlunos(listaDeIds) {
+    try {
+        const response = await fetch("/api/students");
+        if (!response.ok) throw new Error("Erro ao buscar alunos");
+        const todosAlunos = await response.json();
+        // Filtra apenas os que estão na lista da aula
+        return todosAlunos.filter((aluno)=>listaDeIds.includes(aluno.id));
+    } catch (error) {
+        console.error("Erro ao buscar dados completos dos alunos:", error);
+        return [];
+    }
+}
 document.addEventListener("atualizarListaAlunos", async function() {
     if (!aulaSelecionadaId) return;
     try {
@@ -4529,7 +4542,8 @@ window.abrirModalAlunos = async function(id) {
         // console.log("ID da aula recebido:", id);
         if (!response.ok) throw new Error("Falha ao buscar aula");
         const aula = await response.json();
-        const alunos = aula.students || [];
+        const alunosIds = aula.students || [];
+        const alunos = await (0, _modais.buscarDadosCompletosDosAlunos)(alunosIds);
         const presences = aula.presences || [];
         (0, _modais.criarModalListaAlunosHTML)(alunos, role, presences);
         const modal = new bootstrap.Modal(document.getElementById("modalListaAlunos"));
@@ -4555,7 +4569,8 @@ async function atualizarModalAlunos(aulaId) {
         const response = await fetch(`/api/sessions/${aulaId}`);
         if (!response.ok) throw new Error("Falha ao buscar aula");
         const aula = await response.json();
-        const alunos = aula.students || [];
+        const alunosIds = aula.students || [];
+        const alunos = await (0, _modais.buscarDadosCompletosDosAlunos)(alunosIds);
         const presences = aula.presences || [];
         const role = getUserRole();
         const tbody = document.querySelector("#modalListaAlunos tbody");

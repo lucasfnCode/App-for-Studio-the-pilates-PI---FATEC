@@ -1,21 +1,23 @@
 package br.com.semesperanca.app.managing.pilates.studios.service;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
-import br.com.semesperanca.app.managing.pilates.studios.model.session.SessionStatus;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.SessionInputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.SessionOutputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.session.SessionInputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.session.SessionOutputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.model.session.Session;
+import br.com.semesperanca.app.managing.pilates.studios.model.session.SessionStatus;
 import br.com.semesperanca.app.managing.pilates.studios.model.studio.DaysOfWeek;
 import br.com.semesperanca.app.managing.pilates.studios.model.studio.Schedules;
 import br.com.semesperanca.app.managing.pilates.studios.model.studio.Studio;
-import br.com.semesperanca.app.managing.pilates.studios.repository.StudioRepository;
 import br.com.semesperanca.app.managing.pilates.studios.repository.SessionRepository;
+import br.com.semesperanca.app.managing.pilates.studios.repository.StudioRepository;
 import lombok.AllArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service

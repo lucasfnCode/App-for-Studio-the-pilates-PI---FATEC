@@ -3,6 +3,7 @@ import {
   criarModalCadastroAlunoHTML,
   criarModalListaAlunosHTML,
   criarModalConfirmacaoHTML,
+  buscarDadosCompletosDosAlunos
 } from "../../components/modais";
 
 // Retorna a role do usuário logado (padrão: aluno)
@@ -215,7 +216,9 @@ window.abrirModalAlunos = async function (id) {
     if (!response.ok) throw new Error("Falha ao buscar aula");
 
     const aula = await response.json();
-    const alunos = aula.students || [];
+    const alunosIds = aula.students || [];
+    const alunos = await buscarDadosCompletosDosAlunos(alunosIds);
+
     const presences = aula.presences || [];
 
     criarModalListaAlunosHTML(alunos, role, presences);
@@ -255,7 +258,9 @@ async function atualizarModalAlunos(aulaId) {
     if (!response.ok) throw new Error("Falha ao buscar aula");
 
     const aula = await response.json();
-    const alunos = aula.students || [];
+    const alunosIds = aula.students || [];
+    const alunos = await buscarDadosCompletosDosAlunos(alunosIds);
+
     const presences = aula.presences || [];
     const role = getUserRole();
 

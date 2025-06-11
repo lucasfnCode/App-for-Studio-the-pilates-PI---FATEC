@@ -417,6 +417,21 @@ export function criarModalCadastroClientesHTML() {
   `;
 }
 
+export async function buscarDadosCompletosDosAlunos(listaDeIds) {
+  try {
+    const response = await fetch("/api/students");
+    if (!response.ok) throw new Error("Erro ao buscar alunos");
+    const todosAlunos = await response.json();
+
+    // Filtra apenas os que estão na lista da aula
+    return todosAlunos.filter((aluno) => listaDeIds.includes(aluno.id));
+  } catch (error) {
+    console.error("Erro ao buscar dados completos dos alunos:", error);
+    return [];
+  }
+}
+
+
 document.addEventListener("atualizarListaAlunos", async function () {
   if (!aulaSelecionadaId) return;
 
