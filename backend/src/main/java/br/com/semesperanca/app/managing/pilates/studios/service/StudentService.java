@@ -58,6 +58,13 @@ public class StudentService {
                 return students.stream().map(this::assemblerStudentOutputDTO).toList();
         }
 
+        public List<StudentOutputDTO> findByIds(List<String> ids) {
+                List<Student> students = studentRepository.findByIdIn(ids);
+                return students.stream()
+                                .map(this::assemblerStudentOutputDTO)
+                                .collect(Collectors.toList());
+        }
+
         public StudentOutputDTO createStudent(StudentInputDTO dto) {
                 Student student = assemblerStudentEntity(dto);
                 Student saved = studentRepository.save(student);
