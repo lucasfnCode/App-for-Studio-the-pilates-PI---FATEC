@@ -103,7 +103,8 @@ public class InstructorService {
                 instructor.getFormation(),
                 instructor.getAdvice(),
                 instructor.getHiringDate(),
-                instructor.getPermissions());
+                instructor.getPermissions(),
+                instructor.getIsActive());
     }
 
     private Instructor assemblerInstructorEntity(InstructorInputDTO dto) {
