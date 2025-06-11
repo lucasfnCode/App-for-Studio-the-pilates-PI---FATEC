@@ -3801,7 +3801,7 @@ function homeScreen() {
     main.innerHTML = homeHTML;
 }
 
-},{"../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../components/modais":"1Ukbc"}],"5zsxX":[function(require,module,exports,__globalThis) {
+},{"../../components/main":"5zsxX","../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"5zsxX":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getOrCreateMainElement", ()=>getOrCreateMainElement);

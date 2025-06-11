@@ -97,38 +97,38 @@ public class SessionService {
     }
 
     public SessionOutputDTO openSession(SessionInputDTO sessionInputDTO) {
-        // if (!checkMaxOfStudents(sessionInputDTO)) {
-        // throw new RuntimeException("caguei no mato");
-        // }
-        // if (!checkIfInstructorIsAvalible(sessionInputDTO)) {
-        // throw new RuntimeException("xereca mole");
-        // }
-        // if (!checkIfStudioIsInOperatingDay(sessionInputDTO)) {
-        // throw new RuntimeException("pinto molenga");
-        // }
-        // if (!checkIfSheduleIsAvaliable(sessionInputDTO)) {
-        // throw new RuntimeException("suruba no acre");
-        // }
+        if (!checkMaxOfStudents(sessionInputDTO)) {
+            throw new RuntimeException("caguei no mato");
+        }
+        if (!checkIfInstructorIsAvalible(sessionInputDTO)) {
+            throw new RuntimeException("xereca mole");
+        }
+        if (!checkIfStudioIsInOperatingDay(sessionInputDTO)) {
+            throw new RuntimeException("pinto molenga");
+        }
+        if (!checkIfSheduleIsAvaliable(sessionInputDTO)) {
+            throw new RuntimeException("suruba no acre");
+        }
         return assemblerSessionOutputDTO(sessionRepository.save(assemblerSessionEntity(sessionInputDTO)));
     }
 
     public SessionOutputDTO updateSessionById(String id, SessionInputDTO sessionInputDTO) {
         Optional<Session> optionalsession = sessionRepository.findById(id);
-        // if (optionalsession.isEmpty()) {
-        // throw new RuntimeException("Session não encontrada");
-        // }
-        // if (!checkMaxOfStudents(sessionInputDTO)) {
-        // throw new RuntimeException("caguei no mato");
-        // }
-        // if (!checkIfInstructorIsAvalible(sessionInputDTO)) {
-        // throw new RuntimeException("xereca mole");
-        // }
-        // if (!checkIfStudioIsInOperatingDay(sessionInputDTO)) {
-        // throw new RuntimeException("pinto molenga");
-        // }
-        // if (!checkIfSheduleIsAvaliable(sessionInputDTO)) {
-        // throw new RuntimeException("suruba no acre");
-        // }
+        if (optionalsession.isEmpty()) {
+            throw new RuntimeException("Session não encontrada");
+        }
+        if (!checkMaxOfStudents(sessionInputDTO)) {
+            throw new RuntimeException("caguei no mato");
+        }
+        if (!checkIfInstructorIsAvalible(sessionInputDTO)) {
+            throw new RuntimeException("xereca mole");
+        }
+        if (!checkIfStudioIsInOperatingDay(sessionInputDTO)) {
+            throw new RuntimeException("pinto molenga");
+        }
+        if (!checkIfSheduleIsAvaliable(sessionInputDTO)) {
+            throw new RuntimeException("suruba no acre");
+        }
 
         Session session = optionalsession.get();
         Schedules hours = Schedules.fromHorario(sessionInputDTO.hours());
