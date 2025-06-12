@@ -49,11 +49,11 @@ public class InstructorService {
         Instructor instructor = optionalInstructor.get();
 
         instructor.setName(instructorInputDTO.name());
-        instructor.setType(instructorInputDTO.type());
-        instructor.setHiringDate(instructorInputDTO.hiringDate());
+        instructor.setRole(instructorInputDTO.role());
+        instructor.setCpf(instructorInputDTO.cpf());
+        instructor.setBirthDate(instructorInputDTO.birthDate());
         instructor.setEmail(instructorInputDTO.email());
         instructor.setContact(instructorInputDTO.contact());
-        instructor.setFormation(instructorInputDTO.formation());
         instructor.setFormation(instructorInputDTO.formation());
         instructor.setAdvice(instructorInputDTO.advice());
         instructor.setHiringDate(instructorInputDTO.hiringDate());
@@ -94,14 +94,17 @@ public class InstructorService {
         return new InstructorOutputDTO(
                 instructor.getId(),
                 instructor.getName(),
-                instructor.getType(),
-                instructor.getHiringDate(),
+                instructor.getRole(),
+                instructor.getCpf(),
+                instructor.getBirthDate(),
                 instructor.getEmail(),
                 instructor.getContact(),
                 instructor.getPhoto(),
                 instructor.getFormation(),
                 instructor.getAdvice(),
-                instructor.getPermissions());
+                instructor.getHiringDate(),
+                instructor.getPermissions(),
+                instructor.getIsActive());
     }
 
     private Instructor assemblerInstructorEntity(InstructorInputDTO dto) {
@@ -121,14 +124,16 @@ public class InstructorService {
          */
         return Instructor.builder()
                 .name(dto.name())
-                .type(dto.type())
+                .role(dto.role())
+                .cpf(dto.cpf())
+                .birthDate(dto.birthDate())
                 .email(dto.email())
                 .contact(dto.contact())
                 .photo(dto.photo())
-                .hiringDate(dto.hiringDate())
                 .isActive(dto.isActive())
                 .formation(dto.formation())
                 .advice(dto.advice())
+                .hiringDate(dto.hiringDate())
                 .permissions(dto.permissions())
                 .build();
 

@@ -1,0 +1,50 @@
+/* global use, db */
+// MongoDB Playground
+// Use Ctrl+Space inside a snippet or a string literal to trigger completions.
+
+// The current database to use.
+use('Pilates');
+
+// Create a new collection.
+db.getCollection('Studios').insert([
+
+
+    [{
+        "_id": {
+            "$oid": "67f082d2d5ffb65cce5d56e7"
+        },
+        "nome": "Studio Central",
+        "endereco": "Rua Exemplo, 123, Centro - São Paulo",
+        "dias_funcionamento": [
+            "Segunda",
+            "Terça",
+            "Quarta",
+            "Quinta",
+            "Sexta"
+        ],
+        "horarios_funcionamento": [
+            "08:00",
+            "09:00",
+            "10:00",
+            "11:00"
+        ],
+        "limite_alunos_por_aula": 3,
+        "horarios_indisponiveis": [
+            "12:00"
+        ],
+        "instrutores_por_horario": {
+            "08:00": "João Silva",
+            "09:00": "Maria Souza"
+        },
+        "feriados": [
+            "2025-04-21",
+            "2025-05-01"
+        ],
+        "recessos": [
+            "2025-12-23",
+            "2026-01-02"
+        ],
+    }]
+]);
+// More information on the `createCollection` command can be found at:
+// https://www.mongodb.com/docs/manual/reference/method/db.createCollection/

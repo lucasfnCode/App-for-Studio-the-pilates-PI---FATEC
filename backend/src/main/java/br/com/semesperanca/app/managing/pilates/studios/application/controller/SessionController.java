@@ -19,12 +19,20 @@ import br.com.semesperanca.app.managing.pilates.studios.application.model.Sessio
 import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.StudentRegisterDTO;
 import br.com.semesperanca.app.managing.pilates.studios.service.SessionService;
 import lombok.AllArgsConstructor;
+<<<<<<< HEAD
+=======
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
+>>>>>>> main
 
 @AllArgsConstructor
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/sessions")
-
 public class SessionController {
 
     private final SessionService service;
@@ -53,6 +61,12 @@ public class SessionController {
     public ResponseEntity<List<SessionOutputDTO>> listAllCurrent() {
         return ResponseEntity.ok(service.listAllCurrentSessionsWithDayLimiter());
     }
+
+    @GetMapping("/instructor/{id}")
+    public ResponseEntity<List<SessionOutputDTO>> listAllByInstructor(@PathVariable String id) {
+        return ResponseEntity.ok(service.listSessionByInstructor(id));
+    }
+    
 
     @GetMapping("/day/{day}")
     public ResponseEntity<List<SessionOutputDTO>> listByDay(@PathVariable LocalDate day) {
