@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TokenService {
@@ -17,7 +18,7 @@ public class TokenService {
 
     public String generateToken(User user) {
 
-        List<String> roles = user.getRoles().stream().toList();
+        List<String> roles = user.getRoles().stream().map(Enum::toString).collect(Collectors.toList());
 
         return JWT.create()
                 .withIssuer("Managing Pilates")

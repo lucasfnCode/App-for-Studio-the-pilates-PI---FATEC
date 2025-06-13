@@ -1,43 +1,36 @@
 package br.com.semesperanca.app.managing.pilates.studios.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO.PlanStudentInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO.StudentInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO.UpComingClassInputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.studentOutputDTO.StudentOutputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.studentOutputDTO.UpComingClassOutputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.studentOutputDTO.ClientAreaOutputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.studentOutputDTO.AssessmentOutputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.studentOutputDTO.PlanStudentOutputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.model.student.Student;
-import br.com.semesperanca.app.managing.pilates.studios.model.student.UpComingClass;
-import br.com.semesperanca.app.managing.pilates.studios.model.student.ClientArea;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.studentOutputDTO.*;
 import br.com.semesperanca.app.managing.pilates.studios.model.Plan;
-import br.com.semesperanca.app.managing.pilates.studios.model.student.Assessment;
-import br.com.semesperanca.app.managing.pilates.studios.model.student.PlanStudent;
+import br.com.semesperanca.app.managing.pilates.studios.model.Role;
+import br.com.semesperanca.app.managing.pilates.studios.model.student.*;
 import br.com.semesperanca.app.managing.pilates.studios.repository.PlanRepository;
-import br.com.semesperanca.app.managing.pilates.studios.repository.StudentRepository;
+import br.com.semesperanca.app.managing.pilates.studios.repository.user.StudentRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class StudentService {
 
     private final StudentRepository studentRepository;
-
     private final PlanRepository planRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    /*public List<StudentOutputDTO> getAllStudentsByRole(String role) {
-        return studentRepository.findByRole(role).stream()
+    public List<StudentOutputDTO> getAllStudents() {
+        return studentRepository.findByRolesContaining(Role.ROLE_STUDENT).stream()
                 .map(this::assemblerStudentOutputDTO)
                 .collect(Collectors.toList());
-    }*/
+    }
 
     public StudentOutputDTO getStudentById(String id) {
         return studentRepository.findById(id)
@@ -180,6 +173,7 @@ public class StudentService {
                 .assessment(assessment)
                 .clientArea(clientArea)
                 .progress(input.progress())
+                .password(passwordEncoder.encode(input.password()))
                 .build();
     }
 

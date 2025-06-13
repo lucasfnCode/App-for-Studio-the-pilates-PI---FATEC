@@ -1,15 +1,9 @@
 package br.com.semesperanca.app.managing.pilates.studios.model.student;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-
-import java.time.LocalDate;
-
+import lombok.*;
 import org.springframework.data.annotation.Id;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.time.LocalDate;
 
 @Getter
 @Setter

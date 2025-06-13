@@ -1,12 +1,14 @@
 package br.com.semesperanca.app.managing.pilates.studios.service;
 
-import org.springframework.stereotype.Service;
-
-import br.com.semesperanca.app.managing.pilates.studios.application.model.InstructorOutputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.InstructorInputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.InstructorOutputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.model.Instructor;
-import br.com.semesperanca.app.managing.pilates.studios.repository.InstructorRepository;
+import br.com.semesperanca.app.managing.pilates.studios.model.Role;
+import br.com.semesperanca.app.managing.pilates.studios.model.User;
+import br.com.semesperanca.app.managing.pilates.studios.repository.user.InstructorRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
@@ -18,18 +20,16 @@ import java.util.stream.Collectors;
 public class InstructorService {
 
     private final InstructorRepository instructorRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public List<InstructorOutputDTO> listAllActiveInstructors() {
-        List<Instructor> instructors = instructorRepository.findAll().stream()
-                .filter(i -> Boolean.TRUE.equals(i.getIsActive()))
-                .toList();
+        List<Instructor> instructors = instructorRepository.findByRolesContaining(Role.ROLE_INSTRUCTOR)
+                .stream().filter(User::getIsActive).toList();
         return instructors.stream().map(this::assemblerInstructorOutputDTO).toList();
     }
 
     public List<InstructorOutputDTO> listAllInstructors() {
-        List<Instructor> instructors = instructorRepository.findAll()
-                .stream()
-                .toList();
+        List<Instructor> instructors = instructorRepository.findByRolesContaining(Role.ROLE_INSTRUCTOR);
         return instructors.stream().map(this::assemblerInstructorOutputDTO).toList();
     }
 
@@ -119,6 +119,7 @@ public class InstructorService {
                 .formation(dto.formation())
                 .advice(dto.advice())
                 .hiringDate(dto.hiringDate())
+                .password(passwordEncoder.encode(dto.password()))
                 .build();
 
     }

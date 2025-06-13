@@ -1,16 +1,15 @@
 package br.com.semesperanca.app.managing.pilates.studios.application.controller;
 
-import java.util.List;
-
+import br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO.PlanStudentInputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO.StudentInputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.studentOutputDTO.StudentOutputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO.PlanStudentInputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO.StudentInputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.studentOutputDTO.StudentOutputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.service.StudentService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users/students")
@@ -19,21 +18,17 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    /*public StudentController(StudentService studentService) {
-        this.studentService = studentService;
-    }*/
-
     @PostMapping
     public ResponseEntity<StudentOutputDTO> create(@RequestBody StudentInputDTO dto) {
         StudentOutputDTO created = studentService.createStudent(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-   /* @GetMapping
+    @GetMapping
     public ResponseEntity<List<StudentOutputDTO>> getAll() {
-        List<StudentOutputDTO> students = studentService.getAllStudentsByRole("aluno");
+        List<StudentOutputDTO> students = studentService.getAllStudents();
         return ResponseEntity.ok(students);
-    }*/
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<StudentOutputDTO> getById(@PathVariable String id) {

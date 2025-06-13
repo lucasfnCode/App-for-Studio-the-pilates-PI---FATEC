@@ -22,7 +22,7 @@ public abstract class User implements UserDetails {
     private String name;
 
     @NonNull
-    private Set<String> roles;
+    private Set<Role> roles;
 
     @NonNull
     private String cpf;
@@ -42,7 +42,6 @@ public abstract class User implements UserDetails {
     @NonNull
     private Boolean isActive;
 
-    @NonNull
     private String password;
 
 }

@@ -1,16 +1,13 @@
 package br.com.semesperanca.app.managing.pilates.studios.application.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import br.com.semesperanca.app.managing.pilates.studios.application.model.plan.PlanInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.plan.PlanOutputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.service.PlanService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @AllArgsConstructor

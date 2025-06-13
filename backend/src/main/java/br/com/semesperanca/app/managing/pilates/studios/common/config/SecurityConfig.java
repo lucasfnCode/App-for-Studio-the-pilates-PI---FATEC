@@ -33,19 +33,19 @@ public class SecurityConfig {
                         sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(requests ->
                         requests
-                                .requestMatchers(HttpMethod.POST, "/login")
-                                    .permitAll()
+                                .requestMatchers(HttpMethod.POST, "/auth/**")
+                                .permitAll()
                                 .requestMatchers(HttpMethod.POST, "/users/**")
-                                    .permitAll()
+                                .permitAll()
                                 .anyRequest()
-                                    .authenticated())
+                                .authenticated())
                 .addFilterBefore(filterToken, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-            throws Exception{
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
