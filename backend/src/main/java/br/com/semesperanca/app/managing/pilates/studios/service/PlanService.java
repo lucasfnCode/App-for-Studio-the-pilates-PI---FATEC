@@ -1,16 +1,14 @@
 package br.com.semesperanca.app.managing.pilates.studios.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import br.com.semesperanca.app.managing.pilates.studios.application.model.plan.PlanInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.plan.PlanOutputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.model.Plan;
 import br.com.semesperanca.app.managing.pilates.studios.repository.PlanRepository;
 import lombok.AllArgsConstructor;
-import br.com.semesperanca.app.managing.pilates.studios.model.Plan;
+import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service

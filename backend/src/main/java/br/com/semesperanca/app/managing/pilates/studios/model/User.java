@@ -1,23 +1,28 @@
 package br.com.semesperanca.app.managing.pilates.studios.model;
 
-import lombok.experimental.SuperBuilder;
-import lombok.NonNull;
-import java.time.LocalDate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
+import java.util.Set;
+
+@Document(collection = "Usuarios")
 @Getter
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-public abstract class User {
+public abstract class User implements UserDetails {
 
     @NonNull
     private String name;
 
     @NonNull
-    private String role;
+    private Set<Role> roles;
 
     @NonNull
     private String cpf;
@@ -36,5 +41,7 @@ public abstract class User {
 
     @NonNull
     private Boolean isActive;
+
+    private String password;
 
 }

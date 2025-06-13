@@ -1,26 +1,22 @@
 package br.com.semesperanca.app.managing.pilates.studios.application.controller;
 
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO.PlanStudentInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO.StudentInputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.application.model.studentOutputDTO.StudentOutputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.service.StudentService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/students")
-
+@RequestMapping("/users/students")
+@AllArgsConstructor
 public class StudentController {
 
     private final StudentService studentService;
-
-    public StudentController(StudentService studentService) {
-        this.studentService = studentService;
-    }
 
     @PostMapping
     public ResponseEntity<StudentOutputDTO> create(@RequestBody StudentInputDTO dto) {
@@ -43,7 +39,7 @@ public class StudentController {
 
     @GetMapping
     public ResponseEntity<List<StudentOutputDTO>> getAll() {
-        List<StudentOutputDTO> students = studentService.getAllStudentsByRole("aluno");
+        List<StudentOutputDTO> students = studentService.getAllStudents();
         return ResponseEntity.ok(students);
     }
 

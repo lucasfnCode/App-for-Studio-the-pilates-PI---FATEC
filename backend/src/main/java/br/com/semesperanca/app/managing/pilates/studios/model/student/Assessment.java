@@ -1,10 +1,6 @@
 package br.com.semesperanca.app.managing.pilates.studios.model.student;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter

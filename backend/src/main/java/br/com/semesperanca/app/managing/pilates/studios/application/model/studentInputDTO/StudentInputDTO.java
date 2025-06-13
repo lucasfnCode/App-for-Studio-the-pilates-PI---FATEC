@@ -1,10 +1,13 @@
 package br.com.semesperanca.app.managing.pilates.studios.application.model.studentInputDTO;
 
+import br.com.semesperanca.app.managing.pilates.studios.model.Role;
+
 import java.time.LocalDate;
+import java.util.List;
 
 public record StudentInputDTO(
     String name,
-    String role,
+    List<Role> role,
     String cpf,
     LocalDate birthDate,
     String email,
@@ -14,5 +17,6 @@ public record StudentInputDTO(
     String progress,
     PlanStudentInputDTO plan,
     ClientAreaInputDTO clientArea,
-    Boolean isActive
+    Boolean isActive,
+    String password
 ) {}
