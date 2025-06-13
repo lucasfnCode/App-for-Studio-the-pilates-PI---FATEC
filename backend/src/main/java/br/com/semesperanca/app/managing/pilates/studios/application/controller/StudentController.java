@@ -24,6 +24,19 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @PostMapping("/{id}/add-plan")
+    public ResponseEntity<StudentOutputDTO> addPlanToStudent(@PathVariable String id,
+            @RequestBody PlanStudentInputDTO planDTO) {
+        StudentOutputDTO updatedStudent = studentService.addPlanToStudent(id, planDTO);
+        return ResponseEntity.ok(updatedStudent);
+    }
+
+    @PostMapping("/by-ids")
+    public ResponseEntity<List<StudentOutputDTO>> getStudentsByIds(@RequestBody List<String> ids) {
+        List<StudentOutputDTO> students = studentService.findByIds(ids);
+        return ResponseEntity.ok(students);
+    }
+
     @GetMapping
     public ResponseEntity<List<StudentOutputDTO>> getAll() {
         List<StudentOutputDTO> students = studentService.getAllStudents();
@@ -63,13 +76,6 @@ public class StudentController {
     public ResponseEntity<Void> activate(@PathVariable String id) {
         studentService.activateStudent(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/{id}/add-plan")
-    public ResponseEntity<StudentOutputDTO> addPlanToStudent(@PathVariable String id,
-            @RequestBody PlanStudentInputDTO planDTO) {
-        StudentOutputDTO updatedStudent = studentService.addPlanToStudent(id, planDTO);
-        return ResponseEntity.ok(updatedStudent);
     }
 
     @PutMapping("/{id}/cancel-plan")
