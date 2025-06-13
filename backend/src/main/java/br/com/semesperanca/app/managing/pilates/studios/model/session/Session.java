@@ -1,5 +1,8 @@
 package br.com.semesperanca.app.managing.pilates.studios.model.session;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,9 +11,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @RequiredArgsConstructor
 @NoArgsConstructor
@@ -21,7 +21,6 @@ public class Session {
 
     @Id
     private String id;
-
     @NonNull
     private List<String> students;
     @NonNull

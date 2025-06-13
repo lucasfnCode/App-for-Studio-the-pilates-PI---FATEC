@@ -1,10 +1,14 @@
+# Arquivo de ajuda
 HELP.md
+
+# Diretórios de build e cache do Maven
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
-### STS ###
+!**/src/main/**/build/
+!**/src/test/**/build/
+### STS (Spring Tool Suite) ###
 .apt_generated
 .classpath
 .factorypath
@@ -14,7 +18,7 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -25,9 +29,23 @@ target/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
 ### VS Code ###
 .vscode/
+
+### Frontend: impedir que bibliotecas e cache sejam versionados ###
+/frontend/node_modules/
+/frontend/.parcel-cache/
+/frontend/.cache
+/dist/
+/build/
+
+### Logs e arquivos temporários ###
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+
+# Ignorar arquivos do Git
+.gitignore

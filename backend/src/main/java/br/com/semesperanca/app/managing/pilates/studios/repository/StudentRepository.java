@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface StudentRepository extends MongoRepository<Student, String> {
     List<Student>findByRole(String role);
     Optional<Student>findByCpf(String cpf);
+    List<Student>findByIdIn(List <String> id);
 }
