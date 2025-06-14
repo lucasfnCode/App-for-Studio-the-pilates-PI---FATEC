@@ -10,9 +10,13 @@ import {
 } from "../../components/modais";
 
 function getUserRole() {
-  const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
-  return user.role || "aluno";
+  const user = JSON.parse(localStorage.getItem ("usuarioLogado")) || {};
+  return user.role;
 }
+function getUserLoggedData(){
+  return JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+}
+  
 
 function createCard(title, imageUrl, modalTargetId) {
   return `
@@ -30,13 +34,14 @@ function createCard(title, imageUrl, modalTargetId) {
 
 export function homeScreen() {
   const role = getUserRole();
-
+  console.log("Role do usuário:", role);
+  
   let titulo = "Bem-vindo ao Estúdio de Pilates";
   let subtitulo = "Transforme seu corpo e mente com nossas aulas especializadas.";
   let cards = "";
   let modais = "";
 
-  if (role === "instrutor") {
+  if (role === "ROLE_INSTRUCTOR") {
     titulo = "Área do Instrutor";
     subtitulo = "Gerencie suas aulas e visualize seu perfil profissional.";
     cards += createCard("Minhas Aulas", "https://placehold.co/600x400?text=Minhas+Aulas", "modalAulasInstrutor");

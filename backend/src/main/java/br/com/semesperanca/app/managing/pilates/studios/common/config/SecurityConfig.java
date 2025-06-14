@@ -1,6 +1,7 @@
 package br.com.semesperanca.app.managing.pilates.studios.common.config;
 
 import br.com.semesperanca.app.managing.pilates.studios.application.security.FilterToken;
+import br.com.semesperanca.app.managing.pilates.studios.model.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import br.com.semesperanca.app.managing.pilates.studios.application.security.FilterToken;
+import lombok.AllArgsConstructor;
+
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
@@ -26,8 +30,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.
-                cors(Customizer.withDefaults())
+        return http.cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sessionManagementConfigurer ->
                         sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -36,6 +39,11 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/auth/**")
                                 .permitAll()
                                 .requestMatchers(HttpMethod.POST, "/users/**")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/v3/api-docs/**",
+                                        "/v3/api-docs.yaml")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.GET, "/docs/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
@@ -55,7 +63,7 @@ public class SecurityConfig {
         configuration.setAllowCredentials(true);
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
-        configuration.addAllowedOrigin("*");
+        configuration.addAllowedOriginPattern("*");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

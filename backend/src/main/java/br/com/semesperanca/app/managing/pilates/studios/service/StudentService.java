@@ -6,6 +6,7 @@ import br.com.semesperanca.app.managing.pilates.studios.application.model.studen
 import br.com.semesperanca.app.managing.pilates.studios.application.model.studentOutputDTO.*;
 import br.com.semesperanca.app.managing.pilates.studios.model.Plan;
 import br.com.semesperanca.app.managing.pilates.studios.model.Role;
+import br.com.semesperanca.app.managing.pilates.studios.model.User;
 import br.com.semesperanca.app.managing.pilates.studios.model.student.*;
 import br.com.semesperanca.app.managing.pilates.studios.repository.PlanRepository;
 import br.com.semesperanca.app.managing.pilates.studios.repository.user.StudentRepository;
@@ -45,10 +46,17 @@ public class StudentService {
     }
 
     public List<StudentOutputDTO> listAllActiveStudent() {
-        List<Student> students = studentRepository.findAll().stream()
-                .filter(i -> Boolean.TRUE.equals(i.getIsActive()))
+        List<Student> students = studentRepository.findByRolesContaining(Role.ROLE_STUDENT).stream()
+                .filter(User::getIsActive)
                 .toList();
         return students.stream().map(this::assemblerStudentOutputDTO).toList();
+    }
+
+    public List<StudentOutputDTO> findByIds(List<String> ids) {
+        List<Student> students = studentRepository.findByIdIn(ids);
+        return students.stream()
+                .map(this::assemblerStudentOutputDTO)
+                .collect(Collectors.toList());
     }
 
     public StudentOutputDTO createStudent(StudentInputDTO dto) {
