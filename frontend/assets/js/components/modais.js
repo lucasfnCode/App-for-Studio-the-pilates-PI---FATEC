@@ -11,7 +11,7 @@ export function criarModalListaAlunosHTML(
       const nascimento = aluno.birthDate || "—";
       const isPresent = presences.includes(alunoId);
 
-      if (role === "instrutor") {
+      if (role === "ROLE_INSTRUCTOR") {
         return `
           <tr>
             <td>${nome}</td>
@@ -61,7 +61,7 @@ export function criarModalListaAlunosHTML(
           </div>
           <div class="modal-footer d-flex justify-content-end gap-2">
             ${
-              role !== "instrutor"
+              role !== "ROLE_INSTRUCTOR"
                 ? `<button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>`
                 : `<button type="button" class="btn btn-outline-primary" onclick="salvarPresencas()">Salvar Presenças</button>`
             }

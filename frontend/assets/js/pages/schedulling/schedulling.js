@@ -25,11 +25,25 @@ async function fetchAulas() {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
-    const data = await response.json();
+
+    if (!response.ok) {
+      // Se a resposta não for ok, você pode capturar o erro e retornar um valor padrão
+      console.error("Erro ao buscar aulas:", response.statusText);
+      return []; // Retorna um array vazio em caso de erro
+    }
+
+    // Verifica se a resposta tem um corpo
+    const text = await response.text();
+    if (!text) {
+      console.error("Resposta vazia do servidor.");
+      return []; // Retorna um array vazio se a resposta estiver vazia
+    }
+
+    const data = JSON.parse(text); // Converte o texto em JSON
     return data;
   } catch (error) {
     console.error("Erro ao buscar aulas:", error);
-    return [];
+    return []; // Retorna um array vazio em caso de erro de conexão
   }
 }
 
@@ -59,7 +73,7 @@ export async function renderAgendamentoPage() {
         const jaAgendado =
           Array.isArray(aula.students) && aula.students.includes(user.id);
 
-        if (role === "aluno") {
+        if (role === "ROLE_STUDENT") {
           if (!jaAgendado && aula.status === "aberta") {
             acoes = `<button class="btn btn-sm btn-success" onclick="agendarAula('${aulaId}')">Agendar</button>`;
           } else if (jaAgendado) {
@@ -67,7 +81,7 @@ export async function renderAgendamentoPage() {
           }
         } else if (role === "recepcionista") {
           acoes = `<button class="btn btn-sm btn-outline-success" onclick="abrirModalAlunos('${aulaId}')">Ver</button>`;
-        } else if (role === "instrutor") {
+        } else if (role === "ROLE_INSTRUCTOR") {
           acoes = `<button class="btn btn-sm btn-secondary" onclick="abrirModalAlunos('${aulaId}')">Visualizar</button>`;
         }
 
