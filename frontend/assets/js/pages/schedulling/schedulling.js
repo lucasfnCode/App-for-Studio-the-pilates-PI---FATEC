@@ -14,7 +14,8 @@ export function getUserRole() {
 
 // Retorna os dados do usuário logado
 export function getUserLoggedData() {
-  return JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+  const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+  return { ...user, id: user.id || user.sub };
 }
 
 async function fetchAulas() {
@@ -69,9 +70,14 @@ export async function renderAgendamentoPage() {
         const aulaId = aula.id || aula._id?.$oid || aula._id;
         let acoes = "";
         const jaAgendado =
-          Array.isArray(aula.students) && aula.students.includes(user.id);
+          Array.isArray(aula.students) &&
+          aula.students
+            .filter((id) => !!id && id !== "null")
+            .map(String)
+            .includes(String(user.id));
 
         if (role === "ROLE_STUDENT") {
+          // console.log("user.id:", user.id, "aula.students:", aula.students);
           if (!jaAgendado && aula.status === "aberta") {
             acoes = `<button class="btn btn-sm btn-success" onclick="agendarAula('${aulaId}')">Agendar</button>`;
           } else if (jaAgendado) {
@@ -129,8 +135,9 @@ export async function renderAgendamentoPage() {
 window.registrarAluno = async function (sessionId, studentId) {
   const id = sessionId || aulaSelecionadaId;
 
-  if (!id) {
-    alert("ID da aula não foi definido.");
+  // Garante que só envia ID válido
+  if (!id || !studentId || studentId === "null" || studentId.length < 10) {
+    alert("ID da aula ou do aluno não foi definido corretamente.");
     return;
   }
 
@@ -141,7 +148,7 @@ window.registrarAluno = async function (sessionId, studentId) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify({ studentId }),
+      body: JSON.stringify({ studentId: String(studentId) }),
     });
 
     if (response.ok) {
@@ -182,13 +189,17 @@ async function verificarAtualizacoes() {
 window.agendarAula = async function (id) {
   try {
     const user = getUserLoggedData();
+    if (!user.id) {
+      alert("Usuário sem ID válido.");
+      return;
+    }
     const response = await fetch(`/api/sessions/register/${id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify({ studentId: user.id }),
+      body: JSON.stringify({ studentId: String(user.id) }),
     });
 
     if (response.ok) {
@@ -207,13 +218,17 @@ window.agendarAula = async function (id) {
 window.cancelarAula = async function (id) {
   try {
     const user = getUserLoggedData();
+    if (!user.id) {
+      alert("Usuário sem ID válido.");
+      return;
+    }
     const response = await fetch(`/api/sessions/unregister/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify({ studentId: user.id }),
+      body: JSON.stringify({ studentId: String(user.id) }),
     });
 
     if (response.ok) {

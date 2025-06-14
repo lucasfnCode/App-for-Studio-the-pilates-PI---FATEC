@@ -171,10 +171,13 @@ window.salvarAlunosSelecionados = async function () {
   const checkboxes = document.querySelectorAll(
     "#alunosDisponiveisTabela input[type='checkbox']:checked"
   );
-  const alunosSelecionados = Array.from(checkboxes).map((cb) => cb.dataset.id);
+  // Filtra apenas IDs válidos
+  const alunosSelecionados = Array.from(checkboxes)
+  .map((cb) => cb.dataset.id)
+  .filter((id) => !!id && id !== "null" && id.length > 10); // IDs do Mongo geralmente têm 24 caracteres
 
   for (const studentId of alunosSelecionados) {
-    await window.registrarAluno(window.aulaSelecionadaId, studentId);
+    await window.registrarAluno(window.aulaSelecionadaId, String(studentId));
   }
 
   const modal = bootstrap.Modal.getInstance(

@@ -34,7 +34,7 @@ function createCard(title, imageUrl, modalTargetId) {
 
 export function homeScreen() {
   const role = getUserRole();
-  console.log("Role do usuário:", role);
+  // console.log("Role do usuário:", role);
   
   let titulo = "Bem-vindo ao Estúdio de Pilates";
   let subtitulo = "Transforme seu corpo e mente com nossas aulas especializadas.";

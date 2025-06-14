@@ -43,23 +43,28 @@ export function loginScreen() {
       const data = await response.json();
 
       if (response.ok) {
-        // Armazenar o token junto às infos do usuário
+        // Armazenar o token
         localStorage.setItem("token", data.token);
 
-        // Decodificar o JWT para obter o role
+        // loginScreen.js
         const decoded = jwtDecode(data.token);
-        const role = decoded.roles[0];
-        localStorage.setItem("usuarioLogado", JSON.stringify({...decoded, role}));
-        
-        // Exibir mensagem de sucesso
+        // Descubra qual campo é o ID do banco (exemplo: decoded.id, decoded._id, decoded.sub)
+        const userId = decoded.id || decoded._id || decoded.sub; // ajuste conforme o JWT
+        const role = decoded.roles ? decoded.roles[0] : decoded.role;
+
+        localStorage.setItem(
+          "usuarioLogado",
+          JSON.stringify({ ...decoded, id: userId, role })
+        );
+        // console.log(decoded);
+
         document.getElementById("loginMessage").innerHTML =
           "<span class='text-info'>Login realizado com sucesso</span>";
 
-        console.log("Dados do usuário!", decoded);
-        console.log("Role!", role);
-
-        // Redirecionar para home ou agendamento
-        // location.hash = "#home";
+        // Redirecionar após login
+        setTimeout(() => {
+          location.hash = "#home";
+        }, 800);
       } else {
         document.getElementById("loginMessage").innerHTML =
           "<span class='text-danger'>" +
