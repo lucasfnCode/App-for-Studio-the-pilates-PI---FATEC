@@ -1,4 +1,5 @@
 import { getOrCreateMainElement } from "../../components/main";
+import jwtDecode from "jwt-decode";
 
 export function loginScreen() {
   const mainElement = getOrCreateMainElement();
@@ -17,6 +18,7 @@ export function loginScreen() {
           </div>
           <button type="submit" class="btn btn-secondary w-100">Login</button>
         </form>
+        <div id="loginMessage" class="mt-3"></div>
       </div>
     </section>
   `;
@@ -40,12 +42,28 @@ export function loginScreen() {
         body: JSON.stringify(body),
       });
       const data = await response.json(); // Captura o corpo da resposta como objeto JS
-      localStorage.setItem("token", data.token); // Armazena o token no localStorage
+
+      console.log(data);
+      if (response.ok) {
+        
+        // localStorage.setItem("token", data.token); // Armazena o token no localStorage
+        const decodedHeader = await jwtDecode(token, { header: true });
+        console.log("Decoded Token!", decodedHeader);
+
+        localStorage.setItem("usuarioLogado", JSON.stringify(decodedToken)); // Armazena os dados do usuário
+        const roles = decodedToken.roles || []; // Supondo que a role esteja em 'roles'
+        localStorage.setItem("userRole", JSON.stringify(roles)); // Armazena as roles
+        console.log(roles);
+        
+        location.hash = '#home';
+      } else {
+        // document.getElementById("loginMessage").textContent = data.message || "Erro ao fazer login.";
+        console.log(data.message);
+        
+      }
     } catch (error) {
-      console.error("Erro ao buscar dados completos dos alunos:", error);
-      return [];
+      console.error("Erro ao buscar dados do login:", error);
+      document.getElementById("loginMessage").textContent = "Erro de conexão ao tentar fazer login.";
     }
-    // // Redirecionamento
-    // location.hash = '#home';
   });
 }
