@@ -1,4 +1,5 @@
 import { MainReload } from "../../../function/reloadmain"
+import { listarStudios } from "../../service/functions/listar"
 import { createStudio } from "../../service/service"
 import { StudioManegementPage } from "../../StudioManegement"
 import { closeform } from "./closeform"
@@ -15,7 +16,7 @@ window.addEventListener("submit",async(e)=>
     console.log("estudio q esta sendo enviado pro back via post:",data);
     await createStudio(data)
     MainReload("studios-row")
-    close
-    StudioManegementPage()
+    close()
+    listarStudios()
 })
 }

@@ -675,7 +675,9 @@ var _schedulling = require("./pages/schedulling/schedulling");
 var _loginScreen = require("./pages/loginScreen/loginScreen");
 var _admpage = require("./pages/adm/admpage");
 var _studioManegement = require("./pages/adm/StudioManegement/StudioManegement");
+var _clearBody = require("./functions/clearBody");
 function renderContentBasedOnHash() {
+    (0, _clearBody.clearBody)();
     switch(location.hash){
         case "":
         case "#home":
@@ -699,7 +701,7 @@ function renderContentBasedOnHash() {
 renderContentBasedOnHash();
 window.addEventListener("hashchange", renderContentBasedOnHash);
 
-},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp","./pages/loginScreen/loginScreen":"9vJvL","./pages/adm/admpage":"eIH1s","./pages/adm/StudioManegement/StudioManegement":"hZsFQ"}],"joWv1":[function(require,module,exports,__globalThis) {
+},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp","./pages/loginScreen/loginScreen":"9vJvL","./pages/adm/admpage":"eIH1s","./pages/adm/StudioManegement/StudioManegement":"hZsFQ","./functions/clearBody":"k97dv"}],"joWv1":[function(require,module,exports,__globalThis) {
 /*!
   * Bootstrap v5.3.6 (https://getbootstrap.com/)
   * Copyright 2011-2025 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
@@ -4781,10 +4783,10 @@ var _listar = require("./service/functions/listar");
 function StudioManegementPage() {
     const main = (0, _main.getOrCreateMainElement)();
     main.insertAdjacentHTML("beforebegin", `
-    <section class="container-fluid my-4">
-        <button class="btn btn-primary fw-bold px-4 py-2 rounded-pill shadow-sm" id="new">
+       <button class="btn btn-primary fw-bold px-4 py-2 rounded-pill shadow-sm" id="new">
                 <i class="bi bi-plus-circle me-2"></i>Criar Est\xfadio
         </button>
+    <section class="container-fluid my-4" >
 
         <section id="studios-row" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
 
@@ -4955,6 +4957,7 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "saveform", ()=>saveform);
 var _reloadmain = require("../../../function/reloadmain");
+var _listar = require("../../service/functions/listar");
 var _service = require("../../service/service");
 var _studioManegement = require("../../StudioManegement");
 var _closeform = require("./closeform");
@@ -4968,12 +4971,12 @@ function saveform() {
         console.log("estudio q esta sendo enviado pro back via post:", data);
         await (0, _service.createStudio)(data);
         (0, _reloadmain.MainReload)("studios-row");
-        close;
-        (0, _studioManegement.StudioManegementPage)();
+        close();
+        (0, _listar.listarStudios)();
     });
 }
 
-},{"../../../function/reloadmain":"fffU7","../../service/service":"8jQ4q","../../StudioManegement":"hZsFQ","./closeform":"eFdFn","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"fffU7":[function(require,module,exports,__globalThis) {
+},{"../../../function/reloadmain":"fffU7","../../service/service":"8jQ4q","../../StudioManegement":"hZsFQ","./closeform":"eFdFn","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../service/functions/listar":"8sfIm"}],"fffU7":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "MainReload", ()=>MainReload);
@@ -5038,7 +5041,55 @@ async function getStudioById(id) {
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"kBHqA":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8sfIm":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "listarStudios", ()=>listarStudios);
+var _service = require("../service");
+async function listarStudios() {
+    const $stuiosrow = document.querySelector("#studios-row");
+    const studio = (0, _service.getStudios)();
+    // studio.forEach(e => {
+    $stuiosrow.insertAdjacentHTML("beforeend", `
+
+   <div class="m-4 card" style="max-width: 400px;">
+    <div class="card-header bg-primary text-white p-2 d-flex justify-content-between align-items-center">
+        <h6 class="card-title mb-0">Informa\xe7\xf5es do Est\xfadio: $ {e.name}</h6>
+        <div>
+            <button class="btn btn-sm btn-danger delete">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body p-2">
+        <dl class="row mb-0">
+            <dt class="col-sm-5">ID:</dt>
+            <dd class="id col-sm-7 p-0 " data-id="928">$ {e.id}</dd>
+
+            <dt class="col-sm-5">Endere\xe7o:</dt>
+            <dd class="col-sm-7 p-0 ">$ {e.address}</dd>
+            
+            <dt class="col-sm-5">Dias/Hor\xe1rios:</dt>
+            <dd class="col-sm-7 p-0 days">
+                <div>$ {e.daysOperation}</div>
+                <div class="small">$ {e.openingHours}</div>
+            </dd>
+            
+            <dt class="col-sm-5">Capacidade:</dt>
+            <dd class="col-sm-7 p-0 ">$ {e.limitStudentsPerClass} pessoas por turma</dd>
+
+            <dt class="col-sm-5">Instrutores:</dt>
+            <dd class="col-sm-7 p-0 ">$ {e.instructorsByTime}</dd>
+        </dl>
+    </div>
+</div>
+
+            `);
+    // })
+    console.log("lista de estudios vindo do back : ", studio);
+}
+
+},{"../service":"8jQ4q","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"kBHqA":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Deletar", ()=>Deletar);
@@ -5072,54 +5123,20 @@ function Deletar(id) {
     });
 }
 
-},{"../../../../../components/main":"5zsxX","../service":"8jQ4q","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8sfIm":[function(require,module,exports,__globalThis) {
+},{"../../../../../components/main":"5zsxX","../service":"8jQ4q","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"k97dv":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "listarStudios", ()=>listarStudios);
-var _service = require("../service");
-async function listarStudios() {
-    const $stuiosrow = document.querySelector("#studios-row");
-    const studio = (0, _service.getStudios)();
-    studio.forEach((e)=>{
-        $stuiosrow.insertAdjacentHTML("beforeend", `
-
-   <div class="m-4 card" style="max-width: 400px;">
-    <div class="card-header bg-primary text-white p-2 d-flex justify-content-between align-items-center">
-        <h6 class="card-title mb-0">Informa\xe7\xf5es do Est\xfadio: ${e.name}</h6>
-        <div>
-            <button class="btn btn-sm btn-danger delete">
-                <i class="bi bi-trash"></i>
-            </button>
-        </div>
-    </div>
-    <div class="card-body p-2">
-        <dl class="row mb-0">
-            <dt class="col-sm-5">ID:</dt>
-            <dd class="id col-sm-7 p-0 " data-id="928">${e.id}</dd>
-
-            <dt class="col-sm-5">Endere\xe7o:</dt>
-            <dd class="col-sm-7 p-0 ">${e.address}</dd>
-            
-            <dt class="col-sm-5">Dias/Hor\xe1rios:</dt>
-            <dd class="col-sm-7 p-0 days">
-                <div>${e.daysOperation}</div>
-                <div class="small">${e.openingHours}</div>
-            </dd>
-            
-            <dt class="col-sm-5">Capacidade:</dt>
-            <dd class="col-sm-7 p-0 ">${e.limitStudentsPerClass} pessoas por turma</dd>
-
-            <dt class="col-sm-5">Instrutores:</dt>
-            <dd class="col-sm-7 p-0 ">${e.instructorsByTime}</dd>
-        </dl>
-    </div>
-</div>
-
-            `);
-    });
-    console.log("lista de estudios vindo do back : ", studio);
+parcelHelpers.export(exports, "clearBody", ()=>clearBody);
+function clearBody() {
+    const main = document.getElementById("main");
+    if (main) {
+        main.innerHTML = '';
+        main.classList = null;
+        const body = document.getElementsByTagName('body');
+        body[0].classList = "";
+    }
 }
 
-},{"../service":"8jQ4q","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
 
 //# sourceMappingURL=frontend.4e1ccf09.js.map

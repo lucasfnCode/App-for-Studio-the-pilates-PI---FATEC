@@ -6,12 +6,13 @@ import { renderAgendamentoPage } from './pages/schedulling/schedulling';
 import { loginScreen } from "./pages/loginScreen/loginScreen";
 import { createPageAdm } from "./pages/adm/admpage";
 import { StudioManegementPage } from "./pages/adm/StudioManegement/StudioManegement";
+import { clearBody } from "./functions/clearBody";
 
 
 
 
 function renderContentBasedOnHash() {
-
+clearBody()
   switch (location.hash) {
     case "":
     case "#home":
