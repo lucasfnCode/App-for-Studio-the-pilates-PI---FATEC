@@ -3877,7 +3877,7 @@ function criarModalListaAlunosHTML(alunos = [], role = "aluno", presences = []) 
         const cpf = aluno.cpf || "\u2014";
         const nascimento = aluno.birthDate || "\u2014";
         const isPresent = presences.includes(alunoId);
-        if (role === "ROLE_INSTRUCTOR") return `
+        if (role === "ROLE_INSTRUCTOR" || role === "instrutor" || role === "INSTRUTOR") return `
           <tr>
             <td>${nome}</td>
             <td>${cpf}</td>
@@ -3920,7 +3920,7 @@ function criarModalListaAlunosHTML(alunos = [], role = "aluno", presences = []) 
             </table>
           </div>
           <div class="modal-footer d-flex justify-content-end gap-2">
-            ${role !== "ROLE_INSTRUCTOR" ? `<button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>` : `<button type="button" class="btn btn-outline-primary" onclick="salvarPresencas()">Salvar Presen\xe7as</button>`}
+            ${role !== "ROLE_INSTRUCTOR" && role !== "instrutor" && role !== "INSTRUTOR" ? `<button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>` : `<button type="button" class="btn btn-outline-primary" onclick="salvarPresencas()">Salvar Presen\xe7as</button>`}
             <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
@@ -4252,7 +4252,12 @@ function criarModalCadastroClientesHTML() {
 }
 async function buscarDadosCompletosDosAlunos(listaDeIds) {
     try {
-        const response = await fetch("/api/students");
+        const response = await fetch("/api/users/students", {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
         if (!response.ok) throw new Error("Erro ao buscar alunos");
         const todosAlunos = await response.json();
         // Filtra apenas os que estão na lista da aula
@@ -4263,9 +4268,14 @@ async function buscarDadosCompletosDosAlunos(listaDeIds) {
     }
 }
 document.addEventListener("atualizarListaAlunos", async function() {
-    if (!aulaSelecionadaId) return;
+    if (!window.aulaSelecionadaId) return;
     try {
-        const response = await fetch(`/api/sessions/${aulaSelecionadaId}`);
+        const response = await fetch(`/api/sessions/${window.aulaSelecionadaId}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
         if (!response.ok) throw new Error("Falha ao buscar aula");
         const aula = await response.json();
         const alunos = aula.students || [];
@@ -4389,21 +4399,19 @@ async function fetchAulas() {
             }
         });
         if (!response.ok) {
-            // Se a resposta não for ok, você pode capturar o erro e retornar um valor padrão
             console.error("Erro ao buscar aulas:", response.statusText);
-            return []; // Retorna um array vazio em caso de erro
+            return [];
         }
-        // Verifica se a resposta tem um corpo
         const text = await response.text();
         if (!text) {
             console.error("Resposta vazia do servidor.");
-            return []; // Retorna um array vazio se a resposta estiver vazia
+            return [];
         }
-        const data = JSON.parse(text); // Converte o texto em JSON
+        const data = JSON.parse(text);
         return data;
     } catch (error) {
         console.error("Erro ao buscar aulas:", error);
-        return []; // Retorna um array vazio em caso de erro de conexão
+        return [];
     }
 }
 window.aulaSelecionadaId = null;
@@ -4428,7 +4436,7 @@ async function renderAgendamentoPage() {
             if (role === "ROLE_STUDENT") {
                 if (!jaAgendado && aula.status === "aberta") acoes = `<button class="btn btn-sm btn-success" onclick="agendarAula('${aulaId}')">Agendar</button>`;
                 else if (jaAgendado) acoes = `<button class="btn btn-sm btn-danger" onclick="cancelarAula('${aulaId}')">Cancelar</button>`;
-            } else if (role === "recepcionista") acoes = `<button class="btn btn-sm btn-outline-success" onclick="abrirModalAlunos('${aulaId}')">Ver</button>`;
+            } else if (role === "ROLE_RECEPTIONIST") acoes = `<button class="btn btn-sm btn-outline-success" onclick="abrirModalAlunos('${aulaId}')">Ver</button>`;
             else if (role === "ROLE_INSTRUCTOR") acoes = `<button class="btn btn-sm btn-secondary" onclick="abrirModalAlunos('${aulaId}')">Visualizar</button>`;
             return `
         <tr>
@@ -4470,7 +4478,7 @@ async function renderAgendamentoPage() {
     await atualizarTabela();
 }
 window.registrarAluno = async function(sessionId, studentId) {
-    const id = sessionId || aulaSelecionadaId; // usa aulaSelecionadaId se sessionId for undefined
+    const id = sessionId || aulaSelecionadaId;
     if (!id) {
         alert("ID da aula n\xe3o foi definido.");
         return;
@@ -4479,7 +4487,8 @@ window.registrarAluno = async function(sessionId, studentId) {
         const response = await fetch(`/api/sessions/register/${id}`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
             },
             body: JSON.stringify({
                 studentId
@@ -4497,14 +4506,18 @@ window.registrarAluno = async function(sessionId, studentId) {
         alert("Erro de conex\xe3o ao tentar registrar aluno.");
     }
 };
-let ultimaListaAlunos = []; // Guarda o estado atual
+let ultimaListaAlunos = [];
 async function verificarAtualizacoes() {
     if (!aulaSelecionadaId) return;
-    const response = await fetch(`/api/sessions/${aulaSelecionadaId}`);
+    const response = await fetch(`/api/sessions/${aulaSelecionadaId}`, {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+    });
     if (!response.ok) return;
     const aula = await response.json();
     const alunosAtuais = aula.students || [];
-    // Se a lista mudou, atualiza o modal
     if (JSON.stringify(alunosAtuais) !== JSON.stringify(ultimaListaAlunos)) {
         ultimaListaAlunos = alunosAtuais;
         await atualizarModalAlunos(aulaSelecionadaId);
@@ -4516,7 +4529,8 @@ window.agendarAula = async function(id) {
         const response = await fetch(`/api/sessions/register/${id}`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
             },
             body: JSON.stringify({
                 studentId: user.id
@@ -4540,7 +4554,8 @@ window.cancelarAula = async function(id) {
         const response = await fetch(`/api/sessions/unregister/${id}`, {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
             },
             body: JSON.stringify({
                 studentId: user.id
@@ -4565,8 +4580,12 @@ window.abrirModalAlunos = async function(id) {
         if (existingInstance) existingInstance.hide();
         document.body.classList.remove("modal-open");
         document.querySelectorAll(".modal-backdrop").forEach((el)=>el.remove());
-        const response = await fetch(`/api/sessions/${id}`);
-        // console.log("ID da aula recebido:", id);
+        const response = await fetch(`/api/sessions/${id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
         if (!response.ok) throw new Error("Falha ao buscar aula");
         const aula = await response.json();
         const alunosIds = aula.students || [];
@@ -4575,9 +4594,6 @@ window.abrirModalAlunos = async function(id) {
         (0, _modais.criarModalListaAlunosHTML)(alunos, role, presences);
         const modal = new bootstrap.Modal(document.getElementById("modalListaAlunos"));
         modal.show();
-        document.addEventListener("atualizarListaAlunos", async function() {
-            await atualizarModalAlunos(aulaSelecionadaId);
-        });
     } catch (error) {
         console.error("Erro ao abrir modal de alunos:", error);
         alert("N\xe3o foi poss\xedvel carregar os alunos da aula.");
@@ -4593,7 +4609,12 @@ window.mostrarModalConfirmacao = function(mensagem) {
 };
 async function atualizarModalAlunos(aulaId) {
     try {
-        const response = await fetch(`/api/sessions/${aulaId}`);
+        const response = await fetch(`/api/sessions/${aulaId}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
         if (!response.ok) throw new Error("Falha ao buscar aula");
         const aula = await response.json();
         const alunosIds = aula.students || [];
@@ -4609,7 +4630,7 @@ async function atualizarModalAlunos(aulaId) {
         tbody.innerHTML = alunos.map((alunoId)=>{
             const wasChecked = checkboxesState[alunoId];
             const isPresent = presences.includes(alunoId) || wasChecked;
-            if (role === "instrutor") return `
+            if (role === "ROLE_INSTRUCTOR") return `
           <tr>
             <td>${alunoId}</td>
             <td>\u{2014}</td>
@@ -4644,7 +4665,8 @@ window.removerAluno = async function(studentId) {
         const response = await fetch(`/api/sessions/unregister/${aulaSelecionadaId}`, {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
             },
             body: JSON.stringify({
                 studentId
@@ -4687,7 +4709,8 @@ window.salvarPresencas = async function() {
         const response = await fetch(`/api/sessions/presence/${aulaSelecionadaId}`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
             },
             body: JSON.stringify(presences)
         });
@@ -4702,7 +4725,7 @@ window.salvarPresencas = async function() {
     }
 };
 
-},{"../../components/main":"5zsxX","../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"9vJvL":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../components/main":"5zsxX","../../components/modais":"1Ukbc"}],"9vJvL":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "loginScreen", ()=>loginScreen);

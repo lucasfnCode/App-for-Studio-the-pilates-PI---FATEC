@@ -11,7 +11,7 @@ export function criarModalListaAlunosHTML(
       const nascimento = aluno.birthDate || "—";
       const isPresent = presences.includes(alunoId);
 
-      if (role === "ROLE_INSTRUCTOR") {
+      if (role === "ROLE_INSTRUCTOR" || role === "instrutor" || role === "INSTRUTOR") {
         return `
           <tr>
             <td>${nome}</td>
@@ -61,7 +61,7 @@ export function criarModalListaAlunosHTML(
           </div>
           <div class="modal-footer d-flex justify-content-end gap-2">
             ${
-              role !== "ROLE_INSTRUCTOR"
+              role !== "ROLE_INSTRUCTOR" && role !== "instrutor" && role !== "INSTRUTOR"
                 ? `<button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>`
                 : `<button type="button" class="btn btn-outline-primary" onclick="salvarPresencas()">Salvar Presenças</button>`
             }
@@ -450,7 +450,12 @@ export function criarModalCadastroClientesHTML() {
 
 export async function buscarDadosCompletosDosAlunos(listaDeIds) {
   try {
-    const response = await fetch("/api/students");
+    const response = await fetch("/api/users/students", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     if (!response.ok) throw new Error("Erro ao buscar alunos");
     const todosAlunos = await response.json();
 
@@ -463,10 +468,14 @@ export async function buscarDadosCompletosDosAlunos(listaDeIds) {
 }
 
 document.addEventListener("atualizarListaAlunos", async function () {
-  if (!aulaSelecionadaId) return;
-
+  if (!window.aulaSelecionadaId) return;
   try {
-    const response = await fetch(`/api/sessions/${aulaSelecionadaId}`);
+    const response = await fetch(`/api/sessions/${window.aulaSelecionadaId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     if (!response.ok) throw new Error("Falha ao buscar aula");
 
     const aula = await response.json();
