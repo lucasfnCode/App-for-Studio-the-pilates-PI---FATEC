@@ -3,7 +3,7 @@ import {
   criarModalCadastroAlunoHTML,
   criarModalListaAlunosHTML,
   criarModalConfirmacaoHTML,
-  buscarDadosCompletosDosAlunos
+  buscarDadosCompletosDosAlunos,
 } from "../../components/modais";
 
 // Retorna a role do usuário logado (padrão: aluno)
@@ -19,7 +19,12 @@ function getUserLoggedData() {
 
 async function fetchAulas() {
   try {
-    const response = await fetch("/api/sessions");
+    const response = await fetch("http://localhost:8080/sessions", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     const data = await response.json();
     return data;
   } catch (error) {
@@ -136,7 +141,6 @@ window.registrarAluno = async function (sessionId, studentId) {
     alert("Erro de conexão ao tentar registrar aluno.");
   }
 };
-
 
 let ultimaListaAlunos = []; // Guarda o estado atual
 

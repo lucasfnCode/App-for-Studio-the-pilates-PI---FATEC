@@ -3973,7 +3973,12 @@ window.adicionarAluno = function() {
 };
 window.carregarAlunosDisponiveis = async function() {
     try {
-        const response = await fetch("/api/students/actives");
+        const response = await fetch("http://localhost:8080/users/students/actives", {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
         if (!response.ok) throw new Error("Erro ao buscar alunos");
         const alunos = await response.json();
         const tbody = document.getElementById("alunosDisponiveisTabela");
@@ -4139,7 +4144,7 @@ function criarModalDetalhesInstrutorHTML(instrutor = {}) {
           </div>
           <div class="modal-body row g-4">
             <div class="col-md-5 text-center">
-              <img src="${instrutor.foto || 'https://placehold.co/300x300'}" class="img-fluid rounded-circle shadow-sm" alt="${instrutor.nome}">
+              <img src="${instrutor.foto || "https://placehold.co/300x300"}" class="img-fluid rounded-circle shadow-sm" alt="${instrutor.nome}">
             </div>
             <div class="col-md-7">
               <p class="fs-5">${instrutor.descricao}</p>
@@ -4371,7 +4376,12 @@ function getUserLoggedData() {
 }
 async function fetchAulas() {
     try {
-        const response = await fetch("/api/sessions");
+        const response = await fetch("http://localhost:8080/sessions", {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
         const data = await response.json();
         return data;
     } catch (error) {
@@ -4688,25 +4698,45 @@ function loginScreen() {
         <h2 class="text-center mb-4">Login</h2>
         <form id="loginForm">
           <div class="mb-3">
-            <label for="email" class="form-label">Usu\xe1rio</label>
-            <input type="email" class="form-control" id="username" required>
+            <label class="form-label">Usu\xe1rio</label>
+            <input name="username" class="form-control" id="username" required>
           </div>
           <div class="mb-3">
-            <label for="senha" class="form-label">Senha</label>
-            <input type="password" class="form-control" id="password" required>
+            <label for="password" class="form-label">Senha</label>
+            <input name="password" type="password" class="form-control" id="password" required>
           </div>
           <button type="submit" class="btn btn-secondary w-100">Login</button>
         </form>
       </div>
     </section>
   `;
-    const loginForm = document.getElementById('loginForm');
-    loginForm.addEventListener('submit', (event)=>{
+    const loginForm = document.getElementById("loginForm");
+    loginForm.addEventListener("submit", async (event)=>{
         event.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        // Redirecionamento
-        location.hash = '#home';
+        const formData = new FormData(event.target);
+        const username = formData.get("username");
+        const password = formData.get("password");
+        const body = {
+            username: username,
+            password: password
+        };
+        console.log(body);
+        try {
+            const response = await fetch(`http://localhost:8080/auth/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            });
+            const data = await response.json(); // Captura o corpo da resposta como objeto JS
+            localStorage.setItem("token", data.token); // Armazena o token no localStorage
+        } catch (error) {
+            console.error("Erro ao buscar dados completos dos alunos:", error);
+            return [];
+        }
+    // // Redirecionamento
+    // location.hash = '#home';
     });
 }
 
