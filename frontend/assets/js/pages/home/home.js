@@ -8,10 +8,21 @@ import {
   criarModalAgendaRecepcaoHTML,
   criarModalCadastroClientesHTML,
 } from "../../components/modais";
+import { jwtDecode } from "jwt-decode";
 
 function getUserRole() {
-  const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
-  return user.role || "aluno";
+  const token = localStorage.getItem("token");
+
+  if (!token) return "aluno";
+
+  try {
+    const decoded = jwtDecode(token);
+    const role = decoded.role || (decoded.roles ? decoded.roles[0] : "aluno");
+    return role;
+  } catch (e) {
+    console.error("Erro ao decodificar o token:", e);
+    return "aluno";
+  }
 }
 
 function createCard(title, imageUrl, modalTargetId) {
