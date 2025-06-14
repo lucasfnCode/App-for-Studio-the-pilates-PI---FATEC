@@ -4210,6 +4210,9 @@ parcelHelpers.export(exports, "criarModalPerfilInstrutorHTML", ()=>criarModalPer
 parcelHelpers.export(exports, "criarModalAgendaRecepcaoHTML", ()=>criarModalAgendaRecepcaoHTML);
 parcelHelpers.export(exports, "criarModalCadastroClientesHTML", ()=>criarModalCadastroClientesHTML);
 parcelHelpers.export(exports, "buscarDadosCompletosDosAlunos", ()=>buscarDadosCompletosDosAlunos);
+parcelHelpers.export(exports, "criarModalUsuariosAdminHTML", ()=>criarModalUsuariosAdminHTML);
+// Modal para gerenciar aulas
+parcelHelpers.export(exports, "criarModalAulasAdminHTML", ()=>criarModalAulasAdminHTML);
 function criarModalListaAlunosHTML(alunos = [], role = "aluno", presences = []) {
     const alunosRows = alunos.map((aluno)=>{
         const alunoId = aluno.id || aluno._id || "\u2014";
@@ -4631,6 +4634,100 @@ document.addEventListener("atualizarListaAlunos", async function() {
         console.error("Erro ao atualizar lista de alunos:", error);
     }
 });
+async function criarModalUsuariosAdminHTML() {
+    try {
+        const res = await fetch("/api/users", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        const users = await res.json();
+        const modalHTML = `
+      <div class="modal fade" id="modalUsuariosAdmin" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content p-4 rounded-4">
+            <div class="modal-header border-0">
+              <h4 class="modal-title">Gerenciar Usu\xe1rios</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table table-striped">
+                <thead>
+                  <tr><th>Nome</th><th>Email</th><th>Perfil</th><th>A\xe7\xf5es</th></tr>
+                </thead>
+                <tbody>
+                  ${users.map((user)=>`
+                    <tr>
+                      <td>${user.name}</td>
+                      <td>${user.email}</td>
+                      <td>${user.role}</td>
+                      <td>
+                        <button class="btn btn-sm btn-warning" onclick="editarUsuario('${user.id}')">Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="removerUsuario('${user.id}')">Remover</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+        const existente = document.getElementById("modalUsuariosAdmin");
+        if (existente) existente.remove();
+        document.body.insertAdjacentHTML("beforeend", modalHTML);
+    } catch (error) {
+        console.error("Erro ao buscar usu\xe1rios:", error);
+    }
+}
+async function criarModalAulasAdminHTML() {
+    try {
+        const res = await fetch("/api/sessions", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        const aulas = await res.json();
+        const modalHTML = `
+      <div class="modal fade" id="modalAulasAdmin" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content p-4 rounded-4">
+            <div class="modal-header border-0">
+              <h4 class="modal-title">Gerenciar Aulas</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table table-striped">
+                <thead>
+                  <tr><th>Nome da Aula</th><th>Instrutor</th><th>Hor\xe1rio</th><th>A\xe7\xf5es</th></tr>
+                </thead>
+                <tbody>
+                  ${aulas.map((aula)=>`
+                    <tr>
+                      <td>${aula.name}</td>
+                      <td>${aula.instructorName || "\u2014"}</td>
+                      <td>${aula.schedule || "\u2014"}</td>
+                      <td>
+                        <button class="btn btn-sm btn-warning" onclick="editarAula('${aula.id}')">Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="removerAula('${aula.id}')">Remover</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+        const existente = document.getElementById("modalAulasAdmin");
+        if (existente) existente.remove();
+        document.body.insertAdjacentHTML("beforeend", modalHTML);
+    } catch (error) {
+        console.error("Erro ao buscar aulas:", error);
+    }
+}
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"lYthH":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -4656,7 +4753,7 @@ function createCard(title, imageUrl, modalTargetId, useOnClick = false) {
     </div>
   `;
 }
-function homeScreen() {
+async function homeScreen() {
     const role = getUserRole();
     console.log("Role do usu\xe1rio:", role);
     let titulo = "Bem-vindo ao Est\xfadio de Pilates";
@@ -4668,24 +4765,31 @@ function homeScreen() {
         subtitulo = "Gerencie suas aulas e visualize seu perfil profissional.";
         cards += createCard("Minhas Aulas", "https://placehold.co/600x400?text=Minhas+Aulas", "modalAulasInstrutor");
         cards += createCard("Meu Perfil", "https://placehold.co/600x400?text=Perfil", "modalPerfilInstrutor");
-        modais += (0, _modais.criarModalAulasInstrutorHTML)();
-        modais += (0, _modais.criarModalPerfilInstrutorHTML)();
+        modais += await (0, _modais.criarModalAulasInstrutorHTML)();
+        modais += await (0, _modais.criarModalPerfilInstrutorHTML)();
     } else if (role === "ROLE_RECEPTIONIST") {
         titulo = "\xc1rea da Recep\xe7\xe3o";
         subtitulo = "Organize agendamentos e cadastros de clientes com facilidade.";
         cards += createCard("Agenda", "https://placehold.co/600x400?text=Agenda", "modalAgendaRecepcao");
         cards += createCard("Clientes", "https://placehold.co/600x400?text=Clientes", "modalCadastroClientes");
-        modais += (0, _modais.criarModalAgendaRecepcaoHTML)();
-        modais += (0, _modais.criarModalCadastroClientesHTML)();
+        modais += await (0, _modais.criarModalAgendaRecepcaoHTML)();
+        modais += await (0, _modais.criarModalCadastroClientesHTML)();
+    } else if (role === "ROLE_ADMIN") {
+        titulo = "\xc1rea do Administrador";
+        subtitulo = "Gerencie usu\xe1rios, aulas e todo o sistema.";
+        cards += createCard("Gerenciar Usu\xe1rios", "https://placehold.co/600x400?text=Usu\xe1rios", "modalUsuariosAdmin");
+        cards += createCard("Gerenciar Aulas", "https://placehold.co/600x400?text=Aulas", "modalAulasAdmin");
+        modais += await (0, _modais.criarModalUsuariosAdminHTML)();
+        modais += await (0, _modais.criarModalAulasAdminHTML)();
     } else {
         // Aluno padrão
         cards += createCard("Instrutores", "https://placehold.co/600x400?text=Instrutores", "abrirModalInstrutores", true);
         cards += createCard("Assinaturas", "https://placehold.co/600x400?text=Assinaturas", "modalAssinaturas");
-        modais += (0, _modais.criarModalAssinaturasHTML)();
+        modais += await (0, _modais.criarModalAssinaturasHTML)();
     }
     // O modal "Sobre" é comum a todos
     cards += createCard("Sobre", "https://placehold.co/600x400?text=Sobre", "modalSobre");
-    modais += (0, _modais.criarModalSobreHTML)();
+    modais += await (0, _modais.criarModalSobreHTML)();
     const homeHTML = `
     <section id="bemVindoSection">
       <div class="bem-vindo-container text-center">
@@ -4712,6 +4816,26 @@ window.abrirModalInstrutores = async function() {
             const modal = new bootstrap.Modal(modalEl);
             modal.show();
         } else console.error("Modal de instrutores n\xe3o foi encontrado no DOM.");
+    }, 100);
+};
+window.abrirModalInstrutores = async function() {
+    await (0, _modais.criarModalInstrutoresHTML)();
+    setTimeout(()=>{
+        const modalEl = document.getElementById("modalInstrutores");
+        if (modalEl) {
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        } else console.error("Modal de instrutores n\xe3o foi encontrado no DOM.");
+    }, 100);
+};
+window.abrirModalAssinaturas = async function() {
+    await (0, _modais.criarModalAssinaturasHTML)();
+    setTimeout(()=>{
+        const modalEl = document.getElementById("modalAssinaturas");
+        if (modalEl) {
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        } else console.error("Modal de assinaturas n\xe3o foi encontrado no DOM.");
     }, 100);
 };
 

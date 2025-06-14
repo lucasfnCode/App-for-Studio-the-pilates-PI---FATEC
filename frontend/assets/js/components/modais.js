@@ -503,3 +503,106 @@ document.addEventListener("atualizarListaAlunos", async function () {
     console.error("Erro ao atualizar lista de alunos:", error);
   }
 });
+
+export async function criarModalUsuariosAdminHTML() {
+  try {
+    const res = await fetch("/api/users", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const users = await res.json();
+
+    const modalHTML = `
+      <div class="modal fade" id="modalUsuariosAdmin" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content p-4 rounded-4">
+            <div class="modal-header border-0">
+              <h4 class="modal-title">Gerenciar Usuários</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table table-striped">
+                <thead>
+                  <tr><th>Nome</th><th>Email</th><th>Perfil</th><th>Ações</th></tr>
+                </thead>
+                <tbody>
+                  ${users.map(user => `
+                    <tr>
+                      <td>${user.name}</td>
+                      <td>${user.email}</td>
+                      <td>${user.role}</td>
+                      <td>
+                        <button class="btn btn-sm btn-warning" onclick="editarUsuario('${user.id}')">Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="removerUsuario('${user.id}')">Remover</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const existente = document.getElementById("modalUsuariosAdmin");
+    if (existente) existente.remove();
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+  } catch (error) {
+    console.error("Erro ao buscar usuários:", error);
+  }
+}
+
+// Modal para gerenciar aulas
+export async function criarModalAulasAdminHTML() {
+  try {
+    const res = await fetch("/api/sessions", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const aulas = await res.json();
+
+    const modalHTML = `
+      <div class="modal fade" id="modalAulasAdmin" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content p-4 rounded-4">
+            <div class="modal-header border-0">
+              <h4 class="modal-title">Gerenciar Aulas</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table table-striped">
+                <thead>
+                  <tr><th>Nome da Aula</th><th>Instrutor</th><th>Horário</th><th>Ações</th></tr>
+                </thead>
+                <tbody>
+                  ${aulas.map(aula => `
+                    <tr>
+                      <td>${aula.name}</td>
+                      <td>${aula.instructorName || "—"}</td>
+                      <td>${aula.schedule || "—"}</td>
+                      <td>
+                        <button class="btn btn-sm btn-warning" onclick="editarAula('${aula.id}')">Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="removerAula('${aula.id}')">Remover</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const existente = document.getElementById("modalAulasAdmin");
+    if (existente) existente.remove();
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+  } catch (error) {
+    console.error("Erro ao buscar aulas:", error);
+  }
+}
