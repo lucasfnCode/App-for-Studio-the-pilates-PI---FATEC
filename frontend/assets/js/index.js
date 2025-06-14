@@ -4,6 +4,8 @@ import { headerHtml } from './components/header';
 import { footerHtml } from './components/footer';
 import { renderAgendamentoPage } from './pages/schedulling/schedulling';
 import { loginScreen } from "./pages/loginScreen/loginScreen";
+import { createPageAdm } from "./pages/adm/admpage";
+import { StudioManegementPage } from "./pages/adm/StudioManegement/StudioManegement";
 
 
 
@@ -21,6 +23,12 @@ function renderContentBasedOnHash() {
       break;
     case "#login":
       loginScreen();
+      break;
+    case "#gerenciamento":
+      createPageAdm()
+      break;
+    case "#Studio-manegment":
+        StudioManegementPage()
       break;
   }
 }
