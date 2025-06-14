@@ -4308,7 +4308,7 @@ const headerHtml = `
     <a class="nav-link m-1 text-secondary" aria-current="page" href="#home">Home</a>
     <a class="nav-link m-1 text-secondary" href="#agendamento">Agendamento</a>
     <a class="nav-link m-1 text-secondary" href="#">Aulas</a>
-      <a class="nav-link m-1 text-secondary" href="#gerenciamento">test adm</a>
+      <a class="nav-link m-1 text-secondary" href="#gerenciamento">gerenciamento</a>
   </div>
 
   <div class="nav">
@@ -4775,7 +4775,6 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "StudioManegementPage", ()=>StudioManegementPage);
 var _main = require("../../../components/main");
-var _editformstudi = require("./components/editform/editformstudi");
 var _newStudioForm = require("./components/newStudioform/NewStudioForm");
 var _deletar = require("./service/functions/deletar");
 var _listar = require("./service/functions/listar");
@@ -4789,112 +4788,13 @@ function StudioManegementPage() {
 
         <section id="studios-row" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
 
-            <div class="m-4 card" style="max-width: 400px;">
-                <div class="card-header bg-primary text-white p-2 d-flex justify-content-between align-items-center">
-                    <h6 class="card-title mb-0">Informa\xe7\xf5es do Est\xfadio: [name]</h6>
-                    <div>
-                  
-                    <button class="btn btn-sm btn-danger delete">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                    </div>
-                </div>
-                <div class="card-body p-2">
-                    <dl class="row mb-0">
-                    <dt class="col-sm-5">ID:</dt>
-                    <dd class="id col-sm-7 p-0 " data-id="${"123"}">[123]</dd>
-
-                    <dt class="col-sm-5">Endere\xe7o:</dt>
-                    <dd class="col-sm-7 p-0 ">[address]</dd>
-                    
-                    <dt class="col-sm-5">Dias/Hor\xe1rios:</dt>
-                    <dd class="col-sm-7 p-0  days">
-                        <div>Seg, Qua, Sex</div>
-                        <div class="small">08:00 - 12:00</div>
-                    </dd>
-                    
-                    <dt class="col-sm-5">capacidade :</dt>
-                    <dd class="col-sm-7 p-0 ">20 pessoas por turma</dd>
-
-                    <dt class="col-sm-5">Instrutores:</dt>
-                    <dd class="col-sm-7 p-0 ">[instrutores]</dd>
-                    </dl>
-                </div>
-                </div>
-                 
-              
-                    <div class="m-4 card" style="max-width: 400px;">
-                <div class="card-header bg-primary text-white p-2 d-flex justify-content-between align-items-center">
-                    <h6 class="card-title mb-0">Informa\xe7\xf5es do Est\xfadio: [name]</h6>
-                    <div>
-                    
-                    <button class="btn btn-sm btn-danger delete">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                    </div>
-                </div>
-                <div class="card-body p-2">
-                    <dl class="row mb-0">
-                    <dt class="col-sm-5">ID:</dt>
-                    <dd class="id col-sm-7 p-0 " data-id="${"456"}">[456]</dd>
-
-                    <dt class="col-sm-5">Endere\xe7o:</dt>
-                    <dd class="col-sm-7 p-0 ">[address]</dd>
-                    
-                    <dt class="col-sm-5">Dias/Hor\xe1rios:</dt>
-                    <dd class="col-sm-7 p-0  days">
-                        <div>Seg, Qua, Sex</div>
-                        <div class="small">08:00 - 12:00</div>
-                    </dd>
-                    
-                    <dt class="col-sm-5">capacidade :</dt>
-                    <dd class="col-sm-7 p-0 ">20 pessoas por turma</dd>
-
-                    <dt class="col-sm-5">Instrutores:</dt>
-                    <dd class="col-sm-7 p-0 ">[instrutores]</dd>
-                    </dl>
-                </div>
-                </div>
-
-
-
-
-                <div class="m-4 card" style="max-width: 400px;">
-                <div class="card-header bg-primary text-white p-2 d-flex justify-content-between align-items-center">
-                    <h6 class="card-title mb-0">Informa\xe7\xf5es do Est\xfadio: [name]</h6>
-                    <div>
-                    
-                    <button class="btn btn-sm btn-danger delete">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                    </div>
-                </div>
-                <div class="card-body p-2">
-                    <dl class="row mb-0">
-                    <dt class="col-sm-5">ID:</dt>
-                    <dd class="id col-sm-7 p-0 " data-id="${"987"}">[987]</dd>
-
-                    <dt class="col-sm-5">Endere\xe7o:</dt>
-                    <dd class="col-sm-7 p-0 ">[address]</dd>
-                    
-                    <dt class="col-sm-5">Dias/Hor\xe1rios:</dt>
-                    <dd class="col-sm-7 p-0  days">
-                        <div>Seg, Qua, Sex</div>
-                        <div class="small">08:00 - 12:00</div>
-                    </dd>
-                    
-                    <dt class="col-sm-5">capacidade :</dt>
-                    <dd class="col-sm-7 p-0 ">20 pessoas por turma</dd>
-
-                    <dt class="col-sm-5">Instrutores:</dt>
-                    <dd class="col-sm-7 p-0 ">[instrutores]</dd>
-                    </dl>
-                </div>
-                </div>
+           
+                
         </section>
 
     <section>
     `);
+    (0, _listar.listarStudios)();
     const $new = document.querySelector("#new");
     $new.addEventListener("click", ()=>(0, _newStudioForm.NewStudioForm)());
     const button = document.querySelectorAll("button.delete");
@@ -4905,117 +4805,9 @@ function StudioManegementPage() {
             (0, _deletar.Deletar)(id);
         });
     });
-    (0, _listar.listarStudios)();
 }
 
-},{"../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","./service/functions/listar":"8sfIm","./components/newStudioform/NewStudioForm":"2bJdg","./components/editform/editformstudi":"5SQug","./service/functions/deletar":"kBHqA"}],"8sfIm":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "listarStudios", ()=>listarStudios);
-var _service = require("../service");
-async function listarStudios() {
-    const $stuiosrow = document.querySelector("#studios-row");
-    const studio = (0, _service.getStudios)();
-    studio.forEach((e)=>{
-        $stuiosrow.insertAdjacentHTML("beforeend", `
-
-    <div class="m-4 card" style="max-width: 400px;">
-        <div class="card-header bg-primary text-white p-2 d-flex justify-content-between align-items-center">
-            <h6 class="card-title mb-0">Informa\xe7\xf5es do Est\xfadio: ${e.name}</h6>
-            <div>
-            <button class="btn btn-sm btn-light me-1">
-                <i class="bi bi-pencil"></i> 
-            </button>
-            <button class="btn btn-sm btn-danger">
-                <i class="bi bi-trash"></i>
-            </button>
-            </div>
-        </div>
-        <div class="card-body p-2">
-            <dl class="row mb-0">
-            <dt class="col-sm-5">ID:</dt>
-            <dd class="col-sm-7 p-0 ">${e.id}</dd>
-
-            <dt class="col-sm-5">Endere\xe7o:</dt>
-            <dd class="col-sm-7 p-0 ">${e.address}</dd>
-            
-            <dt class="col-sm-5">Dias/Hor\xe1rios:</dt>
-            <dd class="col-sm-7 p-0  days">
-                <div>${e.daysOperation}</div>
-                <div class="small">${e.openingHours}</div>
-            </dd>
-            
-            <dt class="col-sm-5">capacidade :</dt>
-            <dd class="col-sm-7 p-0 ">${e.limitStudentsPerClass} pessoas por turma</dd>
-
-            <dt class="col-sm-5">Instrutores:</dt>
-            <dd class="col-sm-7 p-0 "${e.instructorsByTime}</dd>
-            </dl>
-        </div>
-    </div>
-            `);
-    });
-}
-
-},{"../service":"8jQ4q","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8jQ4q":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "getStudios", ()=>getStudios);
-parcelHelpers.export(exports, "createStudio", ()=>createStudio);
-parcelHelpers.export(exports, "deleteStudio", ()=>deleteStudio);
-parcelHelpers.export(exports, "getStudioById", ()=>getStudioById);
-const api = "http://localhost:8080/";
-async function getStudios() {
-    try {
-        const response = await fetch(`${api}studios`, {
-            method: 'GET'
-        });
-        return response.json();
-    } catch (error) {
-        console.error("Erro ao buscar est\xfadios:", error);
-        return null;
-    }
-}
-async function createStudio(studioData) {
-    try {
-        const response = await fetch(`${api}studios`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(studioData)
-        });
-        if (response.ok) alert("estudio criado");
-        return response.json();
-    } catch (error) {
-        console.error("Erro ao criar est\xfadio:", error);
-        return null;
-    }
-}
-async function deleteStudio(id) {
-    try {
-        const response = await fetch(`${api}studios/${id}`, {
-            method: 'DELETE'
-        });
-        return response.json();
-    } catch (error) {
-        console.error("Erro ao excluir est\xfadio:", error);
-        return null;
-    }
-}
-async function getStudioById(id) {
-    try {
-        const response = await fetch(`${api}studios/${id}`, {
-            method: 'GET'
-        });
-        return response.json();
-    } catch (error) {
-        console.error("Erro ao buscar est\xfadio por ID:", error);
-        return null;
-    }
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"2bJdg":[function(require,module,exports,__globalThis) {
+},{"../../../components/main":"5zsxX","./components/newStudioform/NewStudioForm":"2bJdg","./service/functions/deletar":"kBHqA","./service/functions/listar":"8sfIm","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"2bJdg":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "NewStudioForm", ()=>NewStudioForm);
@@ -5140,7 +4932,25 @@ function NewStudioForm() {
     (0, _saveform.saveform)();
 }
 
-},{"../../../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","./saveform":"c8nDu","./closeform":"eFdFn"}],"c8nDu":[function(require,module,exports,__globalThis) {
+},{"../../../../../components/main":"5zsxX","./closeform":"eFdFn","./saveform":"c8nDu","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"eFdFn":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "closeform", ()=>closeform);
+function closeform() {
+    const $btn = document.querySelector("#close");
+    $btn.addEventListener("click", ()=>{
+        const $form = document.querySelector("#newformcon");
+        $form.innerHTML = ``;
+        $form.remove();
+    });
+    document.addEventListener("submit", ()=>{
+        const $form = document.querySelector("#newformcon");
+        $form.innerHTML = ``;
+        $form.remove();
+    });
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"c8nDu":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "saveform", ()=>saveform);
@@ -5163,7 +4973,7 @@ function saveform() {
     });
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../service/service":"8jQ4q","../../../function/reloadmain":"fffU7","../../StudioManegement":"hZsFQ","./closeform":"eFdFn"}],"fffU7":[function(require,module,exports,__globalThis) {
+},{"../../../function/reloadmain":"fffU7","../../service/service":"8jQ4q","../../StudioManegement":"hZsFQ","./closeform":"eFdFn","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"fffU7":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "MainReload", ()=>MainReload);
@@ -5171,151 +4981,65 @@ function MainReload(IDelementopae) {
     document.querySelector(`#${IDelementopae}`).remove();
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"eFdFn":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8jQ4q":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "closeform", ()=>closeform);
-function closeform() {
-    const $btn = document.querySelector("#close");
-    $btn.addEventListener("click", ()=>{
-        const $form = document.querySelector("#newformcon");
-        $form.innerHTML = ``;
-        $form.remove();
-    });
-    document.addEventListener("submit", ()=>{
-        const $form = document.querySelector("#newformcon");
-        $form.innerHTML = ``;
-        $form.remove();
-    });
+parcelHelpers.export(exports, "getStudios", ()=>getStudios);
+parcelHelpers.export(exports, "createStudio", ()=>createStudio);
+parcelHelpers.export(exports, "deleteStudio", ()=>deleteStudio);
+parcelHelpers.export(exports, "getStudioById", ()=>getStudioById);
+const api = "http://localhost:8080/";
+async function getStudios() {
+    try {
+        const response = await fetch(`${api}studios`, {
+            method: 'GET'
+        });
+        return response.json();
+    } catch (error) {
+        console.error("Erro ao buscar est\xfadios:", error);
+        return null;
+    }
+}
+async function createStudio(studioData) {
+    try {
+        const response = await fetch(`${api}studios`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(studioData)
+        });
+        if (response.ok) alert("estudio criado");
+        return response.json();
+    } catch (error) {
+        console.error("Erro ao criar est\xfadio:", error);
+        return null;
+    }
+}
+async function deleteStudio(id) {
+    try {
+        const response = await fetch(`${api}studios/${id}`, {
+            method: 'DELETE'
+        });
+        return response.json();
+    } catch (error) {
+        console.error("Erro ao excluir est\xfadio:", error);
+        return null;
+    }
+}
+async function getStudioById(id) {
+    try {
+        const response = await fetch(`${api}studios/${id}`, {
+            method: 'GET'
+        });
+        return response.json();
+    } catch (error) {
+        console.error("Erro ao buscar est\xfadio por ID:", error);
+        return null;
+    }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"5SQug":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-// import { getStudioById } from "../../service/service";
-parcelHelpers.export(exports, "EditFrom", ()=>EditFrom);
-var _main = require("../../../../../components/main");
-var _closeform = require("../newStudioform/closeform");
-var _saveform = require("../newStudioform/saveform");
-async function EditFrom(id) {
-    //const thisStudio =await getStudioById(id)
-    const main = (0, _main.getOrCreateMainElement)();
-    if (!document.querySelector("#newformcon")) main.insertAdjacentHTML("beforebegin", `
- <div class="card position-absolute top-50 start-50 translate-middle" id="newformcon">
-  <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
-    <h5 class="card-title mb-0">Cadastro de Local</h5>
-
-
-    <button id="close" class="p-0 btn">
-      <i class="bi bi-x-lg btn btn-danger"></i>
-    </button>
-  </div>
-  <div class="card-body">
-    <form id="cardInfoForm">
-      <!-- Linha 1 - Nome -->
-      ${id}
-      <div class="mb-3">
-        <label for="name" class="form-label">Nome do Estudio</label>
-        <input type="text" class="form-control" name="name" id="name" placeholder="Digite o nome" required>
-      </div>
-
-      <!-- Linha 2 - Endere\xe7o -->
-      <div class="mb-3">
-        <label for="address" class="form-label">Endere\xe7o</label>
-        <textarea class="form-control" id="address" rows="2" placeholder="Endere\xe7o completo" required name="address"></textarea>
-      </div>
-
-      <!-- Linha 3 - Dias de Funcionamento -->
-      <div class="mb-3">
-        <label class="form-label">Dias de Funcionamento</label>
-        <div class="d-flex flex-wrap gap-3">
-          <div class="form-check">
-
-            <input class="form-check-input" name="daysOperation" type="checkbox" id="monday" value="segunda-feira">
-            <label class="form-check-label" for="monday">Seg</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" name="daysOperation" type="checkbox" id="tuesday" value="ter\xe7a-feira">
-            <label class="form-check-label" for="tuesday">Ter</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" name="daysOperation" type="checkbox" id="wednesday" value="quarta-feira">
-            <label class="form-check-label" for="wednesday">Qua</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" name="daysOperation" type="checkbox" id="thursday" value="quinta-feira">
-            <label class="form-check-label" for="thursday">Qui</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" name="daysOperation" type="checkbox" id="friday" value="Sexta-feira">
-            <label class="form-check-label" for="friday">Sex</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" name="daysOperation" type="checkbox" id="saturday" value="s\xe1bado">
-            <label class="form-check-label" for="saturday">S\xe1b</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" name="daysOperation" type="checkbox" id="sunday" value="domingo">
-            <label class="form-check-label" for="sunday">Dom</label>
-          </div>
-        </div>
-      </div>
-
-      
-      <!-- Linha 4 - Hor\xe1rio e Limite -->
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="form-label">Hor\xe1rio de Funcionamento</label>
-          <div class="input-group">
-            <input type="time" class="form-control" name="openingHours">
-          </div>
-        </div>
-        <div class="col-md-6">
-          <label for="limitStudents" class="form-label">Limite de Alunos</label>
-          <input type="number" class="form-control" id="limitStudents" min="1" placeholder="Ex: 20" name="limitStudentsPerClass">
-        </div>
-      </div>
-
-
-        <!-- linha 5 - instrutor -->
-         <div class="row mb-3">
-        <div class="col-md-6 ">
-
-          <label for="instructorsByTime" class="form-label">instrutores</label>
-            <input type="text" name="instructorsByTime" class="form-control" data-instructor="instrutor"/>
- 
-          </div>
-
-          <div class="col-md-6">                
-            <label for="instructorsByTime" class="form-label">horario</label>
-            <input type="time" name="instructorsByTime" class="form-control" data-instructor="horario"/>
-          
-          </div>
-        </div>
-        <!-- linha 6 - datas em dias - -->
-        
-            <div class="row mb-3">
-                <div class="col-md-6">
-
-                    <label for="limitStudents" class="form-label">dias que nao abrem</label>
-        </div>
-      
-                    <label for="limitStudents" class="form-label">feriados</label>
-                    <input type="date" class="form-control" id="limitStudents" min="1" placeholder="Ex: 20" name="hollidays">
-                    
-                    <label for="limitStudents" class="form-label">recessos</label>
-                    <input type="date" class="form-control" id="limitStudents" min="1" placeholder="Ex: 20" name="recesses">
-                    </div>
-         
-
-      <button type="submit" class="btn btn-success"> salvar </button>
-    </form>
-  </div>
-        `);
-    (0, _closeform.closeform)();
-}
-
-},{"../../../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../newStudioform/saveform":"c8nDu","../newStudioform/closeform":"eFdFn"}],"kBHqA":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"kBHqA":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Deletar", ()=>Deletar);
@@ -5349,6 +5073,53 @@ function Deletar(id) {
     console.log(id);
 }
 
-},{"../../../../../components/main":"5zsxX","../service":"8jQ4q","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
+},{"../../../../../components/main":"5zsxX","../service":"8jQ4q","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8sfIm":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "listarStudios", ()=>listarStudios);
+var _service = require("../service");
+async function listarStudios() {
+    const $stuiosrow = document.querySelector("#studios-row");
+    const studio = (0, _service.getStudios)();
+    studio.forEach((e)=>{
+        $stuiosrow.insertAdjacentHTML("beforeend", `
+
+   <div class="m-4 card" style="max-width: 400px;">
+    <div class="card-header bg-primary text-white p-2 d-flex justify-content-between align-items-center">
+        <h6 class="card-title mb-0">Informa\xe7\xf5es do Est\xfadio: ${e.name}</h6>
+        <div>
+            <button class="btn btn-sm btn-danger delete">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body p-2">
+        <dl class="row mb-0">
+            <dt class="col-sm-5">ID:</dt>
+            <dd class="id col-sm-7 p-0 " data-id="928">${e.id}</dd>
+
+            <dt class="col-sm-5">Endere\xe7o:</dt>
+            <dd class="col-sm-7 p-0 ">${e.address}</dd>
+            
+            <dt class="col-sm-5">Dias/Hor\xe1rios:</dt>
+            <dd class="col-sm-7 p-0 days">
+                <div>${e.daysOperation}</div>
+                <div class="small">${e.openingHours}</div>
+            </dd>
+            
+            <dt class="col-sm-5">Capacidade:</dt>
+            <dd class="col-sm-7 p-0 ">${e.limitStudentsPerClass} pessoas por turma</dd>
+
+            <dt class="col-sm-5">Instrutores:</dt>
+            <dd class="col-sm-7 p-0 ">${e.instructorsByTime}</dd>
+        </dl>
+    </div>
+</div>
+
+            `);
+    });
+}
+
+},{"../service":"8jQ4q","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
 
 //# sourceMappingURL=frontend.4e1ccf09.js.map
