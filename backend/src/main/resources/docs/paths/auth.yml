@@ -1,0 +1,25 @@
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Autenticação de usuários
+      description: Gera um token JWT para autenticação do usuário.
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/UserLoginDTO.yml"
+      responses:
+        "200":
+          description: Usuário autenticado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/UserLoginOutputDTO.yml"
+        "400":
+          description: Requisição inválida (dados faltando ou incorretos)
+        "401":
+          description: Credenciais inválidas

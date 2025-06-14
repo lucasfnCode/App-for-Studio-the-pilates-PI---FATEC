@@ -1,6 +1,7 @@
 package br.com.semesperanca.app.managing.pilates.studios.common.config;
 
 import br.com.semesperanca.app.managing.pilates.studios.application.security.FilterToken;
+import br.com.semesperanca.app.managing.pilates.studios.model.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +37,11 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/auth/**")
                                 .permitAll()
                                 .requestMatchers(HttpMethod.POST, "/users/**")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/v3/api-docs/**",
+                                        "/v3/api-docs.yaml")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.GET, "/docs/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())

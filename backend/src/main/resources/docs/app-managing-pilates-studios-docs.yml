@@ -1,0 +1,48 @@
+openapi: 3.0.1
+info:
+  title: API de Gerenciamento de Studios de Pilates
+  description: Documentação App Managing Pilates Studio
+  version: '1.0'
+servers:
+  - url: http://localhost:8080
+    description: Servidor Local
+tags:
+  - name: Auth
+    description: Operações relacionadas à autenticação
+  - name: Instructor
+    description: Gestão de instrutores
+  - name: Plan
+    description: Operações relacionadas a planos de serviço
+  - name: Session
+    description: Gerenciamento de sessões e agendamentos
+  - name: Student
+    description: Gestão de estudantes e suas informações
+  - name: Studio
+    description: Administração de estúdios e unidades de negócio
+paths:
+  /auth:
+    $ref: './paths/auth.yml'
+  /instructors:
+    $ref: './paths/instructors.yml'
+  /plans:
+    $ref: './paths/plans.yml'
+  /sessions:
+    $ref: './paths/sessions.yml'
+  /students:
+    $ref: './paths/students.yml'
+  /studios:
+    $ref: './paths/studios.yml'
+components:
+  schemas:
+    Auth:
+      $ref: './schemas/auth.yml'
+    Instructor:
+      $ref: './schemas/instructor.yml'
+    Plan:
+      $ref: './schemas/plan.yml'
+    Session:
+      $ref: './schemas/session.yml'
+    Student:
+      $ref: './schemas/student.yml'
+    Studio:
+      $ref: './schemas/studio.yml'

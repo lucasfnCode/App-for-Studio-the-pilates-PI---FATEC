@@ -31,11 +31,11 @@ public class StudentController {
         return ResponseEntity.ok(updatedStudent);
     }
 
-    @PostMapping("/by-ids")
+/*    @PostMapping("/by-ids")
     public ResponseEntity<List<StudentOutputDTO>> getStudentsByIds(@RequestBody List<String> ids) {
         List<StudentOutputDTO> students = studentService.findByIds(ids);
         return ResponseEntity.ok(students);
-    }
+    }*/
 
     @GetMapping
     public ResponseEntity<List<StudentOutputDTO>> getAll() {
