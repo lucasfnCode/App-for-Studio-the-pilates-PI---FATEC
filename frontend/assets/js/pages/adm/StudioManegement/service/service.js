@@ -21,9 +21,7 @@ export async function createStudio(studioData) {
             },
             body: JSON.stringify(studioData)
         });
-        if(response.ok){
-            alert("estudio criado")
-        }     
+        
         return response.json();
     } catch (error) {
         console.error("Erro ao criar estúdio:", error);

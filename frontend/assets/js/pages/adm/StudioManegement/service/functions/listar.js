@@ -41,4 +41,6 @@ export async function listarStudios(){
 
             `)
     })
+    console.log("lista de estudios vindo do back : ",studio);
+    
 }

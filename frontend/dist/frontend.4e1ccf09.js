@@ -4959,16 +4959,16 @@ var _service = require("../../service/service");
 var _studioManegement = require("../../StudioManegement");
 var _closeform = require("./closeform");
 function saveform() {
-    window.addEventListener("submit", (e)=>{
+    const $form = document.querySelector("#cardInfoForm");
+    const form = new FormData($form);
+    const data = Object.fromEntries(form.entries());
+    data.isActive = true;
+    window.addEventListener("submit", async (e)=>{
         e.preventDefault();
-        const $form = document.querySelector("#cardInfoForm");
-        const form = new FormData($form);
-        const data = Object.fromEntries(form.entries());
-        data.isActive = true;
-        console.log(data);
-        (0, _service.createStudio)(data);
+        console.log("estudio q esta sendo enviado pro back via post:", data);
+        await (0, _service.createStudio)(data);
         (0, _reloadmain.MainReload)("studios-row");
-        (0, _closeform.closeform)();
+        close;
         (0, _studioManegement.StudioManegementPage)();
     });
 }
@@ -5009,7 +5009,6 @@ async function createStudio(studioData) {
             },
             body: JSON.stringify(studioData)
         });
-        if (response.ok) alert("estudio criado");
         return response.json();
     } catch (error) {
         console.error("Erro ao criar est\xfadio:", error);
@@ -5047,6 +5046,7 @@ var _main = require("../../../../../components/main");
 var _service = require("../service");
 function Deletar(id) {
     const main = (0, _main.getOrCreateMainElement)();
+    console.log("id do estudio q vai ser deletado : ", id);
     main.insertAdjacentHTML("afterbegin", `
     <div class="card shadow-sm mx-auto position-absolute top-50 start-50 translate-middle" style="max-width: 300px;" id="alert">
     <div class="card-body text-center p-4">
@@ -5070,7 +5070,6 @@ function Deletar(id) {
     $cacelar.addEventListener("click", ()=>{
         $alert.remove();
     });
-    console.log(id);
 }
 
 },{"../../../../../components/main":"5zsxX","../service":"8jQ4q","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8sfIm":[function(require,module,exports,__globalThis) {
@@ -5118,6 +5117,7 @@ async function listarStudios() {
 
             `);
     });
+    console.log("lista de estudios vindo do back : ", studio);
 }
 
 },{"../service":"8jQ4q","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})

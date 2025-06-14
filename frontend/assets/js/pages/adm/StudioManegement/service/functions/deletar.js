@@ -3,6 +3,7 @@ import { deleteStudio } from "../service";
 
 export function Deletar(id) {
    const main = getOrCreateMainElement()
+  console.log("id do estudio q vai ser deletado : ",id);
   
    main.insertAdjacentHTML("afterbegin",`
     <div class="card shadow-sm mx-auto position-absolute top-50 start-50 translate-middle" style="max-width: 300px;" id="alert">
@@ -21,7 +22,6 @@ export function Deletar(id) {
     const $cacelar = document.querySelector("#cancelar")
 
     $deletar.addEventListener("click",() => {
-        
         alert("estudio deletado") 
         deleteStudio(id)
         $alert.remove()
@@ -29,6 +29,5 @@ export function Deletar(id) {
     $cacelar.addEventListener("click",()=>{
         $alert.remove()
     })
-    console.log(id);
    
 }
