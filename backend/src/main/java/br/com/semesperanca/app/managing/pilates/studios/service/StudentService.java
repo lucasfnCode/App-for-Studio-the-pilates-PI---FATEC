@@ -46,7 +46,7 @@ public class StudentService {
     }
 
     public List<StudentOutputDTO> listAllActiveStudent() {
-        List<Student> students = studentRepository.findAll().stream()
+        List<Student> students = studentRepository.findByRolesContaining(Role.ROLE_STUDENT).stream()
                 .filter(User::getIsActive)
                 .toList();
         return students.stream().map(this::assemblerStudentOutputDTO).toList();
