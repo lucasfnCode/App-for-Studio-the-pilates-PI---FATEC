@@ -8,5 +8,3 @@ import org.springframework.stereotype.Repository;
 public interface InstructorRepository extends UserBaseRepository<Instructor> {
     
 }
-
-
