@@ -1,6 +1,0 @@
-UserLoginOutputDTO:
-  type: object
-  properties:
-    token:
-      type: string
-      example: "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9..."
