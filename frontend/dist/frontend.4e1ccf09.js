@@ -691,7 +691,7 @@ function renderContentBasedOnHash() {
 renderContentBasedOnHash();
 window.addEventListener("hashchange", renderContentBasedOnHash);
 
-},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp","./pages/loginScreen/loginScreen":"9vJvL"}],"joWv1":[function(require,module,exports,__globalThis) {
+},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp","./pages/home/home":"lYthH","./pages/loginScreen/loginScreen":"9vJvL"}],"joWv1":[function(require,module,exports,__globalThis) {
 /*!
   * Bootstrap v5.3.6 (https://getbootstrap.com/)
   * Copyright 2011-2025 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
@@ -3729,564 +3729,7 @@ window.addEventListener("hashchange", renderContentBasedOnHash);
     };
 });
 
-},{}],"lYthH":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "homeScreen", ()=>homeScreen);
-var _main = require("../../components/main");
-var _modais = require("../../components/modais");
-function getUserRole() {
-    const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
-    return user.role;
-}
-function getUserLoggedData() {
-    return JSON.parse(localStorage.getItem("usuarioLogado")) || {};
-}
-function createCard(title, imageUrl, modalTargetId) {
-    return `
-    <div class="col p-3">
-      <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
-        <img src="${imageUrl}" class="card-img-top" alt="${title}">
-        <div class="card-body text-center">
-          <h5 class="card-title fw-bold">${title}</h5>
-          <button class="btn btn-dark w-100 rounded-pill mt-2" data-bs-toggle="modal" data-bs-target="#${modalTargetId}">Acessar</button>
-        </div>
-      </div>
-    </div>
-  `;
-}
-function homeScreen() {
-    const role = getUserRole();
-    console.log("Role do usu\xe1rio:", role);
-    let titulo = "Bem-vindo ao Est\xfadio de Pilates";
-    let subtitulo = "Transforme seu corpo e mente com nossas aulas especializadas.";
-    let cards = "";
-    let modais = "";
-    if (role === "ROLE_INSTRUCTOR") {
-        titulo = "\xc1rea do Instrutor";
-        subtitulo = "Gerencie suas aulas e visualize seu perfil profissional.";
-        cards += createCard("Minhas Aulas", "https://placehold.co/600x400?text=Minhas+Aulas", "modalAulasInstrutor");
-        cards += createCard("Meu Perfil", "https://placehold.co/600x400?text=Perfil", "modalPerfilInstrutor");
-        modais += (0, _modais.criarModalAulasInstrutorHTML)();
-        modais += (0, _modais.criarModalPerfilInstrutorHTML)();
-    } else if (role === "recepcionista") {
-        titulo = "\xc1rea da Recep\xe7\xe3o";
-        subtitulo = "Organize agendamentos e cadastros de clientes com facilidade.";
-        cards += createCard("Agenda", "https://placehold.co/600x400?text=Agenda", "modalAgendaRecepcao");
-        cards += createCard("Clientes", "https://placehold.co/600x400?text=Clientes", "modalCadastroClientes");
-        modais += (0, _modais.criarModalAgendaRecepcaoHTML)();
-        modais += (0, _modais.criarModalCadastroClientesHTML)();
-    } else {
-        // aluno padrão
-        cards += createCard("Instrutores", "https://placehold.co/600x400?text=Instrutores", "modalInstrutores");
-        cards += createCard("Assinaturas", "https://placehold.co/600x400?text=Assinaturas", "modalAssinaturas");
-        modais += (0, _modais.criarModalInstrutoresHTML)();
-        modais += (0, _modais.criarModalAssinaturasHTML)();
-    }
-    // O modal "Sobre" é comum a todos
-    cards += createCard("Sobre", "https://placehold.co/600x400?text=Sobre", "modalSobre");
-    modais += (0, _modais.criarModalSobreHTML)();
-    const homeHTML = `
-    <section id="bemVindoSection">
-      <div class="bem-vindo-container text-center">
-        <img src="https://cdn-icons-png.flaticon.com/512/2983/2983094.png" alt="\xcdcone de Pilates" class="bem-vindo-icone">
-        <h1 class="bem-vindo-titulo">${titulo}</h1>
-        <p class="bem-vindo-subtitulo">${subtitulo}</p>
-      </div>
-    </section>
-
-    <section class="row row-cols-1 row-cols-md-3 g-4 w-100 justify-content-center">
-      ${cards}
-    </section>
-
-    ${modais}
-  `;
-    const main = (0, _main.getOrCreateMainElement)();
-    main.innerHTML = homeHTML;
-}
-
-},{"../../components/main":"5zsxX","../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"5zsxX":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "getOrCreateMainElement", ()=>getOrCreateMainElement);
-const getOrCreateMainElement = ()=>{
-    let main = document.getElementById('main');
-    if (!main) {
-        main = document.createElement('main');
-        main.id = 'main';
-        const header = document.getElementsByTagName('header')[0];
-        if (header) header.insertAdjacentElement('afterend', main);
-        const footer = document.getElementsByTagName('footer')[0];
-        if (footer) footer.insertAdjacentElement('beforebegin', main);
-        else document.body.appendChild(main);
-    }
-    return main;
-};
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"jnFvT":[function(require,module,exports,__globalThis) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, '__esModule', {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === 'default' || key === '__esModule' || Object.prototype.hasOwnProperty.call(dest, key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"1Ukbc":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "criarModalListaAlunosHTML", ()=>criarModalListaAlunosHTML);
-parcelHelpers.export(exports, "criarModalCadastroAlunoHTML", ()=>criarModalCadastroAlunoHTML);
-parcelHelpers.export(exports, "criarModalConfirmacaoHTML", ()=>criarModalConfirmacaoHTML);
-parcelHelpers.export(exports, "criarModalInstrutoresHTML", ()=>criarModalInstrutoresHTML);
-parcelHelpers.export(exports, "criarModalAssinaturasHTML", ()=>criarModalAssinaturasHTML);
-parcelHelpers.export(exports, "criarModalSobreHTML", ()=>criarModalSobreHTML);
-parcelHelpers.export(exports, "modalSalvarAlteracaoHTML", ()=>modalSalvarAlteracaoHTML);
-parcelHelpers.export(exports, "criarModalDetalhesInstrutorHTML", ()=>criarModalDetalhesInstrutorHTML);
-parcelHelpers.export(exports, "criarModalConfirmarAssinaturaHTML", ()=>criarModalConfirmarAssinaturaHTML);
-parcelHelpers.export(exports, "criarModalAulasInstrutorHTML", ()=>criarModalAulasInstrutorHTML);
-parcelHelpers.export(exports, "criarModalPerfilInstrutorHTML", ()=>criarModalPerfilInstrutorHTML);
-parcelHelpers.export(exports, "criarModalAgendaRecepcaoHTML", ()=>criarModalAgendaRecepcaoHTML);
-parcelHelpers.export(exports, "criarModalCadastroClientesHTML", ()=>criarModalCadastroClientesHTML);
-parcelHelpers.export(exports, "buscarDadosCompletosDosAlunos", ()=>buscarDadosCompletosDosAlunos);
-function criarModalListaAlunosHTML(alunos = [], role = "aluno", presences = []) {
-    const alunosRows = alunos.map((aluno)=>{
-        const alunoId = aluno.id || aluno._id || "\u2014";
-        const nome = aluno.name || "\u2014";
-        const cpf = aluno.cpf || "\u2014";
-        const nascimento = aluno.birthDate || "\u2014";
-        const isPresent = presences.includes(alunoId);
-        if (role === "ROLE_INSTRUCTOR") return `
-          <tr>
-            <td>${nome}</td>
-            <td>${cpf}</td>
-            <td>${nascimento}</td>
-            <td>
-              <input type="checkbox" class="form-check-input presence-checkbox" 
-                     data-aluno-id="${alunoId}" ${isPresent ? "checked" : ""}>
-            </td>
-          </tr>
-        `;
-        return `
-        <tr>
-          <td>${nome}</td>
-          <td>${cpf}</td>
-          <td>${nascimento}</td>
-          <td>
-            <button class="btn btn-sm btn-danger" onclick="removerAluno('${alunoId}')">Remover</button>
-          </td>
-        </tr>
-      `;
-    }).join("");
-    const modalExistente = document.getElementById("modalListaAlunos");
-    if (modalExistente) modalExistente.remove();
-    const modalHTML = `
-    <div class="modal fade" id="modalListaAlunos" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content p-4">
-          <div class="modal-header">
-            <h5 class="modal-title">Alunos da Aula</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <table class="table text-center">
-              <thead>
-                <tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>A\xe7\xf5es</th></tr>
-              </thead>
-              <tbody>
-                ${alunosRows}
-              </tbody>
-            </table>
-          </div>
-          <div class="modal-footer d-flex justify-content-end gap-2">
-            ${role !== "ROLE_INSTRUCTOR" ? `<button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>` : `<button type="button" class="btn btn-outline-primary" onclick="salvarPresencas()">Salvar Presen\xe7as</button>`}
-            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-    document.body.insertAdjacentHTML("beforeend", modalHTML);
-    return "";
-}
-function criarModalCadastroAlunoHTML() {
-    const modal = document.getElementById("modalCadastroAluno");
-    if (modal) modal.remove();
-    const modalHTML = `
-    <div id="modalCadastroAluno" class="modal fade" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content p-4">
-          <div class="modal-header">
-            <h3 class="modal-title">Adicionar Alunos</h3>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div id="listaAlunosDisponiveis" class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th>Selecionar</th>
-                    <th>ID</th>
-                    <th>Data de Nascimento</th>
-                  </tr>
-                </thead>
-                <tbody id="alunosDisponiveisTabela">
-                  <tr><td colspan="3">Carregando alunos...</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="modal-footer d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-outline-success" onclick="salvarAlunosSelecionados()">Adicionar Selecionados</button>
-            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-    document.body.insertAdjacentHTML("beforeend", modalHTML);
-    carregarAlunosDisponiveis();
-    return "";
-}
-window.adicionarAluno = function() {
-    const modalAnterior = bootstrap.Modal.getInstance(document.getElementById("modalListaAlunos"));
-    if (modalAnterior) modalAnterior.hide();
-    const modalCadastro = new bootstrap.Modal(document.getElementById("modalCadastroAluno"));
-    modalCadastro.show();
-};
-window.carregarAlunosDisponiveis = async function() {
-    try {
-        const response = await fetch("http://localhost:8080/users/students/actives", {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`
-            }
-        });
-        if (!response.ok) throw new Error("Erro ao buscar alunos");
-        const alunos = await response.json();
-        const tbody = document.getElementById("alunosDisponiveisTabela");
-        tbody.innerHTML = alunos.map((aluno)=>`
-      <tr>
-        <td><input type="checkbox" class="form-check-input" data-id="${aluno.id}"></td>
-        <td>${aluno.name || aluno.id}</td>
-        <td>${aluno.birthDate || "\u2014"}</td>
-      </tr>
-    `).join("");
-    } catch (error) {
-        console.error("Erro ao carregar alunos dispon\xedveis:", error);
-        const tbody = document.getElementById("alunosDisponiveisTabela");
-        tbody.innerHTML = `<tr><td colspan="3">Erro ao carregar alunos</td></tr>`;
-    }
-};
-window.salvarAlunosSelecionados = async function() {
-    const checkboxes = document.querySelectorAll("#alunosDisponiveisTabela input[type='checkbox']:checked");
-    const alunosSelecionados = Array.from(checkboxes).map((cb)=>cb.dataset.id);
-    for (const studentId of alunosSelecionados)await window.registrarAluno(window.aulaSelecionadaId, studentId);
-    const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastroAluno"));
-    modal.hide();
-};
-function criarModalConfirmacaoHTML() {
-    return `
-    <div id="modalConfirmacao" class="modal fade" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content p-4">
-          <div class="modal-header">
-            <h5 class="modal-title">Confirma\xe7\xe3o</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-          <div class="modal-body">
-            <p id="mensagemConfirmacao">A\xe7\xe3o conclu\xedda com sucesso.</p>
-          </div>
-          <div class="modal-footer d-flex justify-content-end">
-            <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Fechar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-function criarModalInstrutoresHTML() {
-    return `
-    <div class="modal fade" id="modalInstrutores" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content p-4 rounded-4">
-          <div class="modal-header border-0">
-            <h4 class="modal-title">Nossos Instrutores</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-          <div class="modal-body row g-4">
-            <div class="col-md-4 text-center">
-              <img src="https://placehold.co/600x400?text=Ana" class="img-fluid rounded-3 shadow-sm" alt="Ana Clara">
-              <h5 class="mt-3">Ana Clara</h5>
-              <p>Especialista em Pilates Solo e Alongamento</p>
-            </div>
-            <div class="col-md-4 text-center">
-              <img src="https://placehold.co/600x400?text=Bruno" class="img-fluid rounded-3 shadow-sm" alt="Bruno Silva">
-              <h5 class="mt-3">Bruno Silva</h5>
-              <p>Reabilita\xe7\xe3o e Pilates para Idosos</p>
-            </div>
-            <div class="col-md-4 text-center">
-              <img src="https://placehold.co/600x400?text=Camila" class="img-fluid rounded-3 shadow-sm" alt="Camila Torres">
-              <h5 class="mt-3">Camila Torres</h5>
-              <p>Pilates com foco em respira\xe7\xe3o e relaxamento</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-function criarModalAssinaturasHTML() {
-    return `
-    <div class="modal fade" id="modalAssinaturas" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content p-4 rounded-4">
-          <div class="modal-header border-0">
-            <h4 class="modal-title">Planos de Assinatura</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-          <div class="modal-body">
-            <div class="list-group">
-              <div class="list-group-item py-3">
-                <h5>\u{2728} B\xe1sico</h5>
-                <p>2x por semana, acesso ao app, <strong>R$ 89/m\xeas</strong></p>
-              </div>
-              <div class="list-group-item py-3">
-                <h5>\u{1F525} Intermedi\xe1rio</h5>
-                <p>3x por semana + sess\xf5es online, <strong>R$ 129/m\xeas</strong></p>
-              </div>
-              <div class="list-group-item py-3">
-                <h5>\u{1F48E} Premium</h5>
-                <p>Aulas di\xe1rias + consultoria personalizada, <strong>R$ 199/m\xeas</strong></p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-function criarModalSobreHTML() {
-    return `
-    <div class="modal fade" id="modalSobre" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content p-4 rounded-4">
-          <div class="modal-header border-0">
-            <h4 class="modal-title">Sobre o Pilates</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-          <div class="modal-body row g-4 align-items-center">
-            <div class="col-md-6">
-              <img src="https://placehold.co/600x400?text=Pilates" class="img-fluid rounded-3 shadow-sm" alt="Pilates Studio">
-            </div>
-            <div class="col-md-6">
-              <p class="fs-5">
-                O Pilates \xe9 uma pr\xe1tica de exerc\xedcios f\xedsicos focada no controle muscular, respira\xe7\xe3o, alongamento e fortalecimento.
-                Criado por Joseph Pilates, ele promove equil\xedbrio entre corpo e mente, melhorando postura, flexibilidade e bem-estar geral.
-              </p>
-              <p class="fs-5">
-                Ideal para todas as idades, o m\xe9todo trabalha a musculatura profunda, favorece a reabilita\xe7\xe3o f\xedsica e previne dores cr\xf4nicas.
-                A pr\xe1tica regular ajuda no aumento da consci\xeancia corporal, da energia e da sa\xfade mental.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-function modalSalvarAlteracaoHTML() {
-    return `
-    <div class="modal fade" id="modalSalvarAlteracao" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content p-4 rounded-4">
-          <div class="modal-header border-0">
-            <h5 class="modal-title">Confirmar Altera\xe7\xf5es</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-          <div class="modal-body">
-            <p class="fs-5">Voc\xea tem certeza de que deseja salvar as altera\xe7\xf5es feitas?</p>
-          </div>
-          <div class="modal-footer d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-outline-primary" onclick="confirmarSalvarAlteracoes()">Salvar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-function criarModalDetalhesInstrutorHTML(instrutor = {}) {
-    return `
-    <div class="modal fade" id="modalDetalhesInstrutor" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content p-4 rounded-4">
-          <div class="modal-header border-0">
-            <h4 class="modal-title">${instrutor.nome}</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-          <div class="modal-body row g-4">
-            <div class="col-md-5 text-center">
-              <img src="${instrutor.foto || "https://placehold.co/300x300"}" class="img-fluid rounded-circle shadow-sm" alt="${instrutor.nome}">
-            </div>
-            <div class="col-md-7">
-              <p class="fs-5">${instrutor.descricao}</p>
-              <p><strong>Especialidades:</strong> ${instrutor.especialidades?.join(", ") || "Pilates Geral"}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-function criarModalConfirmarAssinaturaHTML(plano = {}) {
-    return `
-    <div class="modal fade" id="modalConfirmarAssinatura" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content p-4 rounded-4">
-          <div class="modal-header border-0">
-            <h5 class="modal-title">Confirmar Assinatura</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-          <div class="modal-body">
-            <p class="fs-5">Voc\xea est\xe1 prestes a assinar o plano <strong>${plano.nome || "Selecionado"}</strong> por <strong>${plano.valor || "R$ XX,XX"}</strong>.</p>
-            <p class="text-muted">Deseja continuar?</p>
-          </div>
-          <div class="modal-footer d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-outline-success" onclick="confirmarPlano('${plano.nome}')">Assinar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-function criarModalAulasInstrutorHTML() {
-    return `
-    <div class="modal fade" id="modalAulasInstrutor" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content p-4 rounded-4">
-          <div class="modal-header border-0">
-            <h4 class="modal-title">Aulas do Instrutor</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-          <div class="modal-body">
-            <p class="fs-5">Lista de aulas, hor\xe1rios ou qualquer conte\xfado relacionado ao instrutor selecionado.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-function criarModalPerfilInstrutorHTML() {
-    return `
-    <div class="modal fade" id="modalPerfilInstrutor" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content p-4 rounded-4">
-          <div class="modal-header border-0">
-            <h4 class="modal-title">Perfil do Instrutor</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-          <div class="modal-body">
-            <p class="fs-5">Detalhes completos sobre o instrutor, como experi\xeancia, certifica\xe7\xf5es, especialidades etc.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-function criarModalAgendaRecepcaoHTML() {
-    return `
-    <div class="modal fade" id="modalAgendaRecepcao" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content p-4 rounded-4">
-          <div class="modal-header border-0">
-            <h4 class="modal-title">Agenda da Recep\xe7\xe3o</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-          <div class="modal-body">
-            <p class="fs-5">Visualiza\xe7\xe3o da agenda di\xe1ria, semanal ou mensal dos atendimentos agendados.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-function criarModalCadastroClientesHTML() {
-    return `
-    <div class="modal fade" id="modalCadastroClientes" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content p-4 rounded-4">
-          <div class="modal-header border-0">
-            <h4 class="modal-title">Cadastro de Clientes</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-          <div class="modal-body">
-            <p class="fs-5">Formul\xe1rio ou painel para cadastro de novos clientes.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-async function buscarDadosCompletosDosAlunos(listaDeIds) {
-    try {
-        const response = await fetch("/api/students");
-        if (!response.ok) throw new Error("Erro ao buscar alunos");
-        const todosAlunos = await response.json();
-        // Filtra apenas os que estão na lista da aula
-        return todosAlunos.filter((aluno)=>listaDeIds.includes(aluno.id));
-    } catch (error) {
-        console.error("Erro ao buscar dados completos dos alunos:", error);
-        return [];
-    }
-}
-document.addEventListener("atualizarListaAlunos", async function() {
-    if (!aulaSelecionadaId) return;
-    try {
-        const response = await fetch(`/api/sessions/${aulaSelecionadaId}`);
-        if (!response.ok) throw new Error("Falha ao buscar aula");
-        const aula = await response.json();
-        const alunos = aula.students || [];
-        const tbody = document.querySelector("#modalListaAlunos tbody");
-        tbody.innerHTML = alunos.map((alunoId)=>`
-      <tr>
-        <td>${alunoId}</td>
-        <td>\u{2014}</td>
-        <td>\u{2014}</td>
-        <td>
-          <button class="btn btn-sm btn-danger" onclick="removerAluno('${alunoId}')">Remover</button>
-        </td>
-      </tr>
-    `).join("");
-        console.log("Lista de alunos atualizada!");
-    } catch (error) {
-        console.error("Erro ao atualizar lista de alunos:", error);
-    }
-});
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"3QKkX":[function(require,module,exports,__globalThis) {
+},{}],"3QKkX":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "headerHtml", ()=>headerHtml);
@@ -4318,7 +3761,37 @@ const headerElement = document.createElement('header');
 headerElement.innerHTML = headerHtml;
 document.body.insertAdjacentElement('afterbegin', headerElement);
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"dr3uo":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"jnFvT":[function(require,module,exports,__globalThis) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, '__esModule', {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === 'default' || key === '__esModule' || Object.prototype.hasOwnProperty.call(dest, key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"dr3uo":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "footerHtml", ()=>footerHtml);
@@ -4702,7 +4175,547 @@ window.salvarPresencas = async function() {
     }
 };
 
-},{"../../components/main":"5zsxX","../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"9vJvL":[function(require,module,exports,__globalThis) {
+},{"../../components/main":"5zsxX","../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"5zsxX":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getOrCreateMainElement", ()=>getOrCreateMainElement);
+const getOrCreateMainElement = ()=>{
+    let main = document.getElementById('main');
+    if (!main) {
+        main = document.createElement('main');
+        main.id = 'main';
+        const header = document.getElementsByTagName('header')[0];
+        if (header) header.insertAdjacentElement('afterend', main);
+        const footer = document.getElementsByTagName('footer')[0];
+        if (footer) footer.insertAdjacentElement('beforebegin', main);
+        else document.body.appendChild(main);
+    }
+    return main;
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"1Ukbc":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "criarModalListaAlunosHTML", ()=>criarModalListaAlunosHTML);
+parcelHelpers.export(exports, "criarModalCadastroAlunoHTML", ()=>criarModalCadastroAlunoHTML);
+parcelHelpers.export(exports, "criarModalConfirmacaoHTML", ()=>criarModalConfirmacaoHTML);
+parcelHelpers.export(exports, "criarModalInstrutoresHTML", ()=>criarModalInstrutoresHTML);
+parcelHelpers.export(exports, "criarModalAssinaturasHTML", ()=>criarModalAssinaturasHTML);
+parcelHelpers.export(exports, "criarModalSobreHTML", ()=>criarModalSobreHTML);
+parcelHelpers.export(exports, "modalSalvarAlteracaoHTML", ()=>modalSalvarAlteracaoHTML);
+parcelHelpers.export(exports, "criarModalDetalhesInstrutorHTML", ()=>criarModalDetalhesInstrutorHTML);
+parcelHelpers.export(exports, "criarModalConfirmarAssinaturaHTML", ()=>criarModalConfirmarAssinaturaHTML);
+parcelHelpers.export(exports, "criarModalAulasInstrutorHTML", ()=>criarModalAulasInstrutorHTML);
+parcelHelpers.export(exports, "criarModalPerfilInstrutorHTML", ()=>criarModalPerfilInstrutorHTML);
+parcelHelpers.export(exports, "criarModalAgendaRecepcaoHTML", ()=>criarModalAgendaRecepcaoHTML);
+parcelHelpers.export(exports, "criarModalCadastroClientesHTML", ()=>criarModalCadastroClientesHTML);
+parcelHelpers.export(exports, "buscarDadosCompletosDosAlunos", ()=>buscarDadosCompletosDosAlunos);
+function criarModalListaAlunosHTML(alunos = [], role = "aluno", presences = []) {
+    const alunosRows = alunos.map((aluno)=>{
+        const alunoId = aluno.id || aluno._id || "\u2014";
+        const nome = aluno.name || "\u2014";
+        const cpf = aluno.cpf || "\u2014";
+        const nascimento = aluno.birthDate || "\u2014";
+        const isPresent = presences.includes(alunoId);
+        if (role === "ROLE_INSTRUCTOR") return `
+          <tr>
+            <td>${nome}</td>
+            <td>${cpf}</td>
+            <td>${nascimento}</td>
+            <td>
+              <input type="checkbox" class="form-check-input presence-checkbox" 
+                     data-aluno-id="${alunoId}" ${isPresent ? "checked" : ""}>
+            </td>
+          </tr>
+        `;
+        return `
+        <tr>
+          <td>${nome}</td>
+          <td>${cpf}</td>
+          <td>${nascimento}</td>
+          <td>
+            <button class="btn btn-sm btn-danger" onclick="removerAluno('${alunoId}')">Remover</button>
+          </td>
+        </tr>
+      `;
+    }).join("");
+    const modalExistente = document.getElementById("modalListaAlunos");
+    if (modalExistente) modalExistente.remove();
+    const modalHTML = `
+    <div class="modal fade" id="modalListaAlunos" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4">
+          <div class="modal-header">
+            <h5 class="modal-title">Alunos da Aula</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table text-center">
+              <thead>
+                <tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>A\xe7\xf5es</th></tr>
+              </thead>
+              <tbody>
+                ${alunosRows}
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer d-flex justify-content-end gap-2">
+            ${role !== "ROLE_INSTRUCTOR" ? `<button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>` : `<button type="button" class="btn btn-outline-primary" onclick="salvarPresencas()">Salvar Presen\xe7as</button>`}
+            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+    return "";
+}
+function criarModalCadastroAlunoHTML() {
+    const modal = document.getElementById("modalCadastroAluno");
+    if (modal) modal.remove();
+    const modalHTML = `
+    <div id="modalCadastroAluno" class="modal fade" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content p-4">
+          <div class="modal-header">
+            <h3 class="modal-title">Adicionar Alunos</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="listaAlunosDisponiveis" class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Selecionar</th>
+                    <th>ID</th>
+                    <th>Data de Nascimento</th>
+                  </tr>
+                </thead>
+                <tbody id="alunosDisponiveisTabela">
+                  <tr><td colspan="3">Carregando alunos...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-success" onclick="salvarAlunosSelecionados()">Adicionar Selecionados</button>
+            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+    carregarAlunosDisponiveis();
+    return "";
+}
+window.adicionarAluno = function() {
+    const modalAnterior = bootstrap.Modal.getInstance(document.getElementById("modalListaAlunos"));
+    if (modalAnterior) modalAnterior.hide();
+    const modalCadastro = new bootstrap.Modal(document.getElementById("modalCadastroAluno"));
+    modalCadastro.show();
+};
+window.carregarAlunosDisponiveis = async function() {
+    try {
+        const response = await fetch("http://localhost:8080/users/students/actives", {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        if (!response.ok) throw new Error("Erro ao buscar alunos");
+        const alunos = await response.json();
+        const tbody = document.getElementById("alunosDisponiveisTabela");
+        tbody.innerHTML = alunos.map((aluno)=>`
+      <tr>
+        <td><input type="checkbox" class="form-check-input" data-id="${aluno.id}"></td>
+        <td>${aluno.name || aluno.id}</td>
+        <td>${aluno.birthDate || "\u2014"}</td>
+      </tr>
+    `).join("");
+    } catch (error) {
+        console.error("Erro ao carregar alunos dispon\xedveis:", error);
+        const tbody = document.getElementById("alunosDisponiveisTabela");
+        tbody.innerHTML = `<tr><td colspan="3">Erro ao carregar alunos</td></tr>`;
+    }
+};
+window.salvarAlunosSelecionados = async function() {
+    const checkboxes = document.querySelectorAll("#alunosDisponiveisTabela input[type='checkbox']:checked");
+    const alunosSelecionados = Array.from(checkboxes).map((cb)=>cb.dataset.id);
+    for (const studentId of alunosSelecionados)await window.registrarAluno(window.aulaSelecionadaId, studentId);
+    const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastroAluno"));
+    modal.hide();
+};
+function criarModalConfirmacaoHTML() {
+    return `
+    <div id="modalConfirmacao" class="modal fade" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirma\xe7\xe3o</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p id="mensagemConfirmacao">A\xe7\xe3o conclu\xedda com sucesso.</p>
+          </div>
+          <div class="modal-footer d-flex justify-content-end">
+            <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+async function criarModalInstrutoresHTML() {
+    try {
+        const res = await fetch("/api/users/instructors", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        const instructors = await res.json();
+        const modalHTML = `
+      <div class="modal fade" id="modalInstrutores" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content p-4 rounded-4">
+            <div class="modal-header border-0">
+              <h4 class="modal-title">Nossos Instrutores</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body row g-4">
+              ${instructors.map((instructors)=>`
+                <div class="col-md-4 text-center">
+                  <img src='https://placehold.co/600x400?text=Instrutor' class="img-fluid rounded-3 shadow-sm" alt="${instructors.name}">
+                  <h5 class="mt-3">${instructors.name}</h5>
+                  <p>${instructors.formation || 'Especialista em Pilates'}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+        // Remove se já existir
+        const existente = document.getElementById("modalInstrutores");
+        if (existente) existente.remove();
+        document.body.insertAdjacentHTML("beforeend", modalHTML);
+    } catch (error) {
+        console.error("Erro ao buscar instrutores:", error);
+    }
+}
+function criarModalAssinaturasHTML() {
+    return `
+    <div class="modal fade" id="modalAssinaturas" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h4 class="modal-title">Planos de Assinatura</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <div class="list-group">
+              <div class="list-group-item py-3">
+                <h5>\u{2728} B\xe1sico</h5>
+                <p>2x por semana, acesso ao app, <strong>R$ 89/m\xeas</strong></p>
+              </div>
+              <div class="list-group-item py-3">
+                <h5>\u{1F525} Intermedi\xe1rio</h5>
+                <p>3x por semana + sess\xf5es online, <strong>R$ 129/m\xeas</strong></p>
+              </div>
+              <div class="list-group-item py-3">
+                <h5>\u{1F48E} Premium</h5>
+                <p>Aulas di\xe1rias + consultoria personalizada, <strong>R$ 199/m\xeas</strong></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function criarModalSobreHTML() {
+    return `
+    <div class="modal fade" id="modalSobre" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h4 class="modal-title">Sobre o Pilates</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body row g-4 align-items-center">
+            <div class="col-md-6">
+              <img src="https://placehold.co/600x400?text=Pilates" class="img-fluid rounded-3 shadow-sm" alt="Pilates Studio">
+            </div>
+            <div class="col-md-6">
+              <p class="fs-5">
+                O Pilates \xe9 uma pr\xe1tica de exerc\xedcios f\xedsicos focada no controle muscular, respira\xe7\xe3o, alongamento e fortalecimento.
+                Criado por Joseph Pilates, ele promove equil\xedbrio entre corpo e mente, melhorando postura, flexibilidade e bem-estar geral.
+              </p>
+              <p class="fs-5">
+                Ideal para todas as idades, o m\xe9todo trabalha a musculatura profunda, favorece a reabilita\xe7\xe3o f\xedsica e previne dores cr\xf4nicas.
+                A pr\xe1tica regular ajuda no aumento da consci\xeancia corporal, da energia e da sa\xfade mental.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function modalSalvarAlteracaoHTML() {
+    return `
+    <div class="modal fade" id="modalSalvarAlteracao" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h5 class="modal-title">Confirmar Altera\xe7\xf5es</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p class="fs-5">Voc\xea tem certeza de que deseja salvar as altera\xe7\xf5es feitas?</p>
+          </div>
+          <div class="modal-footer d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-outline-primary" onclick="confirmarSalvarAlteracoes()">Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function criarModalDetalhesInstrutorHTML(instrutor = {}) {
+    return `
+    <div class="modal fade" id="modalDetalhesInstrutor" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h4 class="modal-title">${instrutor.nome}</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body row g-4">
+            <div class="col-md-5 text-center">
+              <img src="${instrutor.foto || "https://placehold.co/300x300"}" class="img-fluid rounded-circle shadow-sm" alt="${instrutor.nome}">
+            </div>
+            <div class="col-md-7">
+              <p class="fs-5">${instrutor.descricao}</p>
+              <p><strong>Especialidades:</strong> ${instrutor.especialidades?.join(", ") || "Pilates Geral"}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function criarModalConfirmarAssinaturaHTML(plano = {}) {
+    return `
+    <div class="modal fade" id="modalConfirmarAssinatura" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h5 class="modal-title">Confirmar Assinatura</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p class="fs-5">Voc\xea est\xe1 prestes a assinar o plano <strong>${plano.nome || "Selecionado"}</strong> por <strong>${plano.valor || "R$ XX,XX"}</strong>.</p>
+            <p class="text-muted">Deseja continuar?</p>
+          </div>
+          <div class="modal-footer d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-outline-success" onclick="confirmarPlano('${plano.nome}')">Assinar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function criarModalAulasInstrutorHTML() {
+    return `
+    <div class="modal fade" id="modalAulasInstrutor" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h4 class="modal-title">Aulas do Instrutor</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p class="fs-5">Lista de aulas, hor\xe1rios ou qualquer conte\xfado relacionado ao instrutor selecionado.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function criarModalPerfilInstrutorHTML() {
+    return `
+    <div class="modal fade" id="modalPerfilInstrutor" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h4 class="modal-title">Perfil do Instrutor</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p class="fs-5">Detalhes completos sobre o instrutor, como experi\xeancia, certifica\xe7\xf5es, especialidades etc.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function criarModalAgendaRecepcaoHTML() {
+    return `
+    <div class="modal fade" id="modalAgendaRecepcao" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h4 class="modal-title">Agenda da Recep\xe7\xe3o</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p class="fs-5">Visualiza\xe7\xe3o da agenda di\xe1ria, semanal ou mensal dos atendimentos agendados.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function criarModalCadastroClientesHTML() {
+    return `
+    <div class="modal fade" id="modalCadastroClientes" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content p-4 rounded-4">
+          <div class="modal-header border-0">
+            <h4 class="modal-title">Cadastro de Clientes</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p class="fs-5">Formul\xe1rio ou painel para cadastro de novos clientes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+async function buscarDadosCompletosDosAlunos(listaDeIds) {
+    try {
+        const response = await fetch("/api/students");
+        if (!response.ok) throw new Error("Erro ao buscar alunos");
+        const todosAlunos = await response.json();
+        // Filtra apenas os que estão na lista da aula
+        return todosAlunos.filter((aluno)=>listaDeIds.includes(aluno.id));
+    } catch (error) {
+        console.error("Erro ao buscar dados completos dos alunos:", error);
+        return [];
+    }
+}
+document.addEventListener("atualizarListaAlunos", async function() {
+    if (!aulaSelecionadaId) return;
+    try {
+        const response = await fetch(`/api/sessions/${aulaSelecionadaId}`);
+        if (!response.ok) throw new Error("Falha ao buscar aula");
+        const aula = await response.json();
+        const alunos = aula.students || [];
+        const tbody = document.querySelector("#modalListaAlunos tbody");
+        tbody.innerHTML = alunos.map((alunoId)=>`
+      <tr>
+        <td>${alunoId}</td>
+        <td>\u{2014}</td>
+        <td>\u{2014}</td>
+        <td>
+          <button class="btn btn-sm btn-danger" onclick="removerAluno('${alunoId}')">Remover</button>
+        </td>
+      </tr>
+    `).join("");
+        console.log("Lista de alunos atualizada!");
+    } catch (error) {
+        console.error("Erro ao atualizar lista de alunos:", error);
+    }
+});
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"lYthH":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "homeScreen", ()=>homeScreen);
+var _main = require("../../components/main");
+var _modais = require("../../components/modais");
+function getUserRole() {
+    const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+    return user.role;
+}
+function createCard(title, imageUrl, modalTargetId, useOnClick = false) {
+    const button = useOnClick ? `<button class="btn btn-dark w-100 rounded-pill mt-2" onclick="${modalTargetId}()">Acessar</button>` : `<button class="btn btn-dark w-100 rounded-pill mt-2" data-bs-toggle="modal" data-bs-target="#${modalTargetId}">Acessar</button>`;
+    return `
+    <div class="col p-3">
+      <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
+        <img src="${imageUrl}" class="card-img-top" alt="${title}">
+        <div class="card-body text-center">
+          <h5 class="card-title fw-bold">${title}</h5>
+          ${button}
+        </div>
+      </div>
+    </div>
+  `;
+}
+function homeScreen() {
+    const role = getUserRole();
+    console.log("Role do usu\xe1rio:", role);
+    let titulo = "Bem-vindo ao Est\xfadio de Pilates";
+    let subtitulo = "Transforme seu corpo e mente com nossas aulas especializadas.";
+    let cards = "";
+    let modais = "";
+    if (role === "ROLE_INSTRUCTOR") {
+        titulo = "\xc1rea do Instrutor";
+        subtitulo = "Gerencie suas aulas e visualize seu perfil profissional.";
+        cards += createCard("Minhas Aulas", "https://placehold.co/600x400?text=Minhas+Aulas", "modalAulasInstrutor");
+        cards += createCard("Meu Perfil", "https://placehold.co/600x400?text=Perfil", "modalPerfilInstrutor");
+        modais += (0, _modais.criarModalAulasInstrutorHTML)();
+        modais += (0, _modais.criarModalPerfilInstrutorHTML)();
+    } else if (role === "ROLE_RECEPTIONIST") {
+        titulo = "\xc1rea da Recep\xe7\xe3o";
+        subtitulo = "Organize agendamentos e cadastros de clientes com facilidade.";
+        cards += createCard("Agenda", "https://placehold.co/600x400?text=Agenda", "modalAgendaRecepcao");
+        cards += createCard("Clientes", "https://placehold.co/600x400?text=Clientes", "modalCadastroClientes");
+        modais += (0, _modais.criarModalAgendaRecepcaoHTML)();
+        modais += (0, _modais.criarModalCadastroClientesHTML)();
+    } else {
+        // Aluno padrão
+        cards += createCard("Instrutores", "https://placehold.co/600x400?text=Instrutores", "abrirModalInstrutores", true);
+        cards += createCard("Assinaturas", "https://placehold.co/600x400?text=Assinaturas", "modalAssinaturas");
+        modais += (0, _modais.criarModalAssinaturasHTML)();
+    }
+    // O modal "Sobre" é comum a todos
+    cards += createCard("Sobre", "https://placehold.co/600x400?text=Sobre", "modalSobre");
+    modais += (0, _modais.criarModalSobreHTML)();
+    const homeHTML = `
+    <section id="bemVindoSection">
+      <div class="bem-vindo-container text-center">
+        <img src="https://cdn-icons-png.flaticon.com/512/2983/2983094.png" alt="\xcdcone de Pilates" class="bem-vindo-icone">
+        <h1 class="bem-vindo-titulo">${titulo}</h1>
+        <p class="bem-vindo-subtitulo">${subtitulo}</p>
+      </div>
+    </section>
+
+    <section class="row row-cols-1 row-cols-md-3 g-4 w-100 justify-content-center">
+      ${cards}
+    </section>
+
+    ${modais}
+  `;
+    const main = (0, _main.getOrCreateMainElement)();
+    main.innerHTML = homeHTML;
+}
+window.abrirModalInstrutores = async function() {
+    await (0, _modais.criarModalInstrutoresHTML)();
+    setTimeout(()=>{
+        const modalEl = document.getElementById("modalInstrutores");
+        if (modalEl) {
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        } else console.error("Modal de instrutores n\xe3o foi encontrado no DOM.");
+    }, 100);
+};
+
+},{"../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../components/main":"5zsxX"}],"9vJvL":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "loginScreen", ()=>loginScreen);
@@ -4771,7 +4784,7 @@ function loginScreen() {
     });
 }
 
-},{"../../components/main":"5zsxX","jwt-decode":"4WbSe","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"4WbSe":[function(require,module,exports,__globalThis) {
+},{"../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","jwt-decode":"4WbSe"}],"4WbSe":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "InvalidTokenError", ()=>InvalidTokenError);

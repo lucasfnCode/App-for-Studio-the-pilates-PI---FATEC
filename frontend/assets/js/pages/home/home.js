@@ -10,22 +10,22 @@ import {
 } from "../../components/modais";
 
 function getUserRole() {
-  const user = JSON.parse(localStorage.getItem ("usuarioLogado")) || {};
+  const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
   return user.role;
 }
-function getUserLoggedData(){
-  return JSON.parse(localStorage.getItem("usuarioLogado")) || {};
-}
-  
 
-function createCard(title, imageUrl, modalTargetId) {
+function createCard(title, imageUrl, modalTargetId, useOnClick = false) {
+  const button = useOnClick
+    ? `<button class="btn btn-dark w-100 rounded-pill mt-2" onclick="${modalTargetId}()">Acessar</button>`
+    : `<button class="btn btn-dark w-100 rounded-pill mt-2" data-bs-toggle="modal" data-bs-target="#${modalTargetId}">Acessar</button>`;
+
   return `
     <div class="col p-3">
       <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
         <img src="${imageUrl}" class="card-img-top" alt="${title}">
         <div class="card-body text-center">
           <h5 class="card-title fw-bold">${title}</h5>
-          <button class="btn btn-dark w-100 rounded-pill mt-2" data-bs-toggle="modal" data-bs-target="#${modalTargetId}">Acessar</button>
+          ${button}
         </div>
       </div>
     </div>
@@ -35,7 +35,7 @@ function createCard(title, imageUrl, modalTargetId) {
 export function homeScreen() {
   const role = getUserRole();
   console.log("Role do usuário:", role);
-  
+
   let titulo = "Bem-vindo ao Estúdio de Pilates";
   let subtitulo = "Transforme seu corpo e mente com nossas aulas especializadas.";
   let cards = "";
@@ -48,7 +48,7 @@ export function homeScreen() {
     cards += createCard("Meu Perfil", "https://placehold.co/600x400?text=Perfil", "modalPerfilInstrutor");
     modais += criarModalAulasInstrutorHTML();
     modais += criarModalPerfilInstrutorHTML();
-  } else if (role === "recepcionista") {
+  } else if (role === "ROLE_RECEPTIONIST") {
     titulo = "Área da Recepção";
     subtitulo = "Organize agendamentos e cadastros de clientes com facilidade.";
     cards += createCard("Agenda", "https://placehold.co/600x400?text=Agenda", "modalAgendaRecepcao");
@@ -56,10 +56,9 @@ export function homeScreen() {
     modais += criarModalAgendaRecepcaoHTML();
     modais += criarModalCadastroClientesHTML();
   } else {
-    // aluno padrão
-    cards += createCard("Instrutores", "https://placehold.co/600x400?text=Instrutores", "modalInstrutores");
+    // Aluno padrão
+    cards += createCard("Instrutores", "https://placehold.co/600x400?text=Instrutores", "abrirModalInstrutores", true);
     cards += createCard("Assinaturas", "https://placehold.co/600x400?text=Assinaturas", "modalAssinaturas");
-    modais += criarModalInstrutoresHTML();
     modais += criarModalAssinaturasHTML();
   }
 
@@ -86,3 +85,17 @@ export function homeScreen() {
   const main = getOrCreateMainElement();
   main.innerHTML = homeHTML;
 }
+
+window.abrirModalInstrutores = async function () {
+  await criarModalInstrutoresHTML(); 
+
+  setTimeout(() => {
+    const modalEl = document.getElementById("modalInstrutores");
+    if (modalEl) {
+      const modal = new bootstrap.Modal(modalEl);
+      modal.show();
+    } else {
+      console.error("Modal de instrutores não foi encontrado no DOM.");
+    }
+  }, 100);
+};

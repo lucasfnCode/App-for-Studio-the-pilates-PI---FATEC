@@ -204,37 +204,47 @@ export function criarModalConfirmacaoHTML() {
   `;
 }
 
-export function criarModalInstrutoresHTML() {
-  return `
-    <div class="modal fade" id="modalInstrutores" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content p-4 rounded-4">
-          <div class="modal-header border-0">
-            <h4 class="modal-title">Nossos Instrutores</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-          <div class="modal-body row g-4">
-            <div class="col-md-4 text-center">
-              <img src="https://placehold.co/600x400?text=Ana" class="img-fluid rounded-3 shadow-sm" alt="Ana Clara">
-              <h5 class="mt-3">Ana Clara</h5>
-              <p>Especialista em Pilates Solo e Alongamento</p>
+export async function criarModalInstrutoresHTML() {
+  try {
+    const res = await fetch("/api/users/instructors", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const instructors = await res.json();
+
+    const modalHTML = `
+      <div class="modal fade" id="modalInstrutores" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content p-4 rounded-4">
+            <div class="modal-header border-0">
+              <h4 class="modal-title">Nossos Instrutores</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            <div class="col-md-4 text-center">
-              <img src="https://placehold.co/600x400?text=Bruno" class="img-fluid rounded-3 shadow-sm" alt="Bruno Silva">
-              <h5 class="mt-3">Bruno Silva</h5>
-              <p>Reabilitação e Pilates para Idosos</p>
-            </div>
-            <div class="col-md-4 text-center">
-              <img src="https://placehold.co/600x400?text=Camila" class="img-fluid rounded-3 shadow-sm" alt="Camila Torres">
-              <h5 class="mt-3">Camila Torres</h5>
-              <p>Pilates com foco em respiração e relaxamento</p>
+            <div class="modal-body row g-4">
+              ${instructors.map(instructors => `
+                <div class="col-md-4 text-center">
+                  <img src='https://placehold.co/600x400?text=Instrutor' class="img-fluid rounded-3 shadow-sm" alt="${instructors.name}">
+                  <h5 class="mt-3">${instructors.name}</h5>
+                  <p>${instructors.formation || 'Especialista em Pilates'}</p>
+                </div>
+              `).join('')}
             </div>
           </div>
         </div>
       </div>
-    </div>
-  `;
+    `;
+
+    // Remove se já existir
+    const existente = document.getElementById("modalInstrutores");
+    if (existente) existente.remove();
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+  } catch (error) {
+    console.error("Erro ao buscar instrutores:", error);
+  }
 }
+
 
 export function criarModalAssinaturasHTML() {
   return `
