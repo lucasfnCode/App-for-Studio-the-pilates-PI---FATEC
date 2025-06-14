@@ -6,14 +6,14 @@ import {
   buscarDadosCompletosDosAlunos,
 } from "../../components/modais";
 
-// Retorna a role do usuário logado (padrão: aluno)
-function getUserRole() {
+// Retorna a role do usuário logado
+export function getUserRole() {
   const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
-  return user?.role || "aluno";
+  return user?.role;
 }
 
 // Retorna os dados do usuário logado
-function getUserLoggedData() {
+export function getUserLoggedData() {
   return JSON.parse(localStorage.getItem("usuarioLogado")) || {};
 }
 
