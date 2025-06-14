@@ -1,7 +1,6 @@
 package br.com.semesperanca.app.managing.pilates.studios.common.config;
 
 import br.com.semesperanca.app.managing.pilates.studios.application.security.FilterToken;
-import br.com.semesperanca.app.managing.pilates.studios.model.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

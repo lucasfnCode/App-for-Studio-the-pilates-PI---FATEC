@@ -23,6 +23,7 @@ public class TokenService {
         return JWT.create()
                 .withIssuer("Managing Pilates")
                 .withSubject(user.getCpf())
+                .withClaim("id", user.getId())
                 .withClaim("roles", roles)
                 .withExpiresAt(
                         Date.from(

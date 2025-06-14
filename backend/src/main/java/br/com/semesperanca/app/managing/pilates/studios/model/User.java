@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -17,6 +18,9 @@ import java.util.Set;
 @SuperBuilder
 @NoArgsConstructor
 public abstract class User implements UserDetails {
+
+    @Id
+    private String id;
 
     @NonNull
     private String name;
