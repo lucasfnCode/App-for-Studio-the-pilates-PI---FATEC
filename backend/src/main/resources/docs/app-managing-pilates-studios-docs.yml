@@ -1,0 +1,1103 @@
+openapi: 3.0.1
+info:
+  title: API de Gerenciamento de Studios de Pilates
+  description: Documentação App Managing Pilates Studio
+  version: '1.0'
+servers:
+  - url: http://localhost:8080
+    description: Servidor Local
+tags:
+  - name: Auth
+    description: Operações relacionadas à autenticação
+  - name: Instructor
+    description: Gestão de instrutores
+  - name: Plan
+    description: Operações relacionadas a planos de serviço
+  - name: Session
+    description: Gerenciamento de sessões e agendamentos
+  - name: Student
+    description: Gestão de estudantes e suas informações
+  - name: Studio
+    description: Administração de estúdios e unidades de negócio
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Autenticação de usuários
+      description: Gera um token JWT para autenticação do usuário.
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLoginDTO"
+      responses:
+        "200":
+          description: Usuário autenticado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserLoginOutputDTO"
+        "400":
+          description: Requisição inválida (dados faltando ou incorretos)
+        "401":
+          description: Credenciais inválidas
+  /users/instructors/actives:
+    get:
+      tags:
+        - Instructor
+      summary: Listar todos os instrutores ativos
+      description: Retorna uma lista de instrutores que estão ativos no sistema.
+      operationId: listAllActiveInstructors
+      responses:
+        "200":
+          description: Lista de instrutores ativos retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InstructorOutputDTO"
+
+  /users/instructors:
+    get:
+      tags:
+        - Instructor
+      summary: Listar todos os instrutores
+      description: Retorna uma lista com todos os instrutores, ativos e inativos.
+      operationId: listAllInstructors
+      responses:
+        "200":
+          description: Lista de instrutores retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InstructorOutputDTO"
+
+    post:
+      tags:
+        - Instructor
+      summary: Registrar um novo instrutor
+      description: Registra um instrutor na base de dados.
+      operationId: registerInstructor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InstructorInputDTO"
+      responses:
+        "201":
+          description: Instrutor criado com sucesso
+          content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InstructorOutputDTO"
+
+  /users/instructors/{id}:
+    get:
+      tags:
+        - Instructor
+      summary: Obter um instrutor por ID
+      description: Retorna um instrutor específico baseado no ID fornecido.
+      operationId: getInstructorById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Instrutor encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InstructorOutputDTO"
+        "404":
+          description: Instrutor não encontrado
+
+    put:
+      tags:
+        - Instructor
+      summary: Atualizar dados de um instrutor
+      description: Atualiza informações de um instrutor específico pelo ID.
+      operationId: updateInstructorById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InstructorInputDTO"
+      responses:
+        "200":
+          description: Instrutor atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InstructorOutputDTO"
+        "404":
+          description: Instrutor não encontrado
+
+    delete:
+      tags:
+        - Instructor
+      summary: Desativar um instrutor
+      description: Marca um instrutor como inativo no sistema.
+      operationId: desactiveInstructorById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Instrutor desativado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InstructorOutputDTO"
+        "404":
+          description: Instrutor não encontrado
+
+  /plans/actives:
+    get:
+      tags:
+        - Plan
+      summary: Listar todos os planos ativos
+      description: Retorna uma lista de planos que estão ativos no sistema.
+      operationId: listAllActivePlans
+      responses:
+        "200":
+          description: Lista de planos ativos retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlanOutputDTO"
+
+  /plans:
+    get:
+      tags:
+        - Plan
+      summary: Listar todos os planos
+      description: Retorna uma lista com todos os planos, ativos e inativos.
+      operationId: listAllPlans
+      responses:
+        "200":
+          description: Lista de planos retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlanOutputDTO"
+
+    post:
+      tags:
+        - Plan
+      summary: Criar um novo plano
+      description: Adiciona um novo plano ao sistema.
+      operationId: createPlan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlanInputDTO"
+      responses:
+        "201":
+          description: Plano criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlanOutputDTO"
+
+  /plans/{id}:
+    get:
+      tags:
+        - Plan
+      summary: Obter um plano por ID
+      description: Retorna um plano específico baseado no ID fornecido.
+      operationId: listPlanById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Plano encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlanOutputDTO"
+        "404":
+          description: Plano não encontrado
+
+    put:
+      tags:
+        - Plan
+      summary: Atualizar um plano
+      description: Atualiza informações de um plano específico pelo ID.
+      operationId: updatePlanById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlanInputDTO"
+      responses:
+        "200":
+          description: Plano atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlanOutputDTO"
+        "404":
+          description: Plano não encontrado
+
+    delete:
+      tags:
+        - Plan
+      summary: Desativar um plano
+      description: Marca um plano como inativo no sistema.
+      operationId: desactivePlanById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Plano desativado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlanOutputDTO"
+        "404":
+          description: Plano não encontrado
+
+  /sessions/actives:
+    get:
+      tags:
+        - Session
+      summary: Listar todas as sessões ativas
+      description: Retorna uma lista de sessões que estão ativas no sistema.
+      operationId: listAllActiveSessions
+      responses:
+        "200":
+          description: Lista de sessões ativas retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SessionOutputDTO"
+
+  /sessions:
+    get:
+      tags:
+        - Session
+      summary: Listar todas as sessões
+      description: Retorna todas as sessões, incluindo ativas e inativas.
+      operationId: listAllSessions
+      responses:
+        "200":
+          description: Lista de sessões retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SessionOutputDTO"
+
+    post:
+      tags:
+        - Session
+      summary: Criar uma nova sessão
+      description: Abre uma nova sessão de treinamento.
+      operationId: openSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SessionInputDTO"
+      responses:
+        "201":
+          description: Sessão criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionOutputDTO"
+
+  /sessions/{id}:
+    get:
+      tags:
+        - Session
+      summary: Obter uma sessão por ID
+      description: Retorna uma sessão específica baseada no ID fornecido.
+      operationId: listSessionById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Sessão encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionOutputDTO"
+        "404":
+          description: Sessão não encontrada
+
+    put:
+      tags:
+        - Session
+      summary: Atualizar uma sessão
+      description: Atualiza informações de uma sessão específica pelo ID.
+      operationId: updateSessionById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SessionInputDTO"
+      responses:
+        "200":
+          description: Sessão atualizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionOutputDTO"
+        "404":
+          description: Sessão não encontrada
+
+    delete:
+      tags:
+        - Session
+      summary: Desativar uma sessão
+      description: Marca uma sessão como inativa no sistema.
+      operationId: desactiveSessionById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Sessão desativada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionOutputDTO"
+        "404":
+          description: Sessão não encontrada
+
+  /users/students:
+    post:
+      tags:
+        - Student
+      summary: Criar um novo estudante
+      description: Registra um novo estudante no sistema.
+      operationId: createStudent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentInputDTO"
+      responses:
+        "201":
+          description: Estudante criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentOutputDTO"
+
+    get:
+      tags:
+        - Student
+      summary: Listar todos os estudantes
+      description: Retorna uma lista de todos os estudantes cadastrados.
+      operationId: getAllStudents
+      responses:
+        "200":
+          description: Lista de estudantes retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudentOutputDTO"
+
+  /users/students/actives:
+    get:
+      tags:
+        - Student
+      summary: Listar estudantes ativos
+      description: Retorna uma lista de estudantes que estão ativos no sistema.
+      operationId: listAllActiveStudents
+      responses:
+        "200":
+          description: Lista de estudantes ativos retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudentOutputDTO"
+
+  /users/students/{id}:
+    get:
+      tags:
+        - Student
+      summary: Obter um estudante por ID
+      description: Retorna um estudante específico baseado no ID fornecido.
+      operationId: getStudentById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Estudante encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentOutputDTO"
+        "404":
+          description: Estudante não encontrado
+
+    put:
+      tags:
+        - Student
+      summary: Atualizar um estudante
+      description: Atualiza informações de um estudante específico pelo ID.
+      operationId: updateStudent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentInputDTO"
+      responses:
+        "200":
+          description: Estudante atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentOutputDTO"
+        "404":
+          description: Estudante não encontrado
+
+  /users/students/{id}/add-plan:
+    post:
+      tags:
+        - Student
+      summary: Adicionar um plano ao estudante
+      description: Adiciona um plano a um estudante existente.
+      operationId: addPlanToStudent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlanStudentInputDTO"
+      responses:
+        "200":
+          description: Plano adicionado com sucesso ao estudante
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentOutputDTO"
+
+  /studios:
+    post:
+      tags:
+        - Studio
+      summary: Criar um novo estúdio
+      description: Registra um novo estúdio no sistema.
+      operationId: createStudio
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudioInputDTO"
+      responses:
+        "201":
+          description: Estúdio criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudioOutputDTO"
+
+    get:
+      tags:
+        - Studio
+      summary: Listar todos os estúdios
+      description: Retorna uma lista de todos os estúdios cadastrados.
+      operationId: listAllStudios
+      responses:
+        "200":
+          description: Lista de estúdios retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudioOutputDTO"
+
+  /studios/{id}:
+    get:
+      tags:
+        - Studio
+      summary: Obter um estúdio por ID
+      description: Retorna um estúdio específico baseado no ID fornecido.
+      operationId: getStudioById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Estúdio encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudioOutputDTO"
+        "404":
+          description: Estúdio não encontrado
+
+    delete:
+      tags:
+        - Studio
+      summary: Excluir um estúdio
+      description: Remove um estúdio do sistema baseado no ID fornecido.
+      operationId: deleteStudio
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Estúdio excluído com sucesso
+        "404":
+          description: Estúdio não encontrado
+
+components:
+  schemas:
+    UserLoginDTO:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "lucas.silva"
+        password:
+          type: string
+          format: password
+          example: "senha123"
+
+    UserLoginOutputDTO:
+      type: object
+      properties:
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9..."
+
+    InstructorInputDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+            enum: [ ROLE_ADMIN, ROLE_STUDENT, ROLE_INSTRUCTOR, ROLE_RECEPTIONIST ]
+        cpf:
+          type: string
+        birthDate:
+          type: string
+          format: date
+        email:
+          type: string
+          format: email
+        contact:
+          type: string
+        photo:
+          type: string
+        formation:
+          type: string
+        advice:
+          type: string
+        hiringDate:
+          type: string
+          format: date
+        isActive:
+          type: boolean
+        password:
+          type: string
+          format: password
+    InstructorOutputDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        role:
+          type: array
+          items:
+            type: string
+            enum: [ ROLE_ADMIN, ROLE_STUDENT, ROLE_INSTRUCTOR, ROLE_RECEPTIONIST ]
+        cpf:
+          type: string
+        birthDate:
+          type: string
+          format: date
+        email:
+          type: string
+          format: email
+        contact:
+          type: string
+        photo:
+          type: string
+        formation:
+          type: string
+        advice:
+          type: string
+        hiringDate:
+          type: string
+          format: date
+        isActive:
+          type: boolean
+
+    PlanInputDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        period:
+          type: string
+        frequency:
+          type: string
+        monthlyPrice:
+          type: number
+          format: double
+        totalPrice:
+          type: number
+          format: double
+        cancellationPolicy:
+          type: string
+        isActive:
+          type: boolean
+    PlanOutputDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        period:
+          type: string
+        frequency:
+          type: string
+        monthlyPrice:
+          type: number
+          format: double
+        totalPrice:
+          type: number
+          format: double
+        cancellationPolicy:
+          type: string
+        isActive:
+          type: boolean
+
+    SessionInputDTO:
+      type: object
+      properties:
+        students:
+          type: array
+          items:
+            type: string
+        studio:
+          type: string
+        instructor:
+          type: string
+        day:
+          type: string
+          format: date
+        hours:
+          type: string
+        status:
+          type: string
+        presences:
+          type: array
+          items:
+            type: string
+        type:
+          type: string
+        isActive:
+          type: boolean
+    SessionOutputDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        students:
+          type: array
+          items:
+            type: string
+        studio:
+          type: string
+        instructor:
+          type: string
+        day:
+          type: string
+          format: date
+        hours:
+          type: string
+        status:
+          type: string
+        presences:
+          type: array
+          items:
+            type: string
+        type:
+          type: string
+        isActive:
+          type: boolean
+
+    ClientAreaInputDTO:
+      type: object
+      properties:
+        paymentDueDate:
+          type: string
+          format: date
+        makeUps:
+          type: integer
+        paymentProof:
+          type: string
+        fiscalReceipt:
+          type: string
+        contract:
+          type: string
+        upComingClasses:
+          type: array
+          items:
+            $ref: "#/components/schemas/UpComingClassInputDTO"
+        imageAuthorization:
+          type: boolean
+
+    UpComingClassInputDTO:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        time:
+          type: string
+          format: time
+        status:
+          type: string
+
+    StudentInputDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        role:
+          type: array
+          items:
+            type: string
+            enum: [ ROLE_ADMIN, ROLE_STUDENT, ROLE_INSTRUCTOR, ROLE_RECEPTIONIST ]
+        cpf:
+          type: string
+        birthDate:
+          type: string
+          format: date
+        email:
+          type: string
+          format: email
+        contact:
+          type: string
+        photo:
+          type: string
+        assessment:
+          $ref: "#/components/schemas/AssessmentInputDTO"
+        progress:
+          type: string
+        plan:
+          $ref: "#/components/schemas/PlanStudentInputDTO"
+        clientArea:
+          $ref: "#/components/schemas/ClientAreaInputDTO"
+        isActive:
+          type: boolean
+        password:
+          type: string
+          format: password
+
+    AssessmentInputDTO:
+      type: object
+      properties:
+        description:
+          type: string
+        professional:
+          type: string
+        posturalPhoto:
+          type: string
+        relevantData:
+          type: string
+
+    PlanStudentInputDTO:
+      type: object
+      properties:
+        idPlan:
+          type: string
+        duration:
+          type: string
+        startDate:
+          type: string
+          format: date
+        paymentMethod:
+          type: string
+        discount:
+          type: string
+        paymentType:
+          type: string
+        firstPaymentDate:
+          type: string
+          format: date
+        dueDate:
+          type: string
+          format: date
+        isActive:
+          type: boolean
+
+    AssessmentOutputDTO:
+      type: object
+      properties:
+        description:
+          type: string
+        professional:
+          type: string
+        posturalPhoto:
+          type: string
+        relevantData:
+          type: string
+
+    PlanStudentOutputDTO:
+      type: object
+      properties:
+        idPlan:
+          type: string
+        duration:
+          type: string
+        startDate:
+          type: string
+          format: date
+        paymentMethod:
+          type: string
+        discount:
+          type: string
+        paymentType:
+          type: string
+        firstPaymentDate:
+          type: string
+          format: date
+        dueDate:
+          type: string
+          format: date
+        isActive:
+          type: boolean
+
+    StudentOutputDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+            enum: [ ROLE_ADMIN, ROLE_STUDENT, ROLE_INSTRUCTOR, ROLE_RECEPTIONIST ]
+        cpf:
+          type: string
+        birthDate:
+          type: string
+          format: date
+        email:
+          type: string
+          format: email
+        contact:
+          type: string
+        photo:
+          type: string
+        assessment:
+          $ref: "#/components/schemas/AssessmentOutputDTO"
+        progress:
+          type: string
+        plan:
+          $ref: "#/components/schemas/PlanStudentOutputDTO"
+        clientArea:
+          $ref: "#/components/schemas/ClientAreaOutputDTO"
+        isActive:
+          type: boolean
+
+    ClientAreaOutputDTO:
+      type: object
+      properties:
+        paymentDueDate:
+          type: string
+          format: date
+        makeUps:
+          type: integer
+        paymentProof:
+          type: string
+        fiscalReceipt:
+          type: string
+        contract:
+          type: string
+        upComingClasses:
+          type: array
+          items:
+            $ref: "#/components/schemas/UpComingClassOutputDTO"
+        imageAuthorization:
+          type: boolean
+
+    UpComingClassOutputDTO:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        time:
+          type: string
+          format: time
+        status:
+          type: string
+
+    StudioInputDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+        daysOperation:
+          type: array
+          items:
+            type: string
+        openingHours:
+          type: array
+          items:
+            type: string
+        limitStudentsPerClass:
+          type: integer
+        unavailableTimes:
+          type: array
+          items:
+            type: string
+        instructorsByTime:
+          type: object
+        additionalProperties:
+            type: string
+        holidays:
+          type: array
+          items:
+            type: string
+        recesses:
+          type: array
+          items:
+            type: string
+        isActive:
+          type: boolean
+
+    StudioOutputDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        address:
+          type: string
+        daysOperation:
+          type: array
+          items:
+            type: string
+        openingHours:
+          type: array
+          items:
+            type: string
+        limitStudentsPerClass:
+          type: integer
+        unavailableTimes:
+          type: array
+          items:
+            type: string
+        instructorsByTime:
+          type: object
+        additionalProperties:
+            type: string
+        holidays:
+          type: array
+          items:
+            type: string
+        recesses:
+          type: array
+          items:
+            type: string
