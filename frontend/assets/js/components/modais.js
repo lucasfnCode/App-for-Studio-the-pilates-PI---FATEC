@@ -60,9 +60,11 @@ export function criarModalListaAlunosHTML(
             </table>
           </div>
           <div class="modal-footer d-flex justify-content-end gap-2">
-            ${role !== "instrutor"
-              ? `<button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>`
-              : `<button type="button" class="btn btn-outline-primary" onclick="salvarPresencas()">Salvar Presenças</button>`}
+            ${
+              role !== "instrutor"
+                ? `<button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>`
+                : `<button type="button" class="btn btn-outline-primary" onclick="salvarPresencas()">Salvar Presenças</button>`
+            }
             <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
@@ -73,7 +75,6 @@ export function criarModalListaAlunosHTML(
   document.body.insertAdjacentHTML("beforeend", modalHTML);
   return "";
 }
-
 
 export function criarModalCadastroAlunoHTML() {
   const modal = document.getElementById("modalCadastroAluno");
@@ -119,28 +120,46 @@ export function criarModalCadastroAlunoHTML() {
 }
 
 window.adicionarAluno = function () {
-  const modalAnterior = bootstrap.Modal.getInstance(document.getElementById("modalListaAlunos"));
-    if (modalAnterior) modalAnterior.hide();
+  const modalAnterior = bootstrap.Modal.getInstance(
+    document.getElementById("modalListaAlunos")
+  );
+  if (modalAnterior) modalAnterior.hide();
 
-  const modalCadastro = new bootstrap.Modal(document.getElementById("modalCadastroAluno"));
+  const modalCadastro = new bootstrap.Modal(
+    document.getElementById("modalCadastroAluno")
+  );
   modalCadastro.show();
 };
 
 window.carregarAlunosDisponiveis = async function () {
   try {
-    const response = await fetch("/api/students/actives");
+    const response = await fetch(
+      "http://localhost:8080/users/students/actives",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
     if (!response.ok) throw new Error("Erro ao buscar alunos");
 
     const alunos = await response.json();
 
     const tbody = document.getElementById("alunosDisponiveisTabela");
-    tbody.innerHTML = alunos.map((aluno) => `
+    tbody.innerHTML = alunos
+      .map(
+        (aluno) => `
       <tr>
-        <td><input type="checkbox" class="form-check-input" data-id="${aluno.id}"></td>
+        <td><input type="checkbox" class="form-check-input" data-id="${
+          aluno.id
+        }"></td>
         <td>${aluno.name || aluno.id}</td>
         <td>${aluno.birthDate || "—"}</td>
       </tr>
-    `).join("");
+    `
+      )
+      .join("");
   } catch (error) {
     console.error("Erro ao carregar alunos disponíveis:", error);
     const tbody = document.getElementById("alunosDisponiveisTabela");
@@ -148,16 +167,19 @@ window.carregarAlunosDisponiveis = async function () {
   }
 };
 
-
 window.salvarAlunosSelecionados = async function () {
-  const checkboxes = document.querySelectorAll("#alunosDisponiveisTabela input[type='checkbox']:checked");
+  const checkboxes = document.querySelectorAll(
+    "#alunosDisponiveisTabela input[type='checkbox']:checked"
+  );
   const alunosSelecionados = Array.from(checkboxes).map((cb) => cb.dataset.id);
 
   for (const studentId of alunosSelecionados) {
     await window.registrarAluno(window.aulaSelecionadaId, studentId);
   }
 
-  const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastroAluno"));
+  const modal = bootstrap.Modal.getInstance(
+    document.getElementById("modalCadastroAluno")
+  );
   modal.hide();
 };
 
@@ -308,11 +330,17 @@ export function criarModalDetalhesInstrutorHTML(instrutor = {}) {
           </div>
           <div class="modal-body row g-4">
             <div class="col-md-5 text-center">
-              <img src="${instrutor.foto || 'https://placehold.co/300x300'}" class="img-fluid rounded-circle shadow-sm" alt="${instrutor.nome}">
+              <img src="${
+                instrutor.foto || "https://placehold.co/300x300"
+              }" class="img-fluid rounded-circle shadow-sm" alt="${
+    instrutor.nome
+  }">
             </div>
             <div class="col-md-7">
               <p class="fs-5">${instrutor.descricao}</p>
-              <p><strong>Especialidades:</strong> ${instrutor.especialidades?.join(", ") || "Pilates Geral"}</p>
+              <p><strong>Especialidades:</strong> ${
+                instrutor.especialidades?.join(", ") || "Pilates Geral"
+              }</p>
             </div>
           </div>
         </div>
@@ -331,19 +359,22 @@ export function criarModalConfirmarAssinaturaHTML(plano = {}) {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
           </div>
           <div class="modal-body">
-            <p class="fs-5">Você está prestes a assinar o plano <strong>${plano.nome || "Selecionado"}</strong> por <strong>${plano.valor || "R$ XX,XX"}</strong>.</p>
+            <p class="fs-5">Você está prestes a assinar o plano <strong>${
+              plano.nome || "Selecionado"
+            }</strong> por <strong>${plano.valor || "R$ XX,XX"}</strong>.</p>
             <p class="text-muted">Deseja continuar?</p>
           </div>
           <div class="modal-footer d-flex justify-content-end gap-2">
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-outline-success" onclick="confirmarPlano('${plano.nome}')">Assinar</button>
+            <button type="button" class="btn btn-outline-success" onclick="confirmarPlano('${
+              plano.nome
+            }')">Assinar</button>
           </div>
         </div>
       </div>
     </div>
   `;
 }
-
 
 export function criarModalAulasInstrutorHTML() {
   return `
@@ -430,7 +461,6 @@ export async function buscarDadosCompletosDosAlunos(listaDeIds) {
     return [];
   }
 }
-
 
 document.addEventListener("atualizarListaAlunos", async function () {
   if (!aulaSelecionadaId) return;
