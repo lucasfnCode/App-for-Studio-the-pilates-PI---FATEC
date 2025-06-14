@@ -6,19 +6,21 @@ info:
 servers:
   - url: http://localhost:8080
     description: Servidor Local
+security:
+  - bearerAuth: []
 tags:
   - name: Auth
     description: Operações relacionadas à autenticação
-  - name: Instructor
-    description: Gestão de instrutores
-  - name: Plan
-    description: Operações relacionadas a planos de serviço
-  - name: Session
-    description: Gerenciamento de sessões e agendamentos
-  - name: Student
-    description: Gestão de estudantes e suas informações
   - name: Studio
     description: Administração de estúdios e unidades de negócio
+  - name: Plan
+    description: Operações relacionadas a planos de serviço
+  - name: Instructor
+    description: Gestão de instrutores
+  - name: Student
+    description: Gestão de estudantes e suas informações
+  - name: Session
+    description: Gerenciamento de sessões e agendamentos
 paths:
   /auth/login:
     post:
@@ -44,6 +46,7 @@ paths:
           description: Requisição inválida (dados faltando ou incorretos)
         "401":
           description: Credenciais inválidas
+
   /users/instructors/actives:
     get:
       tags:
@@ -51,6 +54,8 @@ paths:
       summary: Listar todos os instrutores ativos
       description: Retorna uma lista de instrutores que estão ativos no sistema.
       operationId: listAllActiveInstructors
+      security:
+        - bearerAuth: [ ]
       responses:
         "200":
           description: Lista de instrutores ativos retornada com sucesso
@@ -424,6 +429,210 @@ paths:
                 $ref: "#/components/schemas/SessionOutputDTO"
         "404":
           description: Sessão não encontrada
+  /sessions/user/{id}:
+    get:
+      tags:
+        - Session
+      summary: Listar sessões de um estudante
+      description: Retorna todas as sessões associadas a um estudante específico.
+      operationId: listSessionByStudentId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Lista de sessões retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SessionOutputDTO"
+        "404":
+          description: Nenhuma sessão encontrada para o estudante
+
+  /sessions/instructor/{id}:
+    get:
+      tags:
+        - Session
+      summary: Listar sessões de um instrutor
+      description: Retorna todas as sessões ministradas por um instrutor específico.
+      operationId: listSessionByInstructor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Lista de sessões retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SessionOutputDTO"
+        "404":
+          description: Nenhuma sessão encontrada para o instrutor
+
+  /sessions/day/{day}:
+    get:
+      tags:
+        - Session
+      summary: Listar sessões de um dia específico
+      description: Retorna todas as sessões agendadas para um determinado dia.
+      operationId: listSessionByDay
+      parameters:
+        - name: day
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Lista de sessões retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SessionOutputDTO"
+        "404":
+          description: Nenhuma sessão encontrada para esse dia
+
+  /sessions/current:
+    get:
+      tags:
+        - Session
+      summary: Listar sessões atuais
+      description: Retorna todas as sessões em andamento dentro do período estabelecido.
+      operationId: listAllCurrentSessions
+      responses:
+        "200":
+          description: Lista de sessões retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SessionOutputDTO"
+
+  /sessions/register/{sessionId}:
+    post:
+      tags:
+        - Session
+      summary: Registrar um estudante em uma sessão
+      description: Adiciona um estudante a uma sessão específica.
+      operationId: registerStudentInSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentRegisterDTO"
+      responses:
+        "200":
+          description: Estudante registrado na sessão com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionOutputDTO"
+
+  /sessions/presence/{sessionId}:
+    post:
+      tags:
+        - Session
+      summary: Registrar presença dos estudantes
+      description: Registra presença dos estudantes em uma sessão específica.
+      operationId: registerPresencesInSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        "200":
+          description: Presença registrada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionOutputDTO"
+    put:
+      tags:
+        - Session
+      summary: Remover presença dos estudantes
+      description: Remove a presença dos estudantes de uma sessão específica.
+      operationId: unregisterPresencesInSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        "200":
+          description: Presença removida com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionOutputDTO"
+
+  /sessions/unregister/{sessionId}:
+    put:
+      tags:
+        - Session
+      summary: Remover um estudante de uma sessão
+      description: Desinscreve um estudante de uma sessão específica.
+      operationId: unregisterStudentFromSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentRegisterDTO"
+      responses:
+        "200":
+          description: Estudante removido da sessão com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionOutputDTO"
+
+
 
   /users/students:
     post:
@@ -556,6 +765,106 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/StudentOutputDTO"
+  /users/students/{id}/cancel-plan:
+    put:
+      tags:
+        - Student
+      summary: Cancelar plano de um estudante
+      description: Cancela o plano atual do estudante baseado no ID fornecido.
+      operationId: cancelStudentPlan
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Plano do estudante cancelado com sucesso
+        "400":
+          description: Erro ao cancelar o plano do estudante
+
+  /users/students/desactivate{id}:
+    put:
+      tags:
+        - Student
+      summary: Desativar um estudante
+      description: Marca o estudante como inativo no sistema.
+      operationId: desactivateStudent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Estudante desativado com sucesso
+
+  /users/students/activate{id}:
+    put:
+      tags:
+        - Student
+      summary: Ativar um estudante
+      description: Reativa um estudante que estava inativo no sistema.
+      operationId: activateStudent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Estudante ativado com sucesso
+
+  /users/students/by-ids:
+    post:
+      tags:
+        - Student
+      summary: Obter estudantes por lista de IDs
+      description: Retorna uma lista de estudantes baseado em múltiplos IDs fornecidos.
+      operationId: getStudentsByIds
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        "200":
+          description: Lista de estudantes encontrados com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudentOutputDTO"
+
+  /users/students/cpf{cpf}:
+    get:
+      tags:
+        - Student
+      summary: Obter um estudante por CPF
+      description: Retorna um estudante específico baseado no CPF fornecido.
+      operationId: getStudentByCpf
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Estudante encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentOutputDTO"
+        "404":
+          description: Estudante não encontrado
 
   /studios:
     post:
@@ -1054,7 +1363,7 @@ components:
         instructorsByTime:
           type: object
         additionalProperties:
-            type: string
+          type: string
         holidays:
           type: array
           items:
@@ -1092,7 +1401,7 @@ components:
         instructorsByTime:
           type: object
         additionalProperties:
-            type: string
+          type: string
         holidays:
           type: array
           items:
@@ -1101,3 +1410,10 @@ components:
           type: array
           items:
             type: string
+
+    StudentRegisterDTO:
+      type: object
+      properties:
+        studentId:
+          type: string
+          description: ID do estudante que será registrado na sessão
