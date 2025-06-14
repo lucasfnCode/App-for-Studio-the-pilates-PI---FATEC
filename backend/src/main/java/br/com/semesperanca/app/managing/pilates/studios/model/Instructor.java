@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,10 +21,6 @@ import java.util.stream.Collectors;
 @Document(collection = "Usuarios")
 public class Instructor extends User {
 
-    @Id
-    private String id;
-    
-   
     private String formation;
     private String advice;
     private LocalDate hiringDate;

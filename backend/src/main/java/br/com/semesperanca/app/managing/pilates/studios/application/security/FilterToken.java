@@ -27,14 +27,6 @@ public class FilterToken extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-/*        String path = request.getRequestURI();
-
-        if (path.equals("/auth/login")) {
-            filterChain.doFilter(request, response);
-            return;
-        }*/
-
-//        if (SecurityContextHolder.getContext().getAuthentication() == null) {
         String token;
         String headerAuthorization = request.getHeader("Authorization");
 
@@ -50,8 +42,6 @@ public class FilterToken extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
-//        }
-
 
         filterChain.doFilter(request, response);
 
