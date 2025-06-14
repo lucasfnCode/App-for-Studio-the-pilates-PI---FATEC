@@ -1,7 +1,7 @@
 package br.com.semesperanca.app.managing.pilates.studios.service;
 
-import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.SessionInputDTO;
-import br.com.semesperanca.app.managing.pilates.studios.application.model.Session.SessionOutputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.session.SessionInputDTO;
+import br.com.semesperanca.app.managing.pilates.studios.application.model.session.SessionOutputDTO;
 import br.com.semesperanca.app.managing.pilates.studios.model.session.Session;
 import br.com.semesperanca.app.managing.pilates.studios.model.session.SessionStatus;
 import br.com.semesperanca.app.managing.pilates.studios.model.studio.DaysOfWeek;
