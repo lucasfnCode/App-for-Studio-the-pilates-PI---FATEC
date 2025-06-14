@@ -18,7 +18,5 @@ window.addEventListener("submit",(e)=>
     MainReload("studios-row");
     closeform()
     StudioManegementPage()
-
-    
 })
 }

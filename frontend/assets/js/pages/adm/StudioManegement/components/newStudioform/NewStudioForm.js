@@ -116,7 +116,7 @@ export function NewStudioForm(){
 
       <button type="submit" class="btn btn-success"> salvar </button>
     </form>
-    
+  </div>
     `)
   }
     
