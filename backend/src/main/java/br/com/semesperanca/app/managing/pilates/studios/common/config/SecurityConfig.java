@@ -1,5 +1,8 @@
 package br.com.semesperanca.app.managing.pilates.studios.common.config;
 
+import br.com.semesperanca.app.managing.pilates.studios.application.security.FilterToken;
+import br.com.semesperanca.app.managing.pilates.studios.model.Role;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -29,15 +32,21 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(requests -> requests
-                        .requestMatchers(HttpMethod.POST, "/auth/**")
-                        .permitAll()
-                        .requestMatchers(HttpMethod.POST, "/users/**")
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
+                .sessionManagement(sessionManagementConfigurer ->
+                        sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(requests ->
+                        requests
+                                .requestMatchers(HttpMethod.POST, "/auth/**")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.POST, "/users/**")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/v3/api-docs/**",
+                                        "/v3/api-docs.yaml")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.GET, "/docs/**")
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated())
                 .addFilterBefore(filterToken, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
