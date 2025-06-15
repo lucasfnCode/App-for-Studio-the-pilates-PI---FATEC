@@ -7,7 +7,7 @@ import { listarStudios } from "./service/functions/listar";
 export function StudioManegementPage(){
     const main = getOrCreateMainElement()
     
-    main.insertAdjacentHTML("beforebegin",`
+    main.innerHTML=`
        <button class="btn btn-primary fw-bold px-4 py-2 rounded-pill shadow-sm" id="new">
                 <i class="bi bi-plus-circle me-2"></i>Criar Estúdio
         </button>
@@ -20,19 +20,8 @@ export function StudioManegementPage(){
         </section>
 
     <section>
-    `)
-        listarStudios()
+    `
+    listarStudios()
     const $new = document.querySelector("#new")
     $new.addEventListener("click",()=>NewStudioForm())
-
-    const button =document.querySelectorAll("button.delete")
-    button.forEach(btn => {
-        btn.addEventListener("click",()=>{
-            const card = btn.closest(".card");
-            const id = card.querySelector(".id").dataset.id;
-            Deletar(id)
-        })  
-    })
-    
-    
 }

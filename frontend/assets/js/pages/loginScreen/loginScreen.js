@@ -55,6 +55,8 @@ export function loginScreen() {
         document.getElementById("loginMessage").innerHTML =
           "<span class='text-info'>Login realizado com sucesso</span>";
 
+          console.log(data.token);
+          
         console.log("Dados do usuário!", decoded);
         console.log("Role!", role);
 

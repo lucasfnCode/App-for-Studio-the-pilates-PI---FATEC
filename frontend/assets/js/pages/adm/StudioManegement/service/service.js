@@ -1,9 +1,19 @@
 const api = "http://localhost:8080/";
 
+// Função para montar os headers com token
+function getAuthHeaders(extraHeaders = {}) {
+    const token = localStorage.getItem('token');
+    return {
+        authorization: token,
+        ...extraHeaders
+    };
+}
+
 export async function getStudios() {
     try {
         const response = await fetch(`${api}studios`, {
-            method: 'GET'
+            method: 'GET',
+            headers: getAuthHeaders()
         });
         return response.json();
     } catch (error) {
@@ -16,24 +26,40 @@ export async function createStudio(studioData) {
     try {
         const response = await fetch(`${api}studios`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
             body: JSON.stringify(studioData)
         });
+
+        // Verifica se há conteúdo antes de tentar fazer o .json()
+        const contentType = response.headers.get("content-type");
         
-        return response.json();
+        if (response.ok) {
+            if (contentType && contentType.includes("application/json")) {
+                return await response.json();
+            } else {
+                console.warn("Resposta sem JSON válido.");
+                return null;
+            }
+        } else {
+            console.error(`Erro ${response.status}:`, await response.text());
+            return null;
+        }
     } catch (error) {
         console.error("Erro ao criar estúdio:", error);
         return null;
     }
 }
 
+
 export async function deleteStudio(id) {
     try {
+        console.log(id);
+        
         const response = await fetch(`${api}studios/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: getAuthHeaders()
         });
+        alert("esudio deletado")
         return response.json();
     } catch (error) {
         console.error("Erro ao excluir estúdio:", error);
@@ -44,7 +70,8 @@ export async function deleteStudio(id) {
 export async function getStudioById(id) {
     try {
         const response = await fetch(`${api}studios/${id}`, {
-            method: 'GET'
+            method: 'GET',
+            headers: getAuthHeaders()
         });
         return response.json();
     } catch (error) {

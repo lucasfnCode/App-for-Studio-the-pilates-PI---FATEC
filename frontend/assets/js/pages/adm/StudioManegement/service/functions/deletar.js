@@ -1,11 +1,15 @@
 import { getOrCreateMainElement } from "../../../../../components/main";
+import { MainReload } from "../../../function/reloadmain";
 import { deleteStudio } from "../service";
+import { listarStudios } from "./listar";
 
 export function Deletar(id) {
+    const cardid = JSON.stringify(id.innerText);
+    const card = id
    const main = getOrCreateMainElement()
   console.log("id do estudio q vai ser deletado : ",id);
   
-   main.insertAdjacentHTML("afterbegin",`
+   main.insertAdjacentHTML("afterend",`
     <div class="card shadow-sm mx-auto position-absolute top-50 start-50 translate-middle" style="max-width: 300px;" id="alert">
     <div class="card-body text-center p-4">
         <p class="mb-4">Tem certeza que quer deletar esse estudio?</p>
@@ -21,13 +25,14 @@ export function Deletar(id) {
     const $deletar = document.querySelector("#deletar")
     const $cacelar = document.querySelector("#cancelar")
 
-    $deletar.addEventListener("click",() => {
-        alert("estudio deletado") 
-        deleteStudio(id)
+    $deletar.addEventListener("click", () => {
+        deleteStudio(cardid)
         $alert.remove()
+        listarStudios()
     })
     $cacelar.addEventListener("click",()=>{
         $alert.remove()
     })
-   
+    
 }
+
