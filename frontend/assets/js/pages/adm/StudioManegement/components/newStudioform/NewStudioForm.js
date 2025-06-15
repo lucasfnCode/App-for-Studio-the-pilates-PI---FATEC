@@ -56,12 +56,12 @@ export function NewStudioForm(){
             <input class="form-check-input" name="daysOperation" type="checkbox" id="friday" value="Sexta-feira">
             <label class="form-check-label" for="friday">Sex</label>
           </div>
-          <!--
+          
           <div class="form-check">
             <input class="form-check-input" name="daysOperation" type="checkbox" id="saturday" value="sábado">
             <label class="form-check-label" for="saturday">Sáb</label>
           </div>
-          -->
+          
           <div class="form-check">
             <input class="form-check-input" name="daysOperation" type="checkbox" id="sunday" value="domingo">
             <label class="form-check-label" for="sunday">Dom</label>

@@ -1,3 +1,4 @@
+import { MainReload } from "../../function/reloadmain";
 import { listarStudios } from "./functions/listar";
 
 const api = "http://localhost:8080/";
@@ -36,11 +37,15 @@ export async function createStudio(studioData) {
         const contentType = response.headers.get("content-type");
         
         if (response.ok) {
+            listarStudios().then(alert("estudio criado"))
+
+            console.log("estudio q vai ser criado>",studioData);
+            
+            
             if (contentType && contentType.includes("application/json")) {
                 return await response.json();
             } else {
                 console.warn("Resposta sem JSON válido.");
-                return null;
             }
         } else {
             console.error(`Erro ${response.status}:`, await response.text());

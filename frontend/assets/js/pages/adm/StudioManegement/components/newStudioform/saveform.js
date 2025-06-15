@@ -1,9 +1,7 @@
-import { MainReload } from "../../../function/reloadmain"
-import { listarStudios } from "../../service/functions/listar"
-import { createStudio } from "../../service/service"
-import { closeform } from "./closeform"
 
-export function saveform(){
+import { createStudio } from "../../service/service"
+
+export async function saveform(){
     const $form = document.querySelector("#cardInfoForm")
     window.addEventListener("submit",async(e)=>
     {
@@ -28,20 +26,9 @@ export function saveform(){
 
         console.log("estudio q esta sendo enviado pro back via post:",data);
         
-        createStudio(data)
-        SoFuncionaDeUmaVez()
-    })
-}
-async function  SoFuncionaDeUmaVez(){
-    document.addEventListener("DOMContentLoaded",()=>{
-
-        if(document.querySelector("studios-row")){
-            MainReload("studios-row")
-            closeform()
-            listarStudios()
-        }else{
-        window.addEventListener("DOMContentLoaded",)
-        }
+        const $formContainer = document.querySelector("#studios-row")
+        $formContainer.innerHTML= "";
+        await createStudio(data)
         
     })
 }

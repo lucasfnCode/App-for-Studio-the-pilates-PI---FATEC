@@ -4969,12 +4969,12 @@ function NewStudioForm() {
             <input class="form-check-input" name="daysOperation" type="checkbox" id="friday" value="Sexta-feira">
             <label class="form-check-label" for="friday">Sex</label>
           </div>
-          <!--
+          
           <div class="form-check">
             <input class="form-check-input" name="daysOperation" type="checkbox" id="saturday" value="s\xe1bado">
             <label class="form-check-label" for="saturday">S\xe1b</label>
           </div>
-          -->
+          
           <div class="form-check">
             <input class="form-check-input" name="daysOperation" type="checkbox" id="sunday" value="domingo">
             <label class="form-check-label" for="sunday">Dom</label>
@@ -5059,11 +5059,8 @@ function closeform() {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "saveform", ()=>saveform);
-var _reloadmain = require("../../../function/reloadmain");
-var _listar = require("../../service/functions/listar");
 var _service = require("../../service/service");
-var _closeform = require("./closeform");
-function saveform() {
+async function saveform() {
     const $form = document.querySelector("#cardInfoForm");
     window.addEventListener("submit", async (e)=>{
         e.preventDefault();
@@ -5083,29 +5080,98 @@ function saveform() {
         data.holidays = feriados;
         data.recesses = recessos;
         console.log("estudio q esta sendo enviado pro back via post:", data);
-        (0, _service.createStudio)(data);
-        SoFuncionaDeUmaVez();
-    });
-}
-async function SoFuncionaDeUmaVez() {
-    document.addEventListener("DOMContentLoaded", ()=>{
-        if (document.querySelector("studios-row")) {
-            (0, _reloadmain.MainReload)("studios-row");
-            (0, _closeform.closeform)();
-            (0, _listar.listarStudios)();
-        } else window.addEventListener("DOMContentLoaded");
+        const $formContainer = document.querySelector("#studios-row");
+        $formContainer.innerHTML = "";
+        await (0, _service.createStudio)(data);
     });
 }
 
-},{"../../../function/reloadmain":"fffU7","../../service/functions/listar":"8sfIm","../../service/service":"8jQ4q","./closeform":"eFdFn","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"fffU7":[function(require,module,exports,__globalThis) {
+},{"../../service/service":"8jQ4q","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8jQ4q":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "MainReload", ()=>MainReload);
-function MainReload(IDelementopae) {
-    document.querySelector(`#${IDelementopae}`).remove();
+parcelHelpers.export(exports, "getStudios", ()=>getStudios);
+parcelHelpers.export(exports, "createStudio", ()=>createStudio);
+parcelHelpers.export(exports, "deleteStudio", ()=>deleteStudio);
+parcelHelpers.export(exports, "getStudioById", ()=>getStudioById);
+var _reloadmain = require("../../function/reloadmain");
+var _listar = require("./functions/listar");
+const api = "http://localhost:8080/";
+// Função para montar os headers com token
+function getAuthHeaders(extraHeaders = {}) {
+    const token = localStorage.getItem('token');
+    return {
+        authorization: token,
+        ...extraHeaders
+    };
+}
+async function getStudios() {
+    try {
+        const response = await fetch(`${api}studios`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+        return response.json();
+    } catch (error) {
+        console.error("Erro ao buscar est\xfadios:", error);
+        return null;
+    }
+}
+async function createStudio(studioData) {
+    try {
+        const response = await fetch(`${api}studios`, {
+            method: 'POST',
+            headers: getAuthHeaders({
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify(studioData)
+        });
+        // Verifica se há conteúdo antes de tentar fazer o .json()
+        const contentType = response.headers.get("content-type");
+        if (response.ok) {
+            (0, _listar.listarStudios)().then(alert("estudio criado"));
+            console.log("estudio q vai ser criado>", studioData);
+            if (contentType && contentType.includes("application/json")) return await response.json();
+            else console.warn("Resposta sem JSON v\xe1lido.");
+        } else {
+            console.error(`Erro ${response.status}:`, await response.text());
+            return null;
+        }
+    } catch (error) {
+        console.error("Erro ao criar est\xfadio:", error);
+        return null;
+    }
+}
+async function deleteStudio(id) {
+    try {
+        const response = await fetch(`${api}studios/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+        if (response.ok) {
+            alert("esudio deletado");
+            (0, _listar.listarStudios)();
+        }
+        return response.json();
+    } catch (error) {
+        alert("erro ao deletar estudio");
+        console.error("Erro ao excluir est\xfadio:", error);
+        return null;
+    }
+}
+async function getStudioById(id) {
+    try {
+        const response = await fetch(`${api}studios/${id}`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+        return response.json();
+    } catch (error) {
+        console.error("Erro ao buscar est\xfadio por ID:", error);
+        return null;
+    }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8sfIm":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","./functions/listar":"8sfIm","../../function/reloadmain":"fffU7"}],"8sfIm":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "listarStudios", ()=>listarStudios);
@@ -5164,98 +5230,12 @@ async function listarStudios() {
     });
 }
 
-},{"../service":"8jQ4q","./deletar":"kBHqA","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8jQ4q":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "getStudios", ()=>getStudios);
-parcelHelpers.export(exports, "createStudio", ()=>createStudio);
-parcelHelpers.export(exports, "deleteStudio", ()=>deleteStudio);
-parcelHelpers.export(exports, "getStudioById", ()=>getStudioById);
-var _listar = require("./functions/listar");
-const api = "http://localhost:8080/";
-// Função para montar os headers com token
-function getAuthHeaders(extraHeaders = {}) {
-    const token = localStorage.getItem('token');
-    return {
-        authorization: token,
-        ...extraHeaders
-    };
-}
-async function getStudios() {
-    try {
-        const response = await fetch(`${api}studios`, {
-            method: 'GET',
-            headers: getAuthHeaders()
-        });
-        return response.json();
-    } catch (error) {
-        console.error("Erro ao buscar est\xfadios:", error);
-        return null;
-    }
-}
-async function createStudio(studioData) {
-    try {
-        const response = await fetch(`${api}studios`, {
-            method: 'POST',
-            headers: getAuthHeaders({
-                'Content-Type': 'application/json'
-            }),
-            body: JSON.stringify(studioData)
-        });
-        // Verifica se há conteúdo antes de tentar fazer o .json()
-        const contentType = response.headers.get("content-type");
-        if (response.ok) {
-            if (contentType && contentType.includes("application/json")) return await response.json();
-            else {
-                console.warn("Resposta sem JSON v\xe1lido.");
-                return null;
-            }
-        } else {
-            console.error(`Erro ${response.status}:`, await response.text());
-            return null;
-        }
-    } catch (error) {
-        console.error("Erro ao criar est\xfadio:", error);
-        return null;
-    }
-}
-async function deleteStudio(id) {
-    try {
-        const response = await fetch(`${api}studios/${id}`, {
-            method: 'DELETE',
-            headers: getAuthHeaders()
-        });
-        if (response.ok) {
-            alert("esudio deletado");
-            (0, _listar.listarStudios)();
-        }
-        return response.json();
-    } catch (error) {
-        alert("erro ao deletar estudio");
-        console.error("Erro ao excluir est\xfadio:", error);
-        return null;
-    }
-}
-async function getStudioById(id) {
-    try {
-        const response = await fetch(`${api}studios/${id}`, {
-            method: 'GET',
-            headers: getAuthHeaders()
-        });
-        return response.json();
-    } catch (error) {
-        console.error("Erro ao buscar est\xfadio por ID:", error);
-        return null;
-    }
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","./functions/listar":"8sfIm"}],"kBHqA":[function(require,module,exports,__globalThis) {
+},{"../service":"8jQ4q","./deletar":"kBHqA","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"kBHqA":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Deletar", ()=>Deletar);
 var _main = require("../../../../../components/main");
 var _service = require("../service");
-var _listar = require("./listar");
 function Deletar(id) {
     const main = (0, _main.getOrCreateMainElement)();
     console.log("id do estudio q vai ser deletado : ", id);
@@ -5277,14 +5257,21 @@ function Deletar(id) {
     $deletar.addEventListener("click", ()=>{
         (0, _service.deleteStudio)(id);
         $alert.remove();
-        (0, _listar.listarStudios)();
     });
     $cacelar.addEventListener("click", ()=>{
         $alert.remove();
     });
 }
 
-},{"../../../../../components/main":"5zsxX","./listar":"8sfIm","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../service":"8jQ4q"}],"k97dv":[function(require,module,exports,__globalThis) {
+},{"../../../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../service":"8jQ4q"}],"fffU7":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "MainReload", ()=>MainReload);
+function MainReload(IDelementopae) {
+    document.querySelector(`#${IDelementopae}`).remove();
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"k97dv":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "clearBody", ()=>clearBody);
