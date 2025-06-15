@@ -505,3 +505,114 @@ document.addEventListener("atualizarListaAlunos", async function () {
     console.error("Erro ao atualizar lista de alunos:", error);
   }
 });
+
+export function criarModalCadastroUsuarioHTML() {
+  return `
+    <div class="modal fade" id="modalCadastroUsuario" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4">
+          <div class="modal-header">
+            <h5 class="modal-title">Cadastro de Aluno</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <form id="formCadastroUsuario">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">Nome completo</label>
+                <input name="name" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">CPF</label>
+                <input name="cpf" class="form-control" required maxlength="14" placeholder="000.000.000-00">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Data de nascimento</label>
+                <input name="birthDate" type="date" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">E-mail</label>
+                <input name="email" type="email" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Contato</label>
+                <input name="contact" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Senha</label>
+                <input name="password" type="password" class="form-control" required minlength="6">
+              </div>
+              <div id="cadastroUsuarioMsg" class="text-center mt-2"></div>
+            </div>
+            <div class="modal-footer d-flex justify-content-end gap-2">
+              <button type="submit" class="btn btn-success">Cadastrar</button>
+              <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Evento de submit do formulário de cadastro
+document.addEventListener("submit", async function (e) {
+  if (e.target && e.target.id === "formCadastroUsuario") {
+    e.preventDefault();
+    const form = e.target;
+    const msg = form.querySelector("#cadastroUsuarioMsg");
+    msg.innerHTML = "";
+
+    const formData = new FormData(form);
+
+    // Monta o objeto conforme o Student.java e o exemplo fornecido
+    const aluno = {
+      name: formData.get("name"),
+      cpf: formData.get("cpf"),
+      birthDate: formData.get("birthDate"),
+      email: formData.get("email"),
+      contact: formData.get("contact"),
+      password: formData.get("password"),
+      role: ["ROLE_STUDENT"],
+      photo: "",
+      assessment: {
+        description: "Avaliação inicial pendente",
+        professional: "",
+        posturalPhoto: "",
+        relevantData: ""
+      },
+      progress: "",
+      plan: null,
+      clientArea: {
+        paymentDueDate: "2025-06-01",
+        makeUps: 0,
+        paymentProof: "",
+        fiscalReceipt: "",
+        contract: "",
+        upComingClasses: [],
+        imageAuthorization: false
+      },
+      isActive: true
+    };
+
+    try {
+      const response = await fetch("http://localhost:8080/users/students", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(aluno)
+      });
+
+      if (response.ok) {
+        msg.innerHTML = `<span class="text-success">Cadastro realizado com sucesso! Faça login para acessar.</span>`;
+        setTimeout(() => {
+          const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastroUsuario"));
+          if (modal) modal.hide();
+        }, 1500);
+      } else {
+        const data = await response.json();
+        msg.innerHTML = `<span class="text-danger">${data.message || "Erro ao cadastrar."}</span>`;
+      }
+    } catch (err) {
+      msg.innerHTML = `<span class="text-danger">Erro de conexão.</span>`;
+    }
+  }
+});
