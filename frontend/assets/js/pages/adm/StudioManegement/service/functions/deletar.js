@@ -1,11 +1,10 @@
 import { getOrCreateMainElement } from "../../../../../components/main";
-import { MainReload } from "../../../function/reloadmain";
 import { deleteStudio } from "../service";
+
+
 import { listarStudios } from "./listar";
 
 export function Deletar(id) {
-    const cardid = JSON.stringify(id.innerText);
-    const card = id
    const main = getOrCreateMainElement()
   console.log("id do estudio q vai ser deletado : ",id);
   
@@ -26,7 +25,8 @@ export function Deletar(id) {
     const $cacelar = document.querySelector("#cancelar")
 
     $deletar.addEventListener("click", () => {
-        deleteStudio(cardid)
+
+        deleteStudio(id)
         $alert.remove()
         listarStudios()
     })

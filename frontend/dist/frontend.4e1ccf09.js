@@ -4892,7 +4892,7 @@ var _listar = require("./service/functions/listar");
 function StudioManegementPage() {
     const main = (0, _main.getOrCreateMainElement)();
     main.innerHTML = `
-       <button class="btn btn-primary fw-bold px-4 py-2 rounded-pill shadow-sm" id="new">
+       <button class="btn btn-primary fw-bold px-4 py-2 rounded-pill shadow-sm w-25" id="new">
                 <i class="bi bi-plus-circle me-2"></i>Criar Est\xfadio
         </button>
     <section class="container-fluid my-4" >
@@ -5157,19 +5157,21 @@ async function listarStudios() {
     button.forEach((btn)=>{
         btn.addEventListener("click", ()=>{
             const card = btn.closest(".card");
-            const id = card.querySelector(".id").innerHTML;
-            (0, _deletar.Deletar)(JSON.stringify(id));
+            const id = card.querySelector(".id");
+            const cardid = id.innerHTML.trim();
+            (0, _deletar.Deletar)(cardid);
         });
     });
 }
 
-},{"../service":"8jQ4q","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","./deletar":"kBHqA"}],"8jQ4q":[function(require,module,exports,__globalThis) {
+},{"../service":"8jQ4q","./deletar":"kBHqA","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8jQ4q":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getStudios", ()=>getStudios);
 parcelHelpers.export(exports, "createStudio", ()=>createStudio);
 parcelHelpers.export(exports, "deleteStudio", ()=>deleteStudio);
 parcelHelpers.export(exports, "getStudioById", ()=>getStudioById);
+var _listar = require("./functions/listar");
 const api = "http://localhost:8080/";
 // Função para montar os headers com token
 function getAuthHeaders(extraHeaders = {}) {
@@ -5219,14 +5221,17 @@ async function createStudio(studioData) {
 }
 async function deleteStudio(id) {
     try {
-        console.log(id);
         const response = await fetch(`${api}studios/${id}`, {
             method: 'DELETE',
             headers: getAuthHeaders()
         });
-        alert("esudio deletado");
+        if (response.ok) {
+            alert("esudio deletado");
+            (0, _listar.listarStudios)();
+        }
         return response.json();
     } catch (error) {
+        alert("erro ao deletar estudio");
         console.error("Erro ao excluir est\xfadio:", error);
         return null;
     }
@@ -5244,17 +5249,14 @@ async function getStudioById(id) {
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"kBHqA":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","./functions/listar":"8sfIm"}],"kBHqA":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Deletar", ()=>Deletar);
 var _main = require("../../../../../components/main");
-var _reloadmain = require("../../../function/reloadmain");
 var _service = require("../service");
 var _listar = require("./listar");
 function Deletar(id) {
-    const cardid = JSON.stringify(id.innerText);
-    const card = id;
     const main = (0, _main.getOrCreateMainElement)();
     console.log("id do estudio q vai ser deletado : ", id);
     main.insertAdjacentHTML("afterend", `
@@ -5273,7 +5275,7 @@ function Deletar(id) {
     const $deletar = document.querySelector("#deletar");
     const $cacelar = document.querySelector("#cancelar");
     $deletar.addEventListener("click", ()=>{
-        (0, _service.deleteStudio)(cardid);
+        (0, _service.deleteStudio)(id);
         $alert.remove();
         (0, _listar.listarStudios)();
     });
@@ -5282,7 +5284,7 @@ function Deletar(id) {
     });
 }
 
-},{"../../../../../components/main":"5zsxX","../service":"8jQ4q","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../../function/reloadmain":"fffU7","./listar":"8sfIm"}],"k97dv":[function(require,module,exports,__globalThis) {
+},{"../../../../../components/main":"5zsxX","./listar":"8sfIm","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../service":"8jQ4q"}],"k97dv":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "clearBody", ()=>clearBody);

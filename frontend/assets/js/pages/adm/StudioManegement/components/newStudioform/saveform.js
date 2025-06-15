@@ -36,8 +36,6 @@ async function  SoFuncionaDeUmaVez(){
     document.addEventListener("DOMContentLoaded",()=>{
 
         if(document.querySelector("studios-row")){
-        
-            
             MainReload("studios-row")
             closeform()
             listarStudios()

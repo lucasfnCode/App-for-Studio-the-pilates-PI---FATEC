@@ -53,8 +53,10 @@ export async function listarStudios(){
     button.forEach(btn => {
     btn.addEventListener("click",()=>{
         const card = btn.closest(".card");
-        const id = card.querySelector(".id").innerHTML;
-        Deletar(JSON.stringify(id))
+        const id = card.querySelector(".id");
+        const cardid = id.innerHTML.trim();
+        
+        Deletar(cardid)
         })
     })  
 }

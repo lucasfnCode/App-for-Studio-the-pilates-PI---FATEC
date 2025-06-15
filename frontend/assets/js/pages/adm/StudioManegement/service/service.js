@@ -1,3 +1,5 @@
+import { listarStudios } from "./functions/listar";
+
 const api = "http://localhost:8080/";
 
 // Função para montar os headers com token
@@ -53,15 +55,17 @@ export async function createStudio(studioData) {
 
 export async function deleteStudio(id) {
     try {
-        console.log(id);
-        
         const response = await fetch(`${api}studios/${id}`, {
             method: 'DELETE',
             headers: getAuthHeaders()
         });
-        alert("esudio deletado")
+        if(response.ok){
+            alert("esudio deletado")
+            listarStudios()
+        }
         return response.json();
     } catch (error) {
+        alert("erro ao deletar estudio")
         console.error("Erro ao excluir estúdio:", error);
         return null;
     }
