@@ -1,14 +1,14 @@
 import { getOrCreateMainElement } from "../../../components/main";
 
 import { NewStudioForm } from "./components/newStudioform/NewStudioForm";
-import { Deletar } from "./service/functions/deletar";
+
 import { listarStudios } from "./service/functions/listar";
 
 export function StudioManegementPage(){
     const main = getOrCreateMainElement()
     
     main.innerHTML=`
-       <button class="btn btn-primary fw-bold px-4 py-2 rounded-pill shadow-sm w-25" id="new">
+       <button class="btn btn-primary fw-bold px-4 py-2 rounded-pill shadow-sm w-25 m-5" id="new">
                 <i class="bi bi-plus-circle me-2"></i>Criar Estúdio
         </button>
     <section class="container-fluid my-4" >

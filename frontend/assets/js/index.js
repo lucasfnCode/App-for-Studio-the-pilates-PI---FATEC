@@ -7,6 +7,7 @@ import { loginScreen } from "./pages/loginScreen/loginScreen";
 import { createPageAdm } from "./pages/adm/admpage";
 import { StudioManegementPage } from "./pages/adm/StudioManegement/StudioManegement";
 import { clearBody } from "./functions/clearBody";
+import { instructorManegement } from "./pages/adm/instrutor/instructorManegement";
 
 
 
@@ -29,7 +30,10 @@ clearBody()
       createPageAdm()
       break;
     case "#Studio-manegment":
-        StudioManegementPage()
+      StudioManegementPage()
+      break;
+    case "#instructor-manegment":
+      instructorManegement()
       break;
   }
 }

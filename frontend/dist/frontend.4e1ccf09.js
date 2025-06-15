@@ -676,6 +676,7 @@ var _loginScreen = require("./pages/loginScreen/loginScreen");
 var _admpage = require("./pages/adm/admpage");
 var _studioManegement = require("./pages/adm/StudioManegement/StudioManegement");
 var _clearBody = require("./functions/clearBody");
+var _instructorManegement = require("./pages/adm/instrutor/instructorManegement");
 function renderContentBasedOnHash() {
     (0, _clearBody.clearBody)();
     switch(location.hash){
@@ -696,12 +697,15 @@ function renderContentBasedOnHash() {
         case "#Studio-manegment":
             (0, _studioManegement.StudioManegementPage)();
             break;
+        case "#instructor-manegment":
+            (0, _instructorManegement.instructorManegement)();
+            break;
     }
 }
 renderContentBasedOnHash();
 window.addEventListener("hashchange", renderContentBasedOnHash);
 
-},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp","./pages/loginScreen/loginScreen":"9vJvL","./pages/adm/admpage":"eIH1s","./pages/adm/StudioManegement/StudioManegement":"hZsFQ","./functions/clearBody":"k97dv"}],"joWv1":[function(require,module,exports,__globalThis) {
+},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp","./pages/loginScreen/loginScreen":"9vJvL","./pages/adm/admpage":"eIH1s","./pages/adm/StudioManegement/StudioManegement":"hZsFQ","./functions/clearBody":"k97dv","./pages/adm/instrutor/instructorManegement":"adWcJ"}],"joWv1":[function(require,module,exports,__globalThis) {
 /*!
   * Bootstrap v5.3.6 (https://getbootstrap.com/)
   * Copyright 2011-2025 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
@@ -4868,15 +4872,24 @@ var _main = require("../../components/main");
 function createPageAdm() {
     const main = (0, _main.getOrCreateMainElement)();
     main.innerHTML = `
-        <section class="menagement container p-5">
-        <a href="#Studio-manegment">
-                <div id="Studios" class="card text-bg-primary" style="width: 18rem">
-                    <div class="card-body">
-                        <h5 class="card-title text-center p-5">gerenciar estudios</h5>
-                        <h6> </h6>
+        <section class="menagement container d-flex  p-4">
+            <a href="#Studio-manegment">
+                    <div id="Studios" class="card m-2 text-bg-primary" style="width: 18rem">
+                        <div class="card-body">
+                            <h5 class="card-title text-center p-5">gerenciar estudios</h5>
+                            <h6> </h6>
+                        </div>
                     </div>
-                </div>
-        </a>
+            </a>
+
+                <a href="#instructor-manegment">
+                    <div id="Studios" class="card m-2 text-bg-success" style="width: 18rem">
+                        <div class="card-body">
+                            <h5 class="card-title text-center p-5">gerenciar instrutores</h5>
+                            <h6> </h6>
+                        </div>
+                    </div>
+            </a>
         </section>
     `;
 }
@@ -4887,12 +4900,11 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "StudioManegementPage", ()=>StudioManegementPage);
 var _main = require("../../../components/main");
 var _newStudioForm = require("./components/newStudioform/NewStudioForm");
-var _deletar = require("./service/functions/deletar");
 var _listar = require("./service/functions/listar");
 function StudioManegementPage() {
     const main = (0, _main.getOrCreateMainElement)();
     main.innerHTML = `
-       <button class="btn btn-primary fw-bold px-4 py-2 rounded-pill shadow-sm w-25" id="new">
+       <button class="btn btn-primary fw-bold px-4 py-2 rounded-pill shadow-sm w-25 m-5" id="new">
                 <i class="bi bi-plus-circle me-2"></i>Criar Est\xfadio
         </button>
     <section class="container-fluid my-4" >
@@ -4910,7 +4922,7 @@ function StudioManegementPage() {
     $new.addEventListener("click", ()=>(0, _newStudioForm.NewStudioForm)());
 }
 
-},{"../../../components/main":"5zsxX","./components/newStudioform/NewStudioForm":"2bJdg","./service/functions/deletar":"kBHqA","./service/functions/listar":"8sfIm","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"2bJdg":[function(require,module,exports,__globalThis) {
+},{"../../../components/main":"5zsxX","./components/newStudioform/NewStudioForm":"2bJdg","./service/functions/listar":"8sfIm","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"2bJdg":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "NewStudioForm", ()=>NewStudioForm);
@@ -5062,27 +5074,29 @@ parcelHelpers.export(exports, "saveform", ()=>saveform);
 var _service = require("../../service/service");
 async function saveform() {
     const $form = document.querySelector("#cardInfoForm");
-    window.addEventListener("submit", async (e)=>{
-        e.preventDefault();
-        const form = new FormData($form);
-        const data = Object.fromEntries(form.entries());
-        data.isActive = true;
-        data.unavailableTimes = [];
-        data.instructorsByTime = {};
-        const recessos = [
-            data.recesses
-        ];
-        const feriados = [
-            data.holidays
-        ];
-        data.daysOperation = form.getAll("daysOperation");
-        data.openingHours = data.openingHours.split("\n");
-        data.holidays = feriados;
-        data.recesses = recessos;
-        console.log("estudio q esta sendo enviado pro back via post:", data);
-        const $formContainer = document.querySelector("#studios-row");
-        $formContainer.innerHTML = "";
-        await (0, _service.createStudio)(data);
+    window.addEventListener("DOMContentLoaded", ()=>{
+        window.addEventListener("submit", async (e)=>{
+            e.preventDefault();
+            const form = new FormData($form);
+            const data = Object.fromEntries(form.entries());
+            data.isActive = true;
+            data.unavailableTimes = [];
+            data.instructorsByTime = {};
+            const recessos = [
+                data.recesses
+            ];
+            const feriados = [
+                data.holidays
+            ];
+            data.daysOperation = form.getAll("daysOperation");
+            data.openingHours = data.openingHours.split("\n");
+            data.holidays = feriados;
+            data.recesses = recessos;
+            console.log("estudio q esta sendo enviado pro back via post:", data);
+            const $formContainer = document.querySelector("#studios-row");
+            $formContainer.innerHTML = "";
+            await (0, _service.createStudio)(data);
+        });
     });
 }
 
@@ -5285,6 +5299,336 @@ function clearBody() {
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"adWcJ":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "instructorManegement", ()=>instructorManegement);
+var _main = require("../../../components/main");
+var _newInstructorForm = require("./components/NewInstructorForm");
+var _listarInstrutores = require("./instructorService/componentes/listarInstrutores");
+function instructorManegement() {
+    const main = (0, _main.getOrCreateMainElement)();
+    main.innerHTML = `
+     <button class="btn btn-success fw-bold px-4 py-2 rounded-pill shadow-sm w-25 m-5" id="new">
+                <i class="bi bi-plus-circle me-2"></i>Criar usuario
+        </button>
+
+
+
+    <div class="container-fluid m-0">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-success text-white py-2 px-3">
+        <h6 class="mb-0">Lista de Usu\xe1rios</h6>
+        </div>
+        <div class="table-responsive">
+        <table class="table table-sm table-striped table-hover align-middle mb-0">
+            <thead class="table-light">
+            <tr>
+                <th>Foto</th>
+                <th>Nome</th>
+                <th>Fun\xe7\xe3o</th>
+                <th>Email</th>
+                <th>Contato</th>
+                <th>CPF</th>
+                <th>Nascimento</th>
+                <th>Forma\xe7\xe3o</th>
+                <th>Contrata\xe7\xe3o</th>
+                <th>Status</th>
+                <th class="text-center">A\xe7\xf5es</th>
+            </tr>
+            </thead>
+            <tbody id="instructors-body">
+            
+            <tr>
+               
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+    `;
+    (0, _newInstructorForm.NewInstructorForm)();
+    (0, _listarInstrutores.listarInstructors)();
+}
+
+},{"../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","./components/NewInstructorForm":"dHxvQ","./instructorService/componentes/listarInstrutores":"62YiX"}],"dHxvQ":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "NewInstructorForm", ()=>NewInstructorForm);
+var _main = require("../../../../components/main");
+var _service = require("../instructorService/service");
+function NewInstructorForm() {
+    const $new = document.querySelector("#new");
+    const main = (0, _main.getOrCreateMainElement)();
+    const instructortable = document.querySelector("#instructors-body");
+    $new.addEventListener("click", ()=>{
+        main.insertAdjacentHTML("beforeend", `
+<div class="card position-absolute top-50 start-50 translate-middle" id="userFormCon">
+
+  <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+
+    <h5 class="card-title mb-0">Cadastro de Instrutor</h5>
+
+    <button id="close" class="p-0 btn">
+      <i class="bi bi-x-lg btn btn-danger"></i>
+    </button>
+
+  </div>
+
+  <div class="card-body">
+
+
+    <form id="userForm">
+  <!-- Nome -->
+  <div class="mb-3">
+    <label for="name" class="form-label">Nome Completo</label>
+    <input type="text" class="form-control" name="name" id="name" required>
+  </div>
+
+  <!-- E-mail e Contato -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" name="email" id="email" required>
+    </div>
+    <div class="col-md-6">
+      <label for="contact" class="form-label">Contato</label>
+      <input type="tel" class="form-control" name="contact" id="contact">
+    </div>
+  </div>
+
+  <!-- CPF e Nascimento -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="cpf" class="form-label">CPF</label>
+      <input type="text" class="form-control" name="cpf" id="cpf">
+    </div>
+    <div class="col-md-6">
+      <label for="birthDate" class="form-label">Data de Nascimento</label>
+      <input type="date" class="form-control" name="birthDate" id="birthDate">
+    </div>
+  </div>
+
+  <!-- Forma\xe7\xe3o -->
+  <div class="mb-3">
+    <label for="formation" class="form-label">Forma\xe7\xe3o</label>
+    <input type="text" class="form-control" name="formation" id="formation">
+  </div>
+
+  <!-- Frase de conselho -->
+  <div class="mb-3">
+    <label for="advice" class="form-label">Conselho</label>
+    <textarea class="form-control" name="advice" id="advice" rows="2"></textarea>
+  </div>
+
+  <!-- Data de contrata\xe7\xe3o e ativo -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="hiringDate" class="form-label">Data de Contrata\xe7\xe3o</label>
+      <input type="date" class="form-control" name="hiringDate" id="hiringDate">
+    </div>
+  </div>
+
+  <!-- Senha -->
+  <div class="mb-3">
+    <label for="password" class="form-label">Senha</label>
+    <input type="password" class="form-control" name="password" id="password">
+  </div>
+
+  <!-- Bot\xe3o -->
+  <button type="submit" class="btn btn-success w-100">Salvar</button>
+</form>
+
+
+
+  </div>
+</div>`);
+    });
+    document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("submit", (e)=>{
+            e.preventDefault();
+            const $form = document.querySelector("#userForm");
+            if ($form) {
+                const formData = new FormData($form);
+                const data = Object.fromEntries(formData.entries());
+                data.isActive = true;
+                data.roles = [
+                    "ROLE_INSTRUCTOR"
+                ];
+                data.photo = "nao tem foto";
+                instructortable.innerHTML = "";
+                (0, _service.createInstructor)(data);
+            } else console.warn("Elemento #userForm n\xe3o foi encontrado.");
+        });
+    });
+}
+
+},{"../../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../instructorService/service":"32p1a"}],"32p1a":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getInstructors", ()=>getInstructors);
+parcelHelpers.export(exports, "getActiveInstructors", ()=>getActiveInstructors);
+parcelHelpers.export(exports, "createInstructor", ()=>createInstructor);
+parcelHelpers.export(exports, "deleteInstructor", ()=>deleteInstructor);
+parcelHelpers.export(exports, "getInstructorById", ()=>getInstructorById);
+parcelHelpers.export(exports, "updateInstructor", ()=>updateInstructor);
+var _listarInstrutores = require("./componentes/listarInstrutores");
+const api = "http://localhost:8080/";
+// Função para montar os headers com token
+function getAuthHeaders(extraHeaders = {}) {
+    const token = localStorage.getItem('token');
+    return {
+        authorization: token,
+        ...extraHeaders
+    };
+}
+async function getInstructors() {
+    try {
+        const response = await fetch(`${api}users/instructors`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+        return response.json();
+    } catch (error) {
+        console.error("Erro ao buscar instrutores:", error);
+        return null;
+    }
+}
+async function getActiveInstructors() {
+    try {
+        const response = await fetch(`${api}users/instructors/actives`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+        return response.json();
+    } catch (error) {
+        console.error("Erro ao buscar instrutores ativos:", error);
+        return null;
+    }
+}
+async function createInstructor(instructorData) {
+    try {
+        console.log("Instrutor a ser criado:", instructorData);
+        const response = await fetch(`${api}users/instructors`, {
+            method: 'POST',
+            headers: getAuthHeaders({
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify(instructorData)
+        });
+        const contentType = response.headers.get("content-type");
+        if (response.ok) {
+            (0, _listarInstrutores.listarInstructors)();
+            if (contentType && contentType.includes("application/json")) return await response.json();
+            else console.warn("Resposta sem JSON.");
+        } else {
+            console.error(`Erro ${response.status}:`, await response.text());
+            return null;
+        }
+    } catch (error) {
+        console.error("Erro ao criar instrutor:", error);
+        return null;
+    }
+}
+async function deleteInstructor(id) {
+    try {
+        const response = await fetch(`${api}users/instructors/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+        if (response.ok) alert("Instrutor deletado com sucesso");
+        return response.json();
+    } catch (error) {
+        alert("Erro ao deletar instrutor");
+        console.error("Erro ao excluir instrutor:", error);
+        return null;
+    }
+}
+async function getInstructorById(id) {
+    try {
+        const response = await fetch(`${api}users/instructors/${id}`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+        return response.json();
+    } catch (error) {
+        console.error("Erro ao buscar instrutor por ID:", error);
+        return null;
+    }
+}
+async function updateInstructor(id, instructorData) {
+    try {
+        const response = await fetch(`${api}users/instructors/${id}`, {
+            method: 'PUT',
+            headers: getAuthHeaders({
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify(instructorData)
+        });
+        const contentType = response.headers.get("content-type");
+        if (response.ok) {
+            (0, _listarInstrutores.listarInstructors)().then(()=>alert("Instrutor atualizado com sucesso"));
+            console.log("Instrutor a ser atualizado:", instructorData);
+            if (contentType && contentType.includes("application/json")) return await response.json();
+            else console.warn("Resposta sem JSON.");
+        } else {
+            console.error(`Erro ${response.status}:`, await response.text());
+            return null;
+        }
+    } catch (error) {
+        console.error("Erro ao atualizar instrutor:", error);
+        return null;
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","./componentes/listarInstrutores":"62YiX"}],"62YiX":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "listarInstructors", ()=>listarInstructors);
+var _service = require("../service");
+async function listarInstructors() {
+    const $instructorsTable = document.querySelector("#instructors-body");
+    const instructors = await (0, _service.getInstructors)();
+    instructors.forEach((instrutor)=>{
+        console.log("Instrutores vindos do back:", instrutor);
+        const activeBadge = instrutor.isActive ? `<span class="badge bg-success">Ativo</span>` : `<span class="badge bg-secondary">Inativo</span>`;
+        const birthDate = new Date(instrutor.birthDate).toLocaleDateString("pt-BR");
+        const hiringDate = new Date(instrutor.hiringDate).toLocaleDateString("pt-BR");
+        $instructorsTable.insertAdjacentHTML("afterbegin", `
+        <tr>
+            <td><img src="${instrutor.photo}" alt="${instrutor.name}" class="rounded-circle" width="36" height="36"></td>
+            <td><strong class="small">${instrutor.name}</strong></td>
+            <td><span class="badge bg-info text-dark">Instrutor</span></td>
+            <td class="small">${instrutor.email}</td>
+            <td class="small">${instrutor.contact}</td>
+            <td class="small">${instrutor.cpf}</td>
+            <td class="small">${birthDate}</td>
+            <td class="small">${instrutor.formation}</td>
+            <td class="small">${hiringDate}</td>
+            <td>${activeBadge}</td>
+            <td class="text-center">
+            
+            <button class="btn btn-sm btn-outline-danger me-1 deactivate" data-id="${instrutor.id}">
+                <i class="bi bi-slash-circle"></i>
+            </button>
+
+            <button class="btn btn-sm btn-outline-secondary edit" data-id="${instrutor.id}">
+                <i class="bi bi-pencil"></i>
+            </button>
+            </td>
+        </tr>
+        `);
+    });
+    // Exemplo de listeners para botões (se desejar)
+    document.querySelectorAll(".view").forEach((btn)=>{
+        btn.addEventListener("click", ()=>{});
+    });
+    document.querySelectorAll(".edit").forEach((btn)=>{
+        btn.addEventListener("click", ()=>{});
+    });
+}
+
+},{"../service":"32p1a","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
 
 //# sourceMappingURL=frontend.4e1ccf09.js.map
