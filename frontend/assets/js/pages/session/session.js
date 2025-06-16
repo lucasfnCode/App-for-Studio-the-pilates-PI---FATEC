@@ -2,11 +2,32 @@ import { renderizarTabelaAulas } from './components/tableSession';
 import { criarModalCadastroAulaHTML, configurarModalCadastroAula } from './components/modaisSessions/formModal';
 import { getOrCreateMainElement } from '../../components/main';
 
-export function init() {
-  const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+export async function init() {
+  let usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
   if (!usuario || usuario.role !== "ROLE_INSTRUCTOR") {
     document.body.innerHTML = "<h2 class='text-center mt-5'>Acesso restrito a instrutores.</h2>";
     return;
+  }
+
+  // Garante que o nome do instrutor está no localStorage
+  if (!usuario.name) {
+    try {
+      const response = await fetch(`http://localhost:8080/users/instructors/${usuario.id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${usuario.token}`,
+        },
+      });
+      if (response.ok) {
+        const userData = await response.json();
+        usuario.name = userData.name;
+        localStorage.setItem("usuarioLogado", JSON.stringify(usuario));
+      } else {
+        console.warn("Não foi possível buscar o nome do instrutor.");
+      }
+    } catch (e) {
+      console.warn("Erro ao buscar nome do instrutor:", e);
+    }
   }
 
   const main = getOrCreateMainElement();
@@ -34,8 +55,11 @@ export function init() {
     </section>
   `;
 
-  renderizarTabelaAulas();
-  window.renderizarTabelaAulas = renderizarTabelaAulas;
+  // Garante que o DOM foi atualizado antes de renderizar a tabela
+  setTimeout(() => {
+    renderizarTabelaAulas();
+    window.renderizarTabelaAulas = renderizarTabelaAulas;
+  }, 0);
 
   document.getElementById('btnAdicionarAula').addEventListener('click', () => {
     const modalExistente = document.getElementById('modalCadastroAula');
