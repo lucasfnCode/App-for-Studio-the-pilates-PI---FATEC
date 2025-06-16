@@ -20,7 +20,7 @@ async function fetchAulas() {
   const roles = getUserRoles();
 
   // Se for instrutor e não houver nome, tenta buscar pelo id
-  if (roles.includes("ROLE_INSTRUCTOR" && !user.name)) {
+  if (roles.includes("ROLE_INSTRUCTOR") && !user.name) {
     try {
       const response = await fetch(
         `http://localhost:8080/users/instructors/${user.id}`,
@@ -66,7 +66,7 @@ async function fetchAulas() {
 
     const data = JSON.parse(text);
 
-    if (roles.includes("ROLE_INSTRUCTOR" && user.name)) {
+    if (roles.includes("ROLE_INSTRUCTOR") && user.name) {
       return data.filter(
         (aula) => aula.instructor === user.name && aula.isActive
       );

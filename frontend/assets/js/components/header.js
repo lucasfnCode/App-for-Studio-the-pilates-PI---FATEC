@@ -26,6 +26,9 @@ export function renderHeader() {
         <a class="nav-link m-1 text-secondary" href="#login">
           <i class="bi bi-people-fill"></i>
         </a>
+        <button id="logoutBtn" class="btn btn-outline-danger btn-sm ms-2" title="Sair">
+          <i class="bi bi-box-arrow-right"></i>
+        </button>
       </div>
     </nav>
   `;
@@ -37,6 +40,16 @@ export function renderHeader() {
   const headerElement = document.createElement('header');
   headerElement.innerHTML = headerHtml;
   document.body.insertAdjacentElement('afterbegin', headerElement);
+
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("usuarioLogado");
+      localStorage.removeItem("token");
+      location.hash = "#login";
+      location.reload();
+    });
+  }
 }
 
 export const headerHtml = ""; // Não use mais diretamente, mas mantém para evitar erros de importação
