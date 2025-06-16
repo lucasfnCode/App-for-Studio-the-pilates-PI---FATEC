@@ -20,7 +20,7 @@ export function renderHeader() {
         <a class="nav-link m-1 text-secondary" aria-current="page" href="#home">Home</a>
         <a class="nav-link m-1 text-secondary" href="#agendamento">Agendamento</a>
         ${(isInstructor || isAdmin) ? `<a class="nav-link m-1 text-secondary" href="#aula">Gerenciar Aulas</a>` : ""}
-        ${isAdmin ? `<a class="nav-link m-1 text-secondary" href="#gerenciamento">gerenciamento</a>` : ""}
+        ${isAdmin ? `<a class="nav-link m-1 text-secondary" href="#gerenciamento">Gerenciamento</a>` : ""}
       </div>
       <div class="nav">
         <a class="nav-link m-1 text-secondary" href="#login">

@@ -4,11 +4,6 @@ import { getOrCreateMainElement } from '../../components/main';
 
 export async function init() {
   let usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
-  if (!usuario || usuario.role !== "ROLE_INSTRUCTOR") {
-    document.body.innerHTML = "<h2 class='text-center mt-5'>Acesso restrito a instrutores.</h2>";
-    return;
-  }
-
   // Garante que o nome do instrutor está no localStorage
   if (!usuario.name) {
     try {
