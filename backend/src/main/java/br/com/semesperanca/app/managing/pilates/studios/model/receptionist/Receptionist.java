@@ -20,12 +20,8 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @SuperBuilder
 @Document(collection = "Usuarios")
-
-
 public class Receptionist extends User {
 
-    @Id
-    private String id;
 
     private LocalDate hiringDate;
 
