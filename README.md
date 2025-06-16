@@ -1,19 +1,9 @@
 # App for Studio the pilátes PI-FATEC
 
-
 # visualizar o banco de dados: 
-    docker run -d --name mongo-container -p 27017:27017 mongo ou docker start mongo-container
-    docker exec -it mongo-container mongosh
-    show dbs
-    use Pilates
-    show collections
+    docker run -d --name mongo-container -p 27017:27017 mongo
 
-# simular role:
-    Aluno:
-    localStorage.setItem("usuarioLogado", JSON.stringify({id: "Aluno123", role: "aluno"}));
+#Objetivo
 
-    Recepcionista:
-    localStorage.setItem("usuarioLogado", JSON.stringify({role: "recepcionista"}));
+    O propósito deste projeto é criar um site dedicado ao gerenciamento de estúdios de pilates. A ideia é oferecer uma plataforma que seja não apenas     intuitiva, mas também super eficiente, facilitando o controle de alunos, o agendamento de aulas, a presença e o histórico de atividades. Com essa      aplicação, buscamos otimizar a rotina dos profissionais, aprimorar a experiência dos clientes e reunir todas as informações essenciais para o          funcionamento do estúdio em um único ambiente digital.   
 
-    Instrutor:
-    localStorage.setItem("usuarioLogado", JSON.stringify({role: "instrutor"}));
