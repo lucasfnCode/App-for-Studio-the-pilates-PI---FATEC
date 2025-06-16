@@ -1,5 +1,5 @@
 import { getOrCreateMainElement } from "../../../../components/main";
-import { listarInstructors } from "../instructorService/componentes/listarInstrutores";
+
 import { getInstructorById, updateInstructor } from "../instructorService/service";
 
 export async function EditInstructorForm(id) {
@@ -7,8 +7,8 @@ export async function EditInstructorForm(id) {
     
   const instructor = await getInstructorById(id);
   
-  main.insertAdjacentHTML("beforeend", `
-<div class="w-100 card position-absolute top-50 start-50 translate-middle" id="userFormCon" style="max-width: 48rem">
+  const $form = `
+  <div class="w-100 card position-absolute top-50 start-50 translate-middle" id="userFormCon" style="max-width: 48rem">
   <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
     <h5 class="card-title mb-0">Editar Instrutor</h5>
     <button id="close" class="p-0 btn">
@@ -66,7 +66,9 @@ export async function EditInstructorForm(id) {
 </form>
 
   </div>
-</div>`);
+</div>`
+  
+  main.insertAdjacentHTML("beforeend", $form);
 
   document.querySelector("#userForm").addEventListener("submit",async (e)=>{
 
@@ -75,8 +77,7 @@ export async function EditInstructorForm(id) {
         const formData = new FormData($form);
         const data =  Object.fromEntries( formData.entries());
 
-        const $instructorsTable = document.querySelector("#instructors-body")
-
+        
         data.roles = ["ROLE_INSTRUCTOR"]
         data.isActive = true
         const id = $form.dataset.id;
@@ -85,8 +86,7 @@ export async function EditInstructorForm(id) {
         
         
         await updateInstructor(id,bodyrequest)
-        $instructorsTable.innerHTML=""
-        
+         document.querySelector("#userFormCon").remove()
   });
-  document.addEventListener("DOMContentLoaded",()=>listarInstructors())
+ 
 }

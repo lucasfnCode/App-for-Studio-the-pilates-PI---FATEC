@@ -49,7 +49,8 @@ export async function createInstructor(instructorData) {
         if (response.ok) {
             const pinto = document.querySelector("#instructors-body")
             pinto.innerHTML = ""
-            listarInstructors()
+            document.querySelector("#userFormCon").remove()
+            await listarInstructors()
         }
     } catch (error) {
         console.error("Erro ao criar instrutor:", error);
@@ -65,7 +66,7 @@ export async function deleteInstructor(id) {
         });
 
         if (response.ok) {
-            alert("Instrutor deletado com sucesso");
+            alert("Instrutor desativado com sucesso");
         }
 
         return response.json();
@@ -109,6 +110,9 @@ export async function updateInstructor(id,bodyrequest) {
 
             console.log("Instrutor a ser atualizado:", bodyrequest);
 
+            const $instructorsTable = document.querySelector("#instructors-body")
+            $instructorsTable.innerHTML=""
+            listarInstructors()
             if (contentType && contentType.includes("application/json")) {
                 return await response.json();
             } else {

@@ -1,5 +1,5 @@
 import { EditInstructorForm } from "../../components/EditFormInstrutor";
-import { deleteInstructor, getInstructors } from "../service";
+import { deleteInstructor, getInstructors, updateInstructor } from "../service";
 
 export async function listarInstructors() {
   const $instructorsTable = document.querySelector("#instructors-body");
@@ -30,14 +30,14 @@ export async function listarInstructors() {
 
         $instructorsTable.insertAdjacentHTML("afterbegin", `
         <tr>
-            <td><strong class="small">${instrutor.name}</strong></td>
+            <td data-name="${instrutor.name}"><strong class="small">${instrutor.name}</strong></td>
             <td><span class="badge bg-info text-dark">Instrutor</span></td>
-            <td class="small">${instrutor.email}</td>
-            <td class="small">${instrutor.contact}</td>
-            <td class="small">${instrutor.cpf}</td>
-            <td class="small">${birthDate}</td>
-            <td class="small">${instrutor.formation}</td>
-            <td class="small">${hiringDate}</td>
+            <td class="small" data-email="${instrutor.email}">${instrutor.email}</td>
+            <td class="small" data-contact="${instrutor.contact}">${instrutor.contact}</td>
+            <td class="small" data-cpf="${instrutor.cpf}">${instrutor.cpf}</td>
+            <td class="small" data-birth="${birthDate}">${birthDate}</td>
+            <td class="small" data-formation="${instrutor.formation}">${instrutor.formation}</td>
+            <td class="small" data-hiringDate="${hiringDate}">${hiringDate}</td>
             <td>${activeBadge}</td>
             <td class="text-center">
             
@@ -45,6 +45,11 @@ export async function listarInstructors() {
             </td>
         </tr>
         `);
+    document.querySelectorAll(".activate").forEach(btn => {
+    const dataid = btn.dataset.id
+    btn.addEventListener("click", () => { console.log(instrutor)})
+
+    })
   });
 
  
@@ -65,9 +70,30 @@ export async function listarInstructors() {
         EditInstructorForm(dataid)
        });
   });
+
+  // document.querySelectorAll(".activate").forEach(btn => {
+  //   const dataid = btn.dataset.id
+  //   btn.addEventListener("click", () => { 
+  //                 // Seleciona todas as linhas da tabela que contêm dados do instrutor
+  //       const linhasInstrutores = document.querySelectorAll('tr');
+
+  //       // Percorre cada linha
+  //       linhasInstrutores.forEach((linha) => {
+  //                 const thisinstrutor = {
+  //                   name: linha.querySelector('td[data-name]')?.dataset.name,
+  //                   email: linha.querySelector('td[data-email]')?.dataset.email,
+  //                   contact: linha.querySelector('td[data-contact]')?.dataset.contact,
+  //                   cpf: linha.querySelector('td[data-cpf]')?.dataset.cpf,
+  //                   birthDate: linha.querySelector('td[data-birth]')?.dataset.birth,
+  //                   formation: linha.querySelector('td[data-formation]')?.dataset.formation,
+  //                   hiringDate: linha.querySelector('td[data-hiringDate]')?.dataset.hiringDate
+  //                 };
+  //                 console.log(thisinstrutor);
+                  
+  //             });
+
+  //         });
+  //       });
+
+
 }
-
-
-
-
-

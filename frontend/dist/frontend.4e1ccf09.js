@@ -5355,10 +5355,11 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "NewInstructorForm", ()=>NewInstructorForm);
 var _main = require("../../../../components/main");
 var _instructorManegement = require("../instructorManegement");
+var _listarInstrutores = require("../instructorService/componentes/listarInstrutores");
+var _service = require("../instructorService/service");
 function NewInstructorForm() {
     const $new = document.querySelector("#new");
     const main = (0, _main.getOrCreateMainElement)();
-    const instructortable = document.querySelector("#instructors-body");
     $new.addEventListener("click", ()=>{
         main.insertAdjacentHTML("beforeend", `
 <div class="card position-absolute top-50 start-50 translate-middle" id="userFormCon">
@@ -5451,12 +5452,134 @@ function NewInstructorForm() {
         data.roles = [
             "ROLE_INSTRUCTOR"
         ];
-        main.innerHTML = "";
-        (0, _instructorManegement.instructorManegement)();
+        data.photo = "";
+        await (0, _service.createInstructor)(data);
+        document.querySelector("#userFormCon").remove();
     });
 }
 
-},{"../../../../components/main":"5zsxX","../instructorManegement":"adWcJ","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"62YiX":[function(require,module,exports,__globalThis) {
+},{"../../../../components/main":"5zsxX","../instructorManegement":"adWcJ","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../instructorService/service":"32p1a","../instructorService/componentes/listarInstrutores":"62YiX"}],"32p1a":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getInstructors", ()=>getInstructors);
+parcelHelpers.export(exports, "getActiveInstructors", ()=>getActiveInstructors);
+parcelHelpers.export(exports, "createInstructor", ()=>createInstructor);
+parcelHelpers.export(exports, "deleteInstructor", ()=>deleteInstructor);
+parcelHelpers.export(exports, "getInstructorById", ()=>getInstructorById);
+parcelHelpers.export(exports, "updateInstructor", ()=>updateInstructor);
+var _listarInstrutores = require("./componentes/listarInstrutores");
+const api = "http://localhost:8080/";
+// Função para montar os headers com token
+function getAuthHeaders(extraHeaders = {}) {
+    const token = localStorage.getItem('token');
+    return {
+        authorization: token,
+        ...extraHeaders
+    };
+}
+async function getInstructors() {
+    try {
+        const response = await fetch(`${api}users/instructors`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+        return response.json();
+    } catch (error) {
+        console.error("Erro ao buscar instrutores:", error);
+        return null;
+    }
+}
+async function getActiveInstructors() {
+    try {
+        const response = await fetch(`${api}users/instructors/actives`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+        return response.json();
+    } catch (error) {
+        console.error("Erro ao buscar instrutores ativos:", error);
+        return null;
+    }
+}
+async function createInstructor(instructorData) {
+    try {
+        console.log("Instrutor a ser criado:", instructorData);
+        const response = await fetch(`${api}users/instructors`, {
+            method: 'POST',
+            headers: getAuthHeaders({
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify(instructorData)
+        });
+        if (response.ok) {
+            const pinto = document.querySelector("#instructors-body");
+            pinto.innerHTML = "";
+            document.querySelector("#userFormCon").remove();
+            await (0, _listarInstrutores.listarInstructors)();
+        }
+    } catch (error) {
+        console.error("Erro ao criar instrutor:", error);
+        return null;
+    }
+}
+async function deleteInstructor(id) {
+    try {
+        const response = await fetch(`${api}users/instructors/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+        if (response.ok) alert("Instrutor desativado com sucesso");
+        return response.json();
+    } catch (error) {
+        alert("Erro ao deletar instrutor");
+        console.error("Erro ao excluir instrutor:", error);
+        return null;
+    }
+}
+async function getInstructorById(id) {
+    try {
+        console.log(id);
+        const response = await fetch(`${api}users/instructors/${id}`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+        const result = await response.json();
+        result.isActive = true;
+        return result;
+    } catch (error) {
+        console.error("Erro ao buscar instrutor por ID:", error);
+        return null;
+    }
+}
+async function updateInstructor(id, bodyrequest) {
+    try {
+        const response = await fetch(`${api}users/instructors/${id}`, {
+            method: 'PUT',
+            headers: getAuthHeaders({
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify(bodyrequest)
+        });
+        const contentType = response.headers.get("content-type");
+        if (response.ok) {
+            alert("Instrutor atualizado com sucesso");
+            console.log("Instrutor a ser atualizado:", bodyrequest);
+            const $instructorsTable = document.querySelector("#instructors-body");
+            $instructorsTable.innerHTML = "";
+            (0, _listarInstrutores.listarInstructors)();
+            if (contentType && contentType.includes("application/json")) return await response.json();
+            else console.warn("Resposta sem JSON.");
+        } else {
+            console.error(`Erro ${response.status}:`, await response.text());
+            return null;
+        }
+    } catch (error) {
+        console.error("Erro ao atualizar instrutor:", error, bodyrequest);
+        return null;
+    }
+}
+
+},{"./componentes/listarInstrutores":"62YiX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"62YiX":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "listarInstructors", ()=>listarInstructors);
@@ -5483,14 +5606,14 @@ async function listarInstructors() {
         const hiringDate = new Date(instrutor.hiringDate).toLocaleDateString("pt-BR");
         $instructorsTable.insertAdjacentHTML("afterbegin", `
         <tr>
-            <td><strong class="small">${instrutor.name}</strong></td>
+            <td data-name="${instrutor.name}"><strong class="small">${instrutor.name}</strong></td>
             <td><span class="badge bg-info text-dark">Instrutor</span></td>
-            <td class="small">${instrutor.email}</td>
-            <td class="small">${instrutor.contact}</td>
-            <td class="small">${instrutor.cpf}</td>
-            <td class="small">${birthDate}</td>
-            <td class="small">${instrutor.formation}</td>
-            <td class="small">${hiringDate}</td>
+            <td class="small" data-email="${instrutor.email}">${instrutor.email}</td>
+            <td class="small" data-contact="${instrutor.contact}">${instrutor.contact}</td>
+            <td class="small" data-cpf="${instrutor.cpf}">${instrutor.cpf}</td>
+            <td class="small" data-birth="${birthDate}">${birthDate}</td>
+            <td class="small" data-formation="${instrutor.formation}">${instrutor.formation}</td>
+            <td class="small" data-hiringDate="${hiringDate}">${hiringDate}</td>
             <td>${activeBadge}</td>
             <td class="text-center">
             
@@ -5498,6 +5621,12 @@ async function listarInstructors() {
             </td>
         </tr>
         `);
+        document.querySelectorAll(".activate").forEach((btn)=>{
+            const dataid = btn.dataset.id;
+            btn.addEventListener("click", ()=>{
+                console.log(instrutor);
+            });
+        });
     });
     // Exemplo de listeners para botões (se desejar)
     document.querySelectorAll(".deactivate").forEach((btn)=>{
@@ -5514,6 +5643,26 @@ async function listarInstructors() {
             (0, _editFormInstrutor.EditInstructorForm)(dataid);
         });
     });
+// document.querySelectorAll(".activate").forEach(btn => {
+//   const dataid = btn.dataset.id
+//   btn.addEventListener("click", () => { 
+//                 // Seleciona todas as linhas da tabela que contêm dados do instrutor
+//       const linhasInstrutores = document.querySelectorAll('tr');
+//       // Percorre cada linha
+//       linhasInstrutores.forEach((linha) => {
+//                 const thisinstrutor = {
+//                   name: linha.querySelector('td[data-name]')?.dataset.name,
+//                   email: linha.querySelector('td[data-email]')?.dataset.email,
+//                   contact: linha.querySelector('td[data-contact]')?.dataset.contact,
+//                   cpf: linha.querySelector('td[data-cpf]')?.dataset.cpf,
+//                   birthDate: linha.querySelector('td[data-birth]')?.dataset.birth,
+//                   formation: linha.querySelector('td[data-formation]')?.dataset.formation,
+//                   hiringDate: linha.querySelector('td[data-hiringDate]')?.dataset.hiringDate
+//                 };
+//                 console.log(thisinstrutor);
+//             });
+//         });
+//       });
 }
 
 },{"../../components/EditFormInstrutor":"8as8w","../service":"32p1a","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8as8w":[function(require,module,exports,__globalThis) {
@@ -5521,13 +5670,12 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "EditInstructorForm", ()=>EditInstructorForm);
 var _main = require("../../../../components/main");
-var _listarInstrutores = require("../instructorService/componentes/listarInstrutores");
 var _service = require("../instructorService/service");
 async function EditInstructorForm(id) {
     const main = (0, _main.getOrCreateMainElement)();
     const instructor = await (0, _service.getInstructorById)(id);
-    main.insertAdjacentHTML("beforeend", `
-<div class="w-100 card position-absolute top-50 start-50 translate-middle" id="userFormCon" style="max-width: 48rem">
+    const $form = `
+  <div class="w-100 card position-absolute top-50 start-50 translate-middle" id="userFormCon" style="max-width: 48rem">
   <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
     <h5 class="card-title mb-0">Editar Instrutor</h5>
     <button id="close" class="p-0 btn">
@@ -5585,13 +5733,13 @@ async function EditInstructorForm(id) {
 </form>
 
   </div>
-</div>`);
+</div>`;
+    main.insertAdjacentHTML("beforeend", $form);
     document.querySelector("#userForm").addEventListener("submit", async (e)=>{
         e.preventDefault();
         const $form = document.querySelector("#userForm");
         const formData = new FormData($form);
         const data = Object.fromEntries(formData.entries());
-        const $instructorsTable = document.querySelector("#instructors-body");
         data.roles = [
             "ROLE_INSTRUCTOR"
         ];
@@ -5599,128 +5747,10 @@ async function EditInstructorForm(id) {
         const id = $form.dataset.id;
         const bodyrequest = data;
         await (0, _service.updateInstructor)(id, bodyrequest);
-        $instructorsTable.innerHTML = "";
+        document.querySelector("#userFormCon").remove();
     });
-    document.addEventListener("DOMContentLoaded", ()=>(0, _listarInstrutores.listarInstructors)());
 }
 
-},{"../../../../components/main":"5zsxX","../instructorService/service":"32p1a","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../instructorService/componentes/listarInstrutores":"62YiX"}],"32p1a":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "getInstructors", ()=>getInstructors);
-parcelHelpers.export(exports, "getActiveInstructors", ()=>getActiveInstructors);
-parcelHelpers.export(exports, "createInstructor", ()=>createInstructor);
-parcelHelpers.export(exports, "deleteInstructor", ()=>deleteInstructor);
-parcelHelpers.export(exports, "getInstructorById", ()=>getInstructorById);
-parcelHelpers.export(exports, "updateInstructor", ()=>updateInstructor);
-var _listarInstrutores = require("./componentes/listarInstrutores");
-const api = "http://localhost:8080/";
-// Função para montar os headers com token
-function getAuthHeaders(extraHeaders = {}) {
-    const token = localStorage.getItem('token');
-    return {
-        authorization: token,
-        ...extraHeaders
-    };
-}
-async function getInstructors() {
-    try {
-        const response = await fetch(`${api}users/instructors`, {
-            method: 'GET',
-            headers: getAuthHeaders()
-        });
-        return response.json();
-    } catch (error) {
-        console.error("Erro ao buscar instrutores:", error);
-        return null;
-    }
-}
-async function getActiveInstructors() {
-    try {
-        const response = await fetch(`${api}users/instructors/actives`, {
-            method: 'GET',
-            headers: getAuthHeaders()
-        });
-        return response.json();
-    } catch (error) {
-        console.error("Erro ao buscar instrutores ativos:", error);
-        return null;
-    }
-}
-async function createInstructor(instructorData) {
-    try {
-        console.log("Instrutor a ser criado:", instructorData);
-        const response = await fetch(`${api}users/instructors`, {
-            method: 'POST',
-            headers: getAuthHeaders({
-                'Content-Type': 'application/json'
-            }),
-            body: JSON.stringify(instructorData)
-        });
-        if (response.ok) {
-            const pinto = document.querySelector("#instructors-body");
-            pinto.innerHTML = "";
-            (0, _listarInstrutores.listarInstructors)();
-        }
-    } catch (error) {
-        console.error("Erro ao criar instrutor:", error);
-        return null;
-    }
-}
-async function deleteInstructor(id) {
-    try {
-        const response = await fetch(`${api}users/instructors/${id}`, {
-            method: 'DELETE',
-            headers: getAuthHeaders()
-        });
-        if (response.ok) alert("Instrutor deletado com sucesso");
-        return response.json();
-    } catch (error) {
-        alert("Erro ao deletar instrutor");
-        console.error("Erro ao excluir instrutor:", error);
-        return null;
-    }
-}
-async function getInstructorById(id) {
-    try {
-        console.log(id);
-        const response = await fetch(`${api}users/instructors/${id}`, {
-            method: 'GET',
-            headers: getAuthHeaders()
-        });
-        const result = await response.json();
-        result.isActive = true;
-        return result;
-    } catch (error) {
-        console.error("Erro ao buscar instrutor por ID:", error);
-        return null;
-    }
-}
-async function updateInstructor(id, bodyrequest) {
-    try {
-        const response = await fetch(`${api}users/instructors/${id}`, {
-            method: 'PUT',
-            headers: getAuthHeaders({
-                'Content-Type': 'application/json'
-            }),
-            body: JSON.stringify(bodyrequest)
-        });
-        const contentType = response.headers.get("content-type");
-        if (response.ok) {
-            alert("Instrutor atualizado com sucesso");
-            console.log("Instrutor a ser atualizado:", bodyrequest);
-            if (contentType && contentType.includes("application/json")) return await response.json();
-            else console.warn("Resposta sem JSON.");
-        } else {
-            console.error(`Erro ${response.status}:`, await response.text());
-            return null;
-        }
-    } catch (error) {
-        console.error("Erro ao atualizar instrutor:", error, bodyrequest);
-        return null;
-    }
-}
-
-},{"./componentes/listarInstrutores":"62YiX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
+},{"../../../../components/main":"5zsxX","../instructorService/service":"32p1a","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
 
 //# sourceMappingURL=frontend.4e1ccf09.js.map
