@@ -11,7 +11,7 @@ export function loginScreen() {
         <h2 class="text-center mb-4">Login</h2>
         <form id="loginForm">
           <div class="mb-3">
-            <label class="form-label">Usuário (CPF)</label>
+            <label class="form-label">Usuário</label>
             <input name="username" class="form-control" id="username" required>
           </div>
           <div class="mb-3">

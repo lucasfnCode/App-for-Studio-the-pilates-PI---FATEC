@@ -19,6 +19,31 @@ export function getUserLoggedData() {
 }
 
 async function fetchAulas() {
+  const user = getUserLoggedData();
+  const role = getUserRole();
+
+  // Se for instrutor e não houver nome, tenta buscar pelo id
+  if (role === "ROLE_INSTRUCTOR" && !user.name) {
+    try {
+      const response = await fetch(`http://localhost:8080/users/instructors/${user.id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      if (response.ok) {
+        const userData = await response.json();
+        user.name = userData.name; // ajuste se o campo for diferente
+        // Atualiza o localStorage para as próximas requisições
+        const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+        usuarioLogado.name = userData.name;
+        localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
+      }
+    } catch (e) {
+      console.warn("Não foi possível buscar o nome do instrutor:", e);
+    }
+  }
+
   try {
     const response = await fetch("http://localhost:8080/sessions", {
       headers: {
@@ -39,6 +64,12 @@ async function fetchAulas() {
     }
 
     const data = JSON.parse(text);
+
+    // Filtra as aulas pelo nome do instrutor logado
+    if (role === "ROLE_INSTRUCTOR" && user.name) {
+      return data.filter(aula => aula.instructor === user.name);
+    }
+
     return data;
   } catch (error) {
     console.error("Erro ao buscar aulas:", error);
@@ -77,7 +108,6 @@ export async function renderAgendamentoPage() {
             .includes(String(user.id));
 
         if (role === "ROLE_STUDENT") {
-          // console.log("user.id:", user.id, "aula.students:", aula.students);
           if (!jaAgendado && aula.status === "aberta") {
             acoes = `<button class="btn btn-sm btn-success" onclick="agendarAula('${aulaId}')">Agendar</button>`;
           } else if (jaAgendado) {
