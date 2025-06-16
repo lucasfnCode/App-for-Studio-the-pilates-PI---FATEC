@@ -49,8 +49,8 @@ export async function createInstructor(instructorData) {
         if (response.ok) {
             const pinto = document.querySelector("#instructors-body")
             pinto.innerHTML = ""
-            document.querySelector("#userFormCon").remove()
             await listarInstructors()
+            document.querySelector("#userFormCon").remove()
         }
     } catch (error) {
         console.error("Erro ao criar instrutor:", error);

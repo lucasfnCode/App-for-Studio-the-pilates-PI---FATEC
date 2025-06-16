@@ -1,15 +1,14 @@
 import { getOrCreateMainElement } from "../../../../components/main";
-import { instructorManegement } from "../instructorManegement";
-import { listarInstructors } from "../instructorService/componentes/listarInstrutores";
+
 import { createInstructor } from "../instructorService/service";
 
 export function NewInstructorForm(){
  
     const $new = document.querySelector("#new")
     const main = getOrCreateMainElement()
-
-  
-    $new.addEventListener("click", () =>{
+    const $fomrcontainer = document.querySelector("#userFromCon")
+ 
+$new.addEventListener("click", () =>{
          main.insertAdjacentHTML("beforeend", `
 <div class="card position-absolute top-50 start-50 translate-middle" id="userFormCon">
 
@@ -92,19 +91,21 @@ export function NewInstructorForm(){
   </div>
 </div>`)
     })
-    
-    document.addEventListener("submit",async (e)=>{
-        e.preventDefault()
 
 
-            const $form = document.querySelector("#userForm");
-            const formData = new FormData($form);
-            const data = Object.fromEntries(formData.entries())
-            data.isActive = true
-            data.roles = ["ROLE_INSTRUCTOR"]
-            data.photo = ""
-           
-            await createInstructor(data)
-            document.querySelector("#userFormCon").remove()
-          })
-}
+
+  $new.addEventListener("click", () => {
+      document.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const $form = document.querySelector("#userForm");
+        const formData = new FormData($form);
+        const data = Object.fromEntries(formData.entries());
+        data.isActive = true;
+        data.roles = ["ROLE_INSTRUCTOR"];
+        data.photo = "";
+
+        createInstructor(data);
+      });
+  });
+
+}    

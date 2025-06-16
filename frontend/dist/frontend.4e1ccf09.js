@@ -5354,12 +5354,11 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "NewInstructorForm", ()=>NewInstructorForm);
 var _main = require("../../../../components/main");
-var _instructorManegement = require("../instructorManegement");
-var _listarInstrutores = require("../instructorService/componentes/listarInstrutores");
 var _service = require("../instructorService/service");
 function NewInstructorForm() {
     const $new = document.querySelector("#new");
     const main = (0, _main.getOrCreateMainElement)();
+    const $fomrcontainer = document.querySelector("#userFromCon");
     $new.addEventListener("click", ()=>{
         main.insertAdjacentHTML("beforeend", `
 <div class="card position-absolute top-50 start-50 translate-middle" id="userFormCon">
@@ -5443,22 +5442,23 @@ function NewInstructorForm() {
   </div>
 </div>`);
     });
-    document.addEventListener("submit", async (e)=>{
-        e.preventDefault();
-        const $form = document.querySelector("#userForm");
-        const formData = new FormData($form);
-        const data = Object.fromEntries(formData.entries());
-        data.isActive = true;
-        data.roles = [
-            "ROLE_INSTRUCTOR"
-        ];
-        data.photo = "";
-        await (0, _service.createInstructor)(data);
-        document.querySelector("#userFormCon").remove();
+    $new.addEventListener("click", ()=>{
+        document.addEventListener("submit", async (e)=>{
+            e.preventDefault();
+            const $form = document.querySelector("#userForm");
+            const formData = new FormData($form);
+            const data = Object.fromEntries(formData.entries());
+            data.isActive = true;
+            data.roles = [
+                "ROLE_INSTRUCTOR"
+            ];
+            data.photo = "";
+            (0, _service.createInstructor)(data);
+        });
     });
 }
 
-},{"../../../../components/main":"5zsxX","../instructorManegement":"adWcJ","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../instructorService/service":"32p1a","../instructorService/componentes/listarInstrutores":"62YiX"}],"32p1a":[function(require,module,exports,__globalThis) {
+},{"../../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../instructorService/service":"32p1a"}],"32p1a":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getInstructors", ()=>getInstructors);
@@ -5514,8 +5514,8 @@ async function createInstructor(instructorData) {
         if (response.ok) {
             const pinto = document.querySelector("#instructors-body");
             pinto.innerHTML = "";
-            document.querySelector("#userFormCon").remove();
             await (0, _listarInstrutores.listarInstructors)();
+            document.querySelector("#userFormCon").remove();
         }
     } catch (error) {
         console.error("Erro ao criar instrutor:", error);
