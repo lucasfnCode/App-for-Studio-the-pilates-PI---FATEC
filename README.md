@@ -53,7 +53,7 @@ Com essa aplicação, buscamos otimizar a rotina dos profissionais, aprimorar a 
 
 - **Executar o Frontend(Em outro terminal)**
   ```shell
-  cd frontend && npm install && npm start
+  cd frontend && npm install && npm rundev
   ``` 
 - **Acessar os recursos**
   #### 📺Frontend  
