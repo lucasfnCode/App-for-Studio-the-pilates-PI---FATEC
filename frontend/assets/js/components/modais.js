@@ -207,37 +207,47 @@ export function criarModalConfirmacaoHTML() {
   `;
 }
 
-export function criarModalInstrutoresHTML() {
-  return `
-    <div class="modal fade" id="modalInstrutores" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content p-4 rounded-4">
-          <div class="modal-header border-0">
-            <h4 class="modal-title">Nossos Instrutores</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-          <div class="modal-body row g-4">
-            <div class="col-md-4 text-center">
-              <img src="https://placehold.co/600x400?text=Ana" class="img-fluid rounded-3 shadow-sm" alt="Ana Clara">
-              <h5 class="mt-3">Ana Clara</h5>
-              <p>Especialista em Pilates Solo e Alongamento</p>
+export async function criarModalInstrutoresHTML() {
+  try {
+    const res = await fetch("/api/users/instructors", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const instructors = await res.json();
+
+    const modalHTML = `
+      <div class="modal fade" id="modalInstrutores" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content p-4 rounded-4">
+            <div class="modal-header border-0">
+              <h4 class="modal-title">Nossos Instrutores</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            <div class="col-md-4 text-center">
-              <img src="https://placehold.co/600x400?text=Bruno" class="img-fluid rounded-3 shadow-sm" alt="Bruno Silva">
-              <h5 class="mt-3">Bruno Silva</h5>
-              <p>Reabilitação e Pilates para Idosos</p>
-            </div>
-            <div class="col-md-4 text-center">
-              <img src="https://placehold.co/600x400?text=Camila" class="img-fluid rounded-3 shadow-sm" alt="Camila Torres">
-              <h5 class="mt-3">Camila Torres</h5>
-              <p>Pilates com foco em respiração e relaxamento</p>
+            <div class="modal-body row g-4">
+              ${instructors.map(instructors => `
+                <div class="col-md-4 text-center">
+                  <img src='https://placehold.co/600x400?text=Instrutor' class="img-fluid rounded-3 shadow-sm" alt="${instructors.name}">
+                  <h5 class="mt-3">${instructors.name}</h5>
+                  <p>${instructors.formation || 'Especialista em Pilates'}</p>
+                </div>
+              `).join('')}
             </div>
           </div>
         </div>
       </div>
-    </div>
-  `;
+    `;
+
+    // Remove se já existir
+    const existente = document.getElementById("modalInstrutores");
+    if (existente) existente.remove();
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+  } catch (error) {
+    console.error("Erro ao buscar instrutores:", error);
+  }
 }
+
 
 export function criarModalAssinaturasHTML() {
   return `
@@ -506,6 +516,7 @@ document.addEventListener("atualizarListaAlunos", async function () {
   }
 });
 
+
 export function criarModalCadastroUsuarioHTML() {
   return `
     <div class="modal fade" id="modalCadastroUsuario" tabindex="-1" aria-hidden="true">
@@ -616,3 +627,105 @@ document.addEventListener("submit", async function (e) {
     }
   }
 });
+export async function criarModalUsuariosAdminHTML() {
+  try {
+    const res = await fetch("/api/users", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const users = await res.json();
+
+    const modalHTML = `
+      <div class="modal fade" id="modalUsuariosAdmin" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content p-4 rounded-4">
+            <div class="modal-header border-0">
+              <h4 class="modal-title">Gerenciar Usuários</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table table-striped">
+                <thead>
+                  <tr><th>Nome</th><th>Email</th><th>Perfil</th><th>Ações</th></tr>
+                </thead>
+                <tbody>
+                  ${users.map(user => `
+                    <tr>
+                      <td>${user.name}</td>
+                      <td>${user.email}</td>
+                      <td>${user.role}</td>
+                      <td>
+                        <button class="btn btn-sm btn-warning" onclick="editarUsuario('${user.id}')">Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="removerUsuario('${user.id}')">Remover</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const existente = document.getElementById("modalUsuariosAdmin");
+    if (existente) existente.remove();
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+  } catch (error) {
+    console.error("Erro ao buscar usuários:", error);
+  }
+}
+
+// Modal para gerenciar aulas
+export async function criarModalAulasAdminHTML() {
+  try {
+    const res = await fetch("/api/sessions", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const aulas = await res.json();
+
+    const modalHTML = `
+      <div class="modal fade" id="modalAulasAdmin" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content p-4 rounded-4">
+            <div class="modal-header border-0">
+              <h4 class="modal-title">Gerenciar Aulas</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table table-striped">
+                <thead>
+                  <tr><th>Nome da Aula</th><th>Instrutor</th><th>Horário</th><th>Ações</th></tr>
+                </thead>
+                <tbody>
+                  ${aulas.map(aula => `
+                    <tr>
+                      <td>${aula.name}</td>
+                      <td>${aula.instructorName || "—"}</td>
+                      <td>${aula.schedule || "—"}</td>
+                      <td>
+                        <button class="btn btn-sm btn-warning" onclick="editarAula('${aula.id}')">Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="removerAula('${aula.id}')">Remover</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const existente = document.getElementById("modalAulasAdmin");
+    if (existente) existente.remove();
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+  } catch (error) {
+    console.error("Erro ao buscar aulas:", error);
+  }
+}

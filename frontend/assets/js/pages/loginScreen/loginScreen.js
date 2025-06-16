@@ -33,7 +33,7 @@ export function loginScreen() {
   loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const formData = new FormData(event.target);
+    const formData = new FormData(loginForm);
     const username = formData.get("username");
     const password = formData.get("password");
 
@@ -58,9 +58,9 @@ export function loginScreen() {
 
         localStorage.setItem(
           "usuarioLogado",
-          JSON.stringify({ ...decoded, id: userId, role })
+          JSON.stringify({ ...decoded, id: userId, role, token: data.token })
         );
-        // console.log(decoded);
+        localStorage.setItem("token", data.token);
 
         document.getElementById("loginMessage").innerHTML =
           "<span class='text-info'>Login realizado com sucesso</span>";
@@ -76,12 +76,12 @@ export function loginScreen() {
           "</span>";
       }
     } catch (error) {
-      console.error("Erro ao fazer login.", error);
+      console.error("Erro ao fazer login:", error);
       document.getElementById("loginMessage").innerHTML =
         "<span class='text-danger'>Erro de conexão.</span>";
     }
   });
-  
+
   if (!document.getElementById("modalCadastroUsuario")) {
     document.body.insertAdjacentHTML(
       "beforeend",
