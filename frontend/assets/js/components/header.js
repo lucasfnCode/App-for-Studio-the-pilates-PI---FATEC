@@ -9,6 +9,7 @@ function getUserRole() {
 
 export function renderHeader() {
   const isInstructor = getUserRole() === "ROLE_INSTRUCTOR";
+  const isAdmin = getUserRole() === "ROLE_ADMIN";
   const headerHtml = `
     <section class="d-flex justify-content-center" id="head">
       <h1>Estudio de Pilates</h1>
@@ -18,7 +19,7 @@ export function renderHeader() {
         <a class="nav-link m-1 text-secondary" aria-current="page" href="#home">Home</a>
         <a class="nav-link m-1 text-secondary" href="#agendamento">Agendamento</a>
         ${isInstructor ? `<a class="nav-link m-1 text-secondary" href="#aula">Gerenciar Aulas</a>` : ""}
-        <a class="nav-link m-1 text-secondary" href="#gerenciamento">gerenciamento</a>
+        ${isAdmin ? `<a class="nav-link m-1 text-secondary" href="#gerenciamento">gerenciamento</a>` : ""}
       </div>
       <div class="nav">
         <a class="nav-link m-1 text-secondary" href="#login">
