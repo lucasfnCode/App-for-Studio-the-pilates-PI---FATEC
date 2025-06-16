@@ -45,7 +45,7 @@ Com essa aplicação, buscamos otimizar a rotina dos profissionais, aprimorar a 
 ## ⚙️ Como executar o Projeto ?
 
 - **Clonar o repository no GitHub**
-  [Clique para clonar o repositório](...)
+  [Clique para clonar o repositório](https://github.com/lucasfnCode/App-for-Studio-the-pilates-PI---FATEC.git)
   
 - **Executar uma instancia do MongoDB**
   docker tralala  
