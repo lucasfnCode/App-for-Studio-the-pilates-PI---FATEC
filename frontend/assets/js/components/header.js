@@ -1,15 +1,16 @@
-function getUserRole() {
+export function getUserRoles() {
   try {
     const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
-    return user?.role;
+    return Array.isArray(user?.role) ? user.role : [user?.role].filter(Boolean);
   } catch {
-    return null;
+    return [];
   }
 }
 
 export function renderHeader() {
-  const isInstructor = getUserRole() === "ROLE_INSTRUCTOR";
-  const isAdmin = getUserRole() === "ROLE_ADMIN";
+  const roles = getUserRoles();
+  const isInstructor = roles.includes("ROLE_INSTRUCTOR");
+  const isAdmin = roles.includes("ROLE_ADMIN");
   const headerHtml = `
     <section class="d-flex justify-content-center" id="head">
       <h1>Estudio de Pilates</h1>
@@ -18,7 +19,7 @@ export function renderHeader() {
       <div class="nav nav-underline">
         <a class="nav-link m-1 text-secondary" aria-current="page" href="#home">Home</a>
         <a class="nav-link m-1 text-secondary" href="#agendamento">Agendamento</a>
-        ${isInstructor ? `<a class="nav-link m-1 text-secondary" href="#aula">Gerenciar Aulas</a>` : ""}
+        ${(isInstructor || isAdmin) ? `<a class="nav-link m-1 text-secondary" href="#aula">Gerenciar Aulas</a>` : ""}
         ${isAdmin ? `<a class="nav-link m-1 text-secondary" href="#gerenciamento">gerenciamento</a>` : ""}
       </div>
       <div class="nav">

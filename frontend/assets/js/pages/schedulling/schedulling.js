@@ -1,3 +1,4 @@
+import { getUserRoles } from "../../components/header";
 import { getOrCreateMainElement } from "../../components/main";
 import {
   criarModalCadastroAlunoHTML,
@@ -7,11 +8,6 @@ import {
 } from "../../components/modais";
 import { formatarDataExibicao } from "../../service/formatData";
 
-// Retorna a role do usuário logado
-export function getUserRole() {
-  const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
-  return user?.role;
-}
 
 // Retorna os dados do usuário logado
 export function getUserLoggedData() {
@@ -21,10 +17,10 @@ export function getUserLoggedData() {
 
 async function fetchAulas() {
   const user = getUserLoggedData();
-  const role = getUserRole();
+  const role = getUserRoles();
 
   // Se for instrutor e não houver nome, tenta buscar pelo id
-  if (role === "ROLE_INSTRUCTOR" && !user.name) {
+  if (roles.includes("ROLE_INSTRUCTOR" && !user.name)) {
     try {
       const response = await fetch(
         `http://localhost:8080/users/instructors/${user.id}`,
@@ -70,7 +66,7 @@ async function fetchAulas() {
 
     const data = JSON.parse(text);
 
-    if (role === "ROLE_INSTRUCTOR" && user.name) {
+    if (roles.includes("ROLE_INSTRUCTOR" && user.name)) {
       return data.filter(
         (aula) => aula.instructor === user.name && aula.isActive
       );
@@ -95,7 +91,7 @@ export async function renderAgendamentoPage() {
   main.style.flexDirection = "column";
   main.style.justifyContent = "between";
 
-  const role = getUserRole();
+  const role = getUserRoles();
   const user = getUserLoggedData();
 
   async function atualizarTabela() {
@@ -114,15 +110,15 @@ export async function renderAgendamentoPage() {
             .map(String)
             .includes(String(user.id));
 
-        if (role === "ROLE_STUDENT") {
+        if (roles.includes("ROLE_STUDENT")) {
           if (!jaAgendado && aula.status === "aberta") {
             acoes = `<button class="btn btn-sm btn-success" onclick="agendarAula('${aulaId}')">Agendar</button>`;
           } else if (jaAgendado) {
             acoes = `<button class="btn btn-sm btn-danger" onclick="cancelarAula('${aulaId}')">Cancelar</button>`;
           }
-        } else if (role === "ROLE_RECEPTIONIST") {
+        } else if (roles.includes("ROLE_RECEPTIONIST")) {
           acoes = `<button class="btn btn-sm btn-outline-success" onclick="abrirModalAlunos('${aulaId}')">Ver</button>`;
-        } else if (role === "ROLE_INSTRUCTOR") {
+        } else if (roles.includes("ROLE_INSTRUCTOR")) {
           acoes = `<button class="btn btn-sm btn-secondary" onclick="abrirModalAlunos('${aulaId}')">Visualizar</button>`;
         }
 
@@ -283,7 +279,7 @@ window.cancelarAula = async function (id) {
 window.abrirModalAlunos = async function (id) {
   try {
     window.aulaSelecionadaId = id;
-    const role = getUserRole();
+    const role = getUserRoles();
 
     // Fecha modal aberto anteriormente
     const modalEl = document.getElementById("modalListaAlunos");
@@ -306,7 +302,7 @@ window.abrirModalAlunos = async function (id) {
 
     const presences = aula.presences || [];
 
-    criarModalListaAlunosHTML(alunos, role, presences);
+    criarModalListaAlunosHTML(alunos, roles, presences);
 
     const modal = new bootstrap.Modal(
       document.getElementById("modalListaAlunos")
@@ -348,7 +344,7 @@ async function atualizarModalAlunos(aulaId) {
     const alunos = await buscarDadosCompletosDosAlunos(alunosIds);
 
     const presences = aula.presences || [];
-    const role = getUserRole();
+    const role = getUserRoles();
 
     const tbody = document.querySelector("#modalListaAlunos tbody");
     if (!tbody) return;
@@ -363,7 +359,7 @@ async function atualizarModalAlunos(aulaId) {
         const wasChecked = checkboxesState[alunoId];
         const isPresent = presences.includes(alunoId) || wasChecked;
 
-        if (role === "ROLE_INSTRUCTOR") {
+        if (roles.includes("ROLE_INSTRUCTOR")) {
           return `
           <tr>
             <td>${alunoId}</td>
