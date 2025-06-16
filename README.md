@@ -41,3 +41,19 @@ Com essa aplicação, buscamos otimizar a rotina dos profissionais, aprimorar a 
   Empacotador de aplicações web que compila, agrupa e otimiza os arquivos do front-end de forma rápida e eficiente, sem necessidade de configuração complexa.
 
 ---
+
+## ⚙️ Como executar o Projeto ?
+
+- **Clonar o repository no GitHub**
+  [Clique para clonar o repositório](...)
+  
+- **Executar uma instancia do MongoDB**
+  docker tralala  
+
+- **Executar o Backend**
+  cd backend && ./mvnw spring-boot:run  
+
+- **Executar o Frontend(Em outro terminal)**
+  cd frontend && npm install && npm start
+    
+
