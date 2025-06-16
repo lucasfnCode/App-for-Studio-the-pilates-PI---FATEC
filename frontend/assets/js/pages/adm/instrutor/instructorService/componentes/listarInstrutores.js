@@ -10,8 +10,7 @@ export async function listarInstructors() {
         ? `<span class="badge bg-success">Ativo</span>`
         : `<span class="badge bg-secondary">Inativo</span>`;
 
-        const actionButtons = instrutor.isActive
-  ? `
+        const actionButtons = instrutor.isActive? `
     <button class="btn btn-sm btn-outline-danger me-1 deactivate" data-id="${instrutor.id}">
       <i class="bi bi-slash-circle"></i>
     </button>
@@ -19,17 +18,16 @@ export async function listarInstructors() {
       <i class="bi bi-pencil"></i>
     </button>
     `
-  : `
-    <button class="btn btn-sm btn-outline-success activate" data-id="${instrutor.id}">
-      <i class="bi bi-check-circle"></i>
-    </button>
-    `;
+  : 
+    `<p class="text-danger">DESATIVADO</p>`
+
+    ;
 
         const birthDate = new Date(instrutor.birthDate).toLocaleDateString("pt-BR");
         const hiringDate = new Date(instrutor.hiringDate).toLocaleDateString("pt-BR");
 
         $instructorsTable.insertAdjacentHTML("afterbegin", `
-        <tr>
+        <tr data-di="${instrutor.id}">
             <td data-name="${instrutor.name}"><strong class="small">${instrutor.name}</strong></td>
             <td><span class="badge bg-info text-dark">Instrutor</span></td>
             <td class="small" data-email="${instrutor.email}">${instrutor.email}</td>
@@ -45,11 +43,6 @@ export async function listarInstructors() {
             </td>
         </tr>
         `);
-    document.querySelectorAll(".activate").forEach(btn => {
-    const dataid = btn.dataset.id
-    btn.addEventListener("click", () => { console.log(instrutor)})
-
-    })
   });
 
  
@@ -71,29 +64,7 @@ export async function listarInstructors() {
        });
   });
 
-  // document.querySelectorAll(".activate").forEach(btn => {
-  //   const dataid = btn.dataset.id
-  //   btn.addEventListener("click", () => { 
-  //                 // Seleciona todas as linhas da tabela que contêm dados do instrutor
-  //       const linhasInstrutores = document.querySelectorAll('tr');
-
-  //       // Percorre cada linha
-  //       linhasInstrutores.forEach((linha) => {
-  //                 const thisinstrutor = {
-  //                   name: linha.querySelector('td[data-name]')?.dataset.name,
-  //                   email: linha.querySelector('td[data-email]')?.dataset.email,
-  //                   contact: linha.querySelector('td[data-contact]')?.dataset.contact,
-  //                   cpf: linha.querySelector('td[data-cpf]')?.dataset.cpf,
-  //                   birthDate: linha.querySelector('td[data-birth]')?.dataset.birth,
-  //                   formation: linha.querySelector('td[data-formation]')?.dataset.formation,
-  //                   hiringDate: linha.querySelector('td[data-hiringDate]')?.dataset.hiringDate
-  //                 };
-  //                 console.log(thisinstrutor);
-                  
-  //             });
-
-  //         });
-  //       });
+ 
 
 
 }

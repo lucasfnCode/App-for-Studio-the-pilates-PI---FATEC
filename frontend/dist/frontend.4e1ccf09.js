@@ -5597,15 +5597,11 @@ async function listarInstructors() {
     <button class="btn btn-sm btn-outline-secondary edit" data-id="${instrutor.id}">
       <i class="bi bi-pencil"></i>
     </button>
-    ` : `
-    <button class="btn btn-sm btn-outline-success activate" data-id="${instrutor.id}">
-      <i class="bi bi-check-circle"></i>
-    </button>
-    `;
+    ` : `<p class="text-danger">DESATIVADO</p>`;
         const birthDate = new Date(instrutor.birthDate).toLocaleDateString("pt-BR");
         const hiringDate = new Date(instrutor.hiringDate).toLocaleDateString("pt-BR");
         $instructorsTable.insertAdjacentHTML("afterbegin", `
-        <tr>
+        <tr data-di="${instrutor.id}">
             <td data-name="${instrutor.name}"><strong class="small">${instrutor.name}</strong></td>
             <td><span class="badge bg-info text-dark">Instrutor</span></td>
             <td class="small" data-email="${instrutor.email}">${instrutor.email}</td>
@@ -5621,12 +5617,6 @@ async function listarInstructors() {
             </td>
         </tr>
         `);
-        document.querySelectorAll(".activate").forEach((btn)=>{
-            const dataid = btn.dataset.id;
-            btn.addEventListener("click", ()=>{
-                console.log(instrutor);
-            });
-        });
     });
     // Exemplo de listeners para botões (se desejar)
     document.querySelectorAll(".deactivate").forEach((btn)=>{
@@ -5643,26 +5633,6 @@ async function listarInstructors() {
             (0, _editFormInstrutor.EditInstructorForm)(dataid);
         });
     });
-// document.querySelectorAll(".activate").forEach(btn => {
-//   const dataid = btn.dataset.id
-//   btn.addEventListener("click", () => { 
-//                 // Seleciona todas as linhas da tabela que contêm dados do instrutor
-//       const linhasInstrutores = document.querySelectorAll('tr');
-//       // Percorre cada linha
-//       linhasInstrutores.forEach((linha) => {
-//                 const thisinstrutor = {
-//                   name: linha.querySelector('td[data-name]')?.dataset.name,
-//                   email: linha.querySelector('td[data-email]')?.dataset.email,
-//                   contact: linha.querySelector('td[data-contact]')?.dataset.contact,
-//                   cpf: linha.querySelector('td[data-cpf]')?.dataset.cpf,
-//                   birthDate: linha.querySelector('td[data-birth]')?.dataset.birth,
-//                   formation: linha.querySelector('td[data-formation]')?.dataset.formation,
-//                   hiringDate: linha.querySelector('td[data-hiringDate]')?.dataset.hiringDate
-//                 };
-//                 console.log(thisinstrutor);
-//             });
-//         });
-//       });
 }
 
 },{"../../components/EditFormInstrutor":"8as8w","../service":"32p1a","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8as8w":[function(require,module,exports,__globalThis) {
