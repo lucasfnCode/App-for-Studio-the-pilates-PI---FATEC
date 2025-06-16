@@ -10,7 +10,7 @@ Com essa aplicação, buscamos otimizar a rotina dos profissionais, aprimorar a 
 
 ## 🌐 Link do Projeto
 
-[🔗 Clique aqui para acessar o projeto no GitHub](https://github.com/lucasfnCode/App-for-Studio-the-pilates-PI---FATEC)
+[🔗 Clique aqui para acessar o projeto no GuitHub](https://github.com/lucasfnCode/App-for-Studio-the-pilates-PI---FATEC)
 
 ---
 
