@@ -1,6 +1,6 @@
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { homeScreen } from './pages/home/home';
-import { headerHtml } from './components/header';
+import { renderHeader } from './components/header';
 import { footerHtml } from './components/footer';
 import { renderAgendamentoPage } from './pages/schedulling/schedulling';
 import { loginScreen } from "./pages/loginScreen/loginScreen";
@@ -19,7 +19,7 @@ function renderContentBasedOnHash() {
     location.hash = "#login";
     return;
   }
-
+  renderHeader();
   switch (hash) {
     case "":
     case "#home":
