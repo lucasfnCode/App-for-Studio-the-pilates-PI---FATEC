@@ -5074,29 +5074,27 @@ parcelHelpers.export(exports, "saveform", ()=>saveform);
 var _service = require("../../service/service");
 async function saveform() {
     const $form = document.querySelector("#cardInfoForm");
-    window.addEventListener("DOMContentLoaded", ()=>{
-        window.addEventListener("submit", async (e)=>{
-            e.preventDefault();
-            const form = new FormData($form);
-            const data = Object.fromEntries(form.entries());
-            data.isActive = true;
-            data.unavailableTimes = [];
-            data.instructorsByTime = {};
-            const recessos = [
-                data.recesses
-            ];
-            const feriados = [
-                data.holidays
-            ];
-            data.daysOperation = form.getAll("daysOperation");
-            data.openingHours = data.openingHours.split("\n");
-            data.holidays = feriados;
-            data.recesses = recessos;
-            console.log("estudio q esta sendo enviado pro back via post:", data);
-            const $formContainer = document.querySelector("#studios-row");
-            $formContainer.innerHTML = "";
-            await (0, _service.createStudio)(data);
-        });
+    window.addEventListener("submit", async (e)=>{
+        e.preventDefault();
+        const form = new FormData($form);
+        const data = Object.fromEntries(form.entries());
+        data.isActive = true;
+        data.unavailableTimes = [];
+        data.instructorsByTime = {};
+        const recessos = [
+            data.recesses
+        ];
+        const feriados = [
+            data.holidays
+        ];
+        data.daysOperation = form.getAll("daysOperation");
+        data.openingHours = data.openingHours.split("\n");
+        data.holidays = feriados;
+        data.recesses = recessos;
+        console.log("estudio q esta sendo enviado pro back via post:", data);
+        const $formContainer = document.querySelector("#studios-row");
+        $formContainer.innerHTML = "";
+        await (0, _service.createStudio)(data);
     });
 }
 
@@ -5185,7 +5183,15 @@ async function getStudioById(id) {
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","./functions/listar":"8sfIm","../../function/reloadmain":"fffU7"}],"8sfIm":[function(require,module,exports,__globalThis) {
+},{"../../function/reloadmain":"fffU7","./functions/listar":"8sfIm","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"fffU7":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "MainReload", ()=>MainReload);
+function MainReload(IDelementopae) {
+    document.querySelector(`#${IDelementopae}`).remove();
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8sfIm":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "listarStudios", ()=>listarStudios);
@@ -5277,15 +5283,7 @@ function Deletar(id) {
     });
 }
 
-},{"../../../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../service":"8jQ4q"}],"fffU7":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "MainReload", ()=>MainReload);
-function MainReload(IDelementopae) {
-    document.querySelector(`#${IDelementopae}`).remove();
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"k97dv":[function(require,module,exports,__globalThis) {
+},{"../../../../../components/main":"5zsxX","../service":"8jQ4q","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"k97dv":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "clearBody", ()=>clearBody);
@@ -5324,7 +5322,6 @@ function instructorManegement() {
         <table class="table table-sm table-striped table-hover align-middle mb-0">
             <thead class="table-light">
             <tr>
-                <th>Foto</th>
                 <th>Nome</th>
                 <th>Fun\xe7\xe3o</th>
                 <th>Email</th>
@@ -5348,16 +5345,16 @@ function instructorManegement() {
     </div>
     </div>
     `;
-    (0, _newInstructorForm.NewInstructorForm)();
     (0, _listarInstrutores.listarInstructors)();
+    (0, _newInstructorForm.NewInstructorForm)();
 }
 
-},{"../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","./components/NewInstructorForm":"dHxvQ","./instructorService/componentes/listarInstrutores":"62YiX"}],"dHxvQ":[function(require,module,exports,__globalThis) {
+},{"../../../components/main":"5zsxX","./components/NewInstructorForm":"dHxvQ","./instructorService/componentes/listarInstrutores":"62YiX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"dHxvQ":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "NewInstructorForm", ()=>NewInstructorForm);
 var _main = require("../../../../components/main");
-var _service = require("../instructorService/service");
+var _instructorManegement = require("../instructorManegement");
 function NewInstructorForm() {
     const $new = document.querySelector("#new");
     const main = (0, _main.getOrCreateMainElement)();
@@ -5445,26 +5442,169 @@ function NewInstructorForm() {
   </div>
 </div>`);
     });
-    document.addEventListener("DOMContentLoaded", function() {
-        document.addEventListener("submit", (e)=>{
-            e.preventDefault();
-            const $form = document.querySelector("#userForm");
-            if ($form) {
-                const formData = new FormData($form);
-                const data = Object.fromEntries(formData.entries());
-                data.isActive = true;
-                data.roles = [
-                    "ROLE_INSTRUCTOR"
-                ];
-                data.photo = "nao tem foto";
-                instructortable.innerHTML = "";
-                (0, _service.createInstructor)(data);
-            } else console.warn("Elemento #userForm n\xe3o foi encontrado.");
+    document.addEventListener("submit", async (e)=>{
+        e.preventDefault();
+        const $form = document.querySelector("#userForm");
+        const formData = new FormData($form);
+        const data = Object.fromEntries(formData.entries());
+        data.isActive = true;
+        data.roles = [
+            "ROLE_INSTRUCTOR"
+        ];
+        main.innerHTML = "";
+        (0, _instructorManegement.instructorManegement)();
+    });
+}
+
+},{"../../../../components/main":"5zsxX","../instructorManegement":"adWcJ","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"62YiX":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "listarInstructors", ()=>listarInstructors);
+var _editFormInstrutor = require("../../components/EditFormInstrutor");
+var _service = require("../service");
+async function listarInstructors() {
+    const $instructorsTable = document.querySelector("#instructors-body");
+    const instructors = await (0, _service.getInstructors)();
+    instructors.forEach((instrutor)=>{
+        const activeBadge = instrutor.isActive ? `<span class="badge bg-success">Ativo</span>` : `<span class="badge bg-secondary">Inativo</span>`;
+        const actionButtons = instrutor.isActive ? `
+    <button class="btn btn-sm btn-outline-danger me-1 deactivate" data-id="${instrutor.id}">
+      <i class="bi bi-slash-circle"></i>
+    </button>
+    <button class="btn btn-sm btn-outline-secondary edit" data-id="${instrutor.id}">
+      <i class="bi bi-pencil"></i>
+    </button>
+    ` : `
+    <button class="btn btn-sm btn-outline-success activate" data-id="${instrutor.id}">
+      <i class="bi bi-check-circle"></i>
+    </button>
+    `;
+        const birthDate = new Date(instrutor.birthDate).toLocaleDateString("pt-BR");
+        const hiringDate = new Date(instrutor.hiringDate).toLocaleDateString("pt-BR");
+        $instructorsTable.insertAdjacentHTML("afterbegin", `
+        <tr>
+            <td><strong class="small">${instrutor.name}</strong></td>
+            <td><span class="badge bg-info text-dark">Instrutor</span></td>
+            <td class="small">${instrutor.email}</td>
+            <td class="small">${instrutor.contact}</td>
+            <td class="small">${instrutor.cpf}</td>
+            <td class="small">${birthDate}</td>
+            <td class="small">${instrutor.formation}</td>
+            <td class="small">${hiringDate}</td>
+            <td>${activeBadge}</td>
+            <td class="text-center">
+            
+            ${actionButtons}
+            </td>
+        </tr>
+        `);
+    });
+    // Exemplo de listeners para botões (se desejar)
+    document.querySelectorAll(".deactivate").forEach((btn)=>{
+        btn.addEventListener("click", async ()=>{
+            const dataid = btn.dataset.id;
+            await (0, _service.deleteInstructor)(dataid);
+            $instructorsTable.innerHTML = "";
+            listarInstructors();
+        });
+    });
+    document.querySelectorAll(".edit").forEach((btn)=>{
+        const dataid = btn.dataset.id;
+        btn.addEventListener("click", ()=>{
+            (0, _editFormInstrutor.EditInstructorForm)(dataid);
         });
     });
 }
 
-},{"../../../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../instructorService/service":"32p1a"}],"32p1a":[function(require,module,exports,__globalThis) {
+},{"../../components/EditFormInstrutor":"8as8w","../service":"32p1a","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8as8w":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "EditInstructorForm", ()=>EditInstructorForm);
+var _main = require("../../../../components/main");
+var _listarInstrutores = require("../instructorService/componentes/listarInstrutores");
+var _service = require("../instructorService/service");
+async function EditInstructorForm(id) {
+    const main = (0, _main.getOrCreateMainElement)();
+    const instructor = await (0, _service.getInstructorById)(id);
+    main.insertAdjacentHTML("beforeend", `
+<div class="w-100 card position-absolute top-50 start-50 translate-middle" id="userFormCon" style="max-width: 48rem">
+  <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+    <h5 class="card-title mb-0">Editar Instrutor</h5>
+    <button id="close" class="p-0 btn">
+      <i class="bi bi-x-lg btn btn-danger"></i>
+    </button>
+  </div>
+  <div class="card-body">
+   <form id="userForm" data-id="${instructor.id}">
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="name" class="form-label">Nome Completo</label>
+      <input type="text" class="form-control" name="name" id="name" value="${instructor.name}" required>
+    </div>
+    <div class="col-md-6">
+      <label for="cpf" class="form-label">CPF</label>
+      <input type="text" class="form-control" name="cpf" id="cpf" value="${instructor.cpf}">
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" name="email" id="email" value="${instructor.email}" required>
+    </div>
+    <div class="col-md-6">
+      <label for="birthDate" class="form-label">Data de Contrata\xe7\xe3o</label>
+      <input type="date" class="form-control" name="birthDate" id="birthDate" value="${instructor.birthDate}">
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="hiringDate" class="form-label">Data de Contrata\xe7\xe3o</label>
+      <input type="date" class="form-control" name="hiringDate" id="hiringDate" value="${instructor.hiringDate}">
+    </div>
+    <div class="col-md-6">
+      <label for="contact" class="form-label">Contato</label>
+      <input type="text" class="form-control" name="contact" id="contact" value="${instructor.contact}">
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="formation" class="form-label">Forma\xe7\xe3o</label>
+      <input type="text" class="form-control" name="formation" id="formation" value="${instructor.formation}">
+    </div>
+  
+
+  <div class="mb-3">
+    <label for="advice" class="form-label">Conselho</label>
+    <textarea class="form-control" name="advice" id="advice" rows="2">${instructor.advice}</textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary w-100">Atualizar</button>
+</form>
+
+  </div>
+</div>`);
+    document.querySelector("#userForm").addEventListener("submit", async (e)=>{
+        e.preventDefault();
+        const $form = document.querySelector("#userForm");
+        const formData = new FormData($form);
+        const data = Object.fromEntries(formData.entries());
+        const $instructorsTable = document.querySelector("#instructors-body");
+        data.roles = [
+            "ROLE_INSTRUCTOR"
+        ];
+        data.isActive = true;
+        const id = $form.dataset.id;
+        const bodyrequest = data;
+        await (0, _service.updateInstructor)(id, bodyrequest);
+        $instructorsTable.innerHTML = "";
+    });
+    document.addEventListener("DOMContentLoaded", ()=>(0, _listarInstrutores.listarInstructors)());
+}
+
+},{"../../../../components/main":"5zsxX","../instructorService/service":"32p1a","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../instructorService/componentes/listarInstrutores":"62YiX"}],"32p1a":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getInstructors", ()=>getInstructors);
@@ -5517,14 +5657,10 @@ async function createInstructor(instructorData) {
             }),
             body: JSON.stringify(instructorData)
         });
-        const contentType = response.headers.get("content-type");
         if (response.ok) {
+            const pinto = document.querySelector("#instructors-body");
+            pinto.innerHTML = "";
             (0, _listarInstrutores.listarInstructors)();
-            if (contentType && contentType.includes("application/json")) return await response.json();
-            else console.warn("Resposta sem JSON.");
-        } else {
-            console.error(`Erro ${response.status}:`, await response.text());
-            return null;
         }
     } catch (error) {
         console.error("Erro ao criar instrutor:", error);
@@ -5547,29 +5683,32 @@ async function deleteInstructor(id) {
 }
 async function getInstructorById(id) {
     try {
+        console.log(id);
         const response = await fetch(`${api}users/instructors/${id}`, {
             method: 'GET',
             headers: getAuthHeaders()
         });
-        return response.json();
+        const result = await response.json();
+        result.isActive = true;
+        return result;
     } catch (error) {
         console.error("Erro ao buscar instrutor por ID:", error);
         return null;
     }
 }
-async function updateInstructor(id, instructorData) {
+async function updateInstructor(id, bodyrequest) {
     try {
         const response = await fetch(`${api}users/instructors/${id}`, {
             method: 'PUT',
             headers: getAuthHeaders({
                 'Content-Type': 'application/json'
             }),
-            body: JSON.stringify(instructorData)
+            body: JSON.stringify(bodyrequest)
         });
         const contentType = response.headers.get("content-type");
         if (response.ok) {
-            (0, _listarInstrutores.listarInstructors)().then(()=>alert("Instrutor atualizado com sucesso"));
-            console.log("Instrutor a ser atualizado:", instructorData);
+            alert("Instrutor atualizado com sucesso");
+            console.log("Instrutor a ser atualizado:", bodyrequest);
             if (contentType && contentType.includes("application/json")) return await response.json();
             else console.warn("Resposta sem JSON.");
         } else {
@@ -5577,58 +5716,11 @@ async function updateInstructor(id, instructorData) {
             return null;
         }
     } catch (error) {
-        console.error("Erro ao atualizar instrutor:", error);
+        console.error("Erro ao atualizar instrutor:", error, bodyrequest);
         return null;
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","./componentes/listarInstrutores":"62YiX"}],"62YiX":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "listarInstructors", ()=>listarInstructors);
-var _service = require("../service");
-async function listarInstructors() {
-    const $instructorsTable = document.querySelector("#instructors-body");
-    const instructors = await (0, _service.getInstructors)();
-    instructors.forEach((instrutor)=>{
-        console.log("Instrutores vindos do back:", instrutor);
-        const activeBadge = instrutor.isActive ? `<span class="badge bg-success">Ativo</span>` : `<span class="badge bg-secondary">Inativo</span>`;
-        const birthDate = new Date(instrutor.birthDate).toLocaleDateString("pt-BR");
-        const hiringDate = new Date(instrutor.hiringDate).toLocaleDateString("pt-BR");
-        $instructorsTable.insertAdjacentHTML("afterbegin", `
-        <tr>
-            <td><img src="${instrutor.photo}" alt="${instrutor.name}" class="rounded-circle" width="36" height="36"></td>
-            <td><strong class="small">${instrutor.name}</strong></td>
-            <td><span class="badge bg-info text-dark">Instrutor</span></td>
-            <td class="small">${instrutor.email}</td>
-            <td class="small">${instrutor.contact}</td>
-            <td class="small">${instrutor.cpf}</td>
-            <td class="small">${birthDate}</td>
-            <td class="small">${instrutor.formation}</td>
-            <td class="small">${hiringDate}</td>
-            <td>${activeBadge}</td>
-            <td class="text-center">
-            
-            <button class="btn btn-sm btn-outline-danger me-1 deactivate" data-id="${instrutor.id}">
-                <i class="bi bi-slash-circle"></i>
-            </button>
-
-            <button class="btn btn-sm btn-outline-secondary edit" data-id="${instrutor.id}">
-                <i class="bi bi-pencil"></i>
-            </button>
-            </td>
-        </tr>
-        `);
-    });
-    // Exemplo de listeners para botões (se desejar)
-    document.querySelectorAll(".view").forEach((btn)=>{
-        btn.addEventListener("click", ()=>{});
-    });
-    document.querySelectorAll(".edit").forEach((btn)=>{
-        btn.addEventListener("click", ()=>{});
-    });
-}
-
-},{"../service":"32p1a","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
+},{"./componentes/listarInstrutores":"62YiX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
 
 //# sourceMappingURL=frontend.4e1ccf09.js.map

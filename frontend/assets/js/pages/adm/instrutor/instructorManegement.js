@@ -20,7 +20,6 @@ export function instructorManegement(){
         <table class="table table-sm table-striped table-hover align-middle mb-0">
             <thead class="table-light">
             <tr>
-                <th>Foto</th>
                 <th>Nome</th>
                 <th>Função</th>
                 <th>Email</th>
@@ -44,6 +43,7 @@ export function instructorManegement(){
     </div>
     </div>
     `
-    NewInstructorForm()
+   
     listarInstructors()
+    NewInstructorForm()
 }

@@ -46,18 +46,10 @@ export async function createInstructor(instructorData) {
             body: JSON.stringify(instructorData)
         });
 
-        const contentType = response.headers.get("content-type");
-
         if (response.ok) {
+            const pinto = document.querySelector("#instructors-body")
+            pinto.innerHTML = ""
             listarInstructors()
-            if (contentType && contentType.includes("application/json")) {
-                return await response.json();
-            } else {
-                console.warn("Resposta sem JSON.");
-            }
-        } else {
-            console.error(`Erro ${response.status}:`, await response.text());
-            return null;
         }
     } catch (error) {
         console.error("Erro ao criar instrutor:", error);
@@ -86,31 +78,36 @@ export async function deleteInstructor(id) {
 
 export async function getInstructorById(id) {
     try {
+        console.log(id);
+   
         const response = await fetch(`${api}users/instructors/${id}`, {
             method: 'GET',
             headers: getAuthHeaders()
         });
-        return response.json();
+        const result = await response.json();
+         result.isActive = true;
+        return result;
     } catch (error) {
         console.error("Erro ao buscar instrutor por ID:", error);
         return null;
     }
 }
 
-export async function updateInstructor(id, instructorData) {
+export async function updateInstructor(id,bodyrequest) {
+  
     try {
         const response = await fetch(`${api}users/instructors/${id}`, {
             method: 'PUT',
             headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify(instructorData)
+            body: JSON.stringify(bodyrequest)
         });
 
         const contentType = response.headers.get("content-type");
 
         if (response.ok) {
-            listarInstructors().then(() => alert("Instrutor atualizado com sucesso"));
+            alert("Instrutor atualizado com sucesso");
 
-            console.log("Instrutor a ser atualizado:", instructorData);
+            console.log("Instrutor a ser atualizado:", bodyrequest);
 
             if (contentType && contentType.includes("application/json")) {
                 return await response.json();
@@ -122,7 +119,7 @@ export async function updateInstructor(id, instructorData) {
             return null;
         }
     } catch (error) {
-        console.error("Erro ao atualizar instrutor:", error);
+        console.error("Erro ao atualizar instrutor:", error,bodyrequest);
         return null;
     }
 }

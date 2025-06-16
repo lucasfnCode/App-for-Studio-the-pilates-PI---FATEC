@@ -3,7 +3,7 @@ import { createStudio } from "../../service/service"
 
 export async function saveform(){
     const $form = document.querySelector("#cardInfoForm")
-    window.addEventListener("DOMContentLoaded",()=>{
+    
         window.addEventListener("submit",async(e)=>
         {
             e.preventDefault()
@@ -31,6 +31,5 @@ export async function saveform(){
             $formContainer.innerHTML= "";
             await createStudio(data)
         })
-    })
 }
 

@@ -1,5 +1,5 @@
 import { getOrCreateMainElement } from "../../../../components/main";
-import { createInstructor } from "../instructorService/service";
+import { instructorManegement } from "../instructorManegement";
 
 export function NewInstructorForm(){
     const $new = document.querySelector("#new")
@@ -90,23 +90,19 @@ export function NewInstructorForm(){
 </div>`)
     })
     
-document.addEventListener("DOMContentLoaded", function () {
-    document.addEventListener("submit",(e)=>{
+    document.addEventListener("submit",async (e)=>{
         e.preventDefault()
             const $form = document.querySelector("#userForm");
-        if ($form) {
             const formData = new FormData($form);
             const data = Object.fromEntries(formData.entries())
             data.isActive = true
             data.roles = ["ROLE_INSTRUCTOR"]
-            data.photo = "nao tem foto"
 
-            instructortable.innerHTML = ""
-            createInstructor(data)
-        } else {
-            console.warn("Elemento #userForm não foi encontrado.");
-        }
-    })
-});
 
+            
+            
+            main.innerHTML=""
+            instructorManegement()
+           
+          })
 }
