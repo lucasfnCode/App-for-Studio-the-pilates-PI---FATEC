@@ -49,14 +49,14 @@ export async function homeScreen() {
     cards += createCard("Meu Perfil", "https://placehold.co/600x400?text=Perfil", "modalPerfilInstrutor");
     modais += await criarModalAulasInstrutorHTML();
     modais += await criarModalPerfilInstrutorHTML();
-  } else if (role === "ROLE_RECEPTIONIST") {
+  } else if (roles.includes("ROLE_RECEPTIONIST")) {
     titulo = "Área da Recepção";
     subtitulo = "Organize agendamentos e cadastros de clientes com facilidade.";
     cards += createCard("Agenda", "https://placehold.co/600x400?text=Agenda", "modalAgendaRecepcao");
     cards += createCard("Clientes", "https://placehold.co/600x400?text=Clientes", "modalCadastroClientes");
     modais += await criarModalAgendaRecepcaoHTML();
     modais += await criarModalCadastroClientesHTML();
-  } else if (role === "ROLE_ADMIN") {
+  } else if (roles.includes("ROLE_ADMIN")) {
     titulo = "Área do Administrador";
     subtitulo = "Gerencie usuários, aulas e todo o sistema.";
     cards += createCard("Gerenciar Usuários", "https://placehold.co/600x400?text=Usuários", "modalUsuariosAdmin");
