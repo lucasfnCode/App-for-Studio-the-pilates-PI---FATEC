@@ -56,13 +56,13 @@ Com essa aplicação, buscamos otimizar a rotina dos profissionais, aprimorar a 
   cd frontend && npm install && npm start
   ``` 
 - **Acessar os recursos**
-  #### Frontend  
+  #### 📺Frontend  
   [http://localhost:3000](a)
 
-  #### Backend
+  #### 🛠️Backend
   [http://localhost:8080](a)
 
-  #### Documentação
+  #### 📖Documentação
   [Link para a documentação](http://localhost:8080/swagger-ui/index.html)
 
 
