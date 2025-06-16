@@ -629,7 +629,7 @@ document.addEventListener("submit", async function (e) {
 });
 export async function criarModalUsuariosAdminHTML() {
   try {
-    const res = await fetch("/api/users", {
+    const res = await fetch("/api/users/students", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
