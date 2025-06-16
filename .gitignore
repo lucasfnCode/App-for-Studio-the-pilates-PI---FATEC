@@ -37,7 +37,7 @@ target/
 /frontend/node_modules/
 /frontend/.parcel-cache/
 /frontend/.cache
-/dist/
+!**/frontend/dist/
 /build/
 
 ### Logs e arquivos temporários ###

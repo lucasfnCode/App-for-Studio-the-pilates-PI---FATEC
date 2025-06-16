@@ -11,10 +11,6 @@ import {
   criarModalUsuariosAdminHTML,   
   criarModalAulasAdminHTML,      
 } from "../../components/modais";
-import { criarModalCadastroAulaHTML } from "../session/components/componentsSession";
-import { renderizarTabelaAulas } from "../session/components/tableSession";
-import { init } from "../session/session";
-
 
 function createCard(title, imageUrl, modalTargetId, useOnClick = false) {
   const button = useOnClick
