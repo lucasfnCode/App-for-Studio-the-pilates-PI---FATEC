@@ -29,7 +29,7 @@ export function loginScreen() {
   loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const formData = new FormData(event.target);
+    const formData = new FormData(loginForm);
     const username = formData.get("username");
     const password = formData.get("password");
 
@@ -42,32 +42,30 @@ export function loginScreen() {
 
       const data = await response.json();
 
-      if (response.ok) {
-        // Armazenar o token junto às infos do usuário
-        localStorage.setItem("token", data.token);
-
-        // Decodificar o JWT para obter o role
-        const decoded = jwtDecode(data.token);
-        const role = decoded.roles[0];
-        localStorage.setItem("usuarioLogado", JSON.stringify({...decoded, role}));
-        
-        // Exibir mensagem de sucesso
+      if (!response.ok) {
         document.getElementById("loginMessage").innerHTML =
-          "<span class='text-info'>Login realizado com sucesso</span>";
-
-        console.log("Dados do usuário!", decoded);
-        console.log("Role!", role);
-
-        // Redirecionar para home ou agendamento
-        // location.hash = "#home";
-      } else {
-        document.getElementById("loginMessage").innerHTML =
-          "<span class='text-danger'>" +
-          (data.message || "Erro ao fazer login.") +
-          "</span>";
+          `<span class='text-danger'>${data.message || "Erro ao fazer login."}</span>`;
+        return;
       }
+
+      localStorage.setItem("token", data.token);
+
+      const decoded = jwtDecode(data.token);
+      const role = decoded.roles?.[0] || decoded.role || "aluno";
+
+      localStorage.setItem("usuarioLogado", JSON.stringify({
+        ...decoded,
+        role,
+        token: data.token
+      }));
+
+      document.getElementById("loginMessage").innerHTML =
+        "<span class='text-info'>Login realizado com sucesso</span>";
+
+      location.hash = "#home";
+
     } catch (error) {
-      console.error("Erro ao fazer login.", error);
+      console.error("Erro ao fazer login:", error);
       document.getElementById("loginMessage").innerHTML =
         "<span class='text-danger'>Erro de conexão.</span>";
     }

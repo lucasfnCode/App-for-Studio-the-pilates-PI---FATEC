@@ -6,11 +6,20 @@ import { renderAgendamentoPage } from './pages/schedulling/schedulling';
 import { loginScreen } from "./pages/loginScreen/loginScreen";
 
 
-
+function isUserLoggedIn() {
+  const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+  return usuario && usuario.token;
+}
 
 function renderContentBasedOnHash() {
+  const hash = location.hash;
 
-  switch (location.hash) {
+  if (!isUserLoggedIn() && hash !== "#login") {
+    location.hash = "#login";
+    return;
+  }
+
+  switch (hash) {
     case "":
     case "#home":
     case undefined:
@@ -24,5 +33,6 @@ function renderContentBasedOnHash() {
       break;
   }
 }
+
 renderContentBasedOnHash();
 window.addEventListener("hashchange", renderContentBasedOnHash);

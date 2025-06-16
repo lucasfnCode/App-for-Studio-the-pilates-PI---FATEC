@@ -673,8 +673,17 @@ var _header = require("./components/header");
 var _footer = require("./components/footer");
 var _schedulling = require("./pages/schedulling/schedulling");
 var _loginScreen = require("./pages/loginScreen/loginScreen");
+function isUserLoggedIn() {
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+    return usuario && usuario.token;
+}
 function renderContentBasedOnHash() {
-    switch(location.hash){
+    const hash = location.hash;
+    if (!isUserLoggedIn() && hash !== "#login") {
+        location.hash = "#login";
+        return;
+    }
+    switch(hash){
         case "":
         case "#home":
         case undefined:
@@ -691,7 +700,7 @@ function renderContentBasedOnHash() {
 renderContentBasedOnHash();
 window.addEventListener("hashchange", renderContentBasedOnHash);
 
-},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp","./pages/home/home":"lYthH","./pages/loginScreen/loginScreen":"9vJvL"}],"joWv1":[function(require,module,exports,__globalThis) {
+},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp","./pages/loginScreen/loginScreen":"9vJvL"}],"joWv1":[function(require,module,exports,__globalThis) {
 /*!
   * Bootstrap v5.3.6 (https://getbootstrap.com/)
   * Copyright 2011-2025 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
@@ -3729,37 +3738,133 @@ window.addEventListener("hashchange", renderContentBasedOnHash);
     };
 });
 
-},{}],"3QKkX":[function(require,module,exports,__globalThis) {
+},{}],"lYthH":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "headerHtml", ()=>headerHtml);
-const headerHtml = `
+parcelHelpers.export(exports, "homeScreen", ()=>homeScreen);
+var _main = require("../../components/main");
+var _modais = require("../../components/modais");
+function getUserRole() {
+    const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+    return user.role;
+}
+function createCard(title, imageUrl, modalTargetId, useOnClick = false) {
+    const button = useOnClick ? `<button class="btn btn-dark w-100 rounded-pill mt-2" onclick="${modalTargetId}()">Acessar</button>` : `<button class="btn btn-dark w-100 rounded-pill mt-2" data-bs-toggle="modal" data-bs-target="#${modalTargetId}">Acessar</button>`;
+    return `
+    <div class="col p-3">
+      <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
+        <img src="${imageUrl}" class="card-img-top" alt="${title}">
+        <div class="card-body text-center">
+          <h5 class="card-title fw-bold">${title}</h5>
+          ${button}
+        </div>
+      </div>
+    </div>
+  `;
+}
+async function homeScreen() {
+    const role = getUserRole();
+    console.log("Role do usu\xe1rio:", role);
+    let titulo = "Bem-vindo ao Est\xfadio de Pilates";
+    let subtitulo = "Transforme seu corpo e mente com nossas aulas especializadas.";
+    let cards = "";
+    let modais = "";
+    if (role === "ROLE_INSTRUCTOR") {
+        titulo = "\xc1rea do Instrutor";
+        subtitulo = "Gerencie suas aulas e visualize seu perfil profissional.";
+        cards += createCard("Minhas Aulas", "https://placehold.co/600x400?text=Minhas+Aulas", "modalAulasInstrutor");
+        cards += createCard("Meu Perfil", "https://placehold.co/600x400?text=Perfil", "modalPerfilInstrutor");
+        modais += await (0, _modais.criarModalAulasInstrutorHTML)();
+        modais += await (0, _modais.criarModalPerfilInstrutorHTML)();
+    } else if (role === "ROLE_RECEPTIONIST") {
+        titulo = "\xc1rea da Recep\xe7\xe3o";
+        subtitulo = "Organize agendamentos e cadastros de clientes com facilidade.";
+        cards += createCard("Agenda", "https://placehold.co/600x400?text=Agenda", "modalAgendaRecepcao");
+        cards += createCard("Clientes", "https://placehold.co/600x400?text=Clientes", "modalCadastroClientes");
+        modais += await (0, _modais.criarModalAgendaRecepcaoHTML)();
+        modais += await (0, _modais.criarModalCadastroClientesHTML)();
+    } else if (role === "ROLE_ADMIN") {
+        titulo = "\xc1rea do Administrador";
+        subtitulo = "Gerencie usu\xe1rios, aulas e todo o sistema.";
+        cards += createCard("Gerenciar Usu\xe1rios", "https://placehold.co/600x400?text=Usu\xe1rios", "modalUsuariosAdmin");
+        cards += createCard("Gerenciar Aulas", "https://placehold.co/600x400?text=Aulas", "modalAulasAdmin");
+        modais += await (0, _modais.criarModalUsuariosAdminHTML)();
+        modais += await (0, _modais.criarModalAulasAdminHTML)();
+    } else {
+        // Aluno padrão
+        cards += createCard("Instrutores", "https://placehold.co/600x400?text=Instrutores", "abrirModalInstrutores", true);
+        cards += createCard("Assinaturas", "https://placehold.co/600x400?text=Assinaturas", "modalAssinaturas");
+        modais += await (0, _modais.criarModalAssinaturasHTML)();
+    }
+    // O modal "Sobre" é comum a todos
+    cards += createCard("Sobre", "https://placehold.co/600x400?text=Sobre", "modalSobre");
+    modais += await (0, _modais.criarModalSobreHTML)();
+    const homeHTML = `
+    <section id="bemVindoSection">
+      <div class="bem-vindo-container text-center">
+        <img src="https://cdn-icons-png.flaticon.com/512/2983/2983094.png" alt="\xcdcone de Pilates" class="bem-vindo-icone">
+        <h1 class="bem-vindo-titulo">${titulo}</h1>
+        <p class="bem-vindo-subtitulo">${subtitulo}</p>
+      </div>
+    </section>
 
-<section class="d-flex justify-content-center" id="head">
+    <section class="row row-cols-1 row-cols-md-3 g-4 w-100 justify-content-center">
+      ${cards}
+    </section>
 
-<h1>Estudio de Pilates</h1>
+    ${modais}
+  `;
+    const main = (0, _main.getOrCreateMainElement)();
+    main.innerHTML = homeHTML;
+}
+window.abrirModalInstrutores = async function() {
+    await (0, _modais.criarModalInstrutoresHTML)();
+    setTimeout(()=>{
+        const modalEl = document.getElementById("modalInstrutores");
+        if (modalEl) {
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        } else console.error("Modal de instrutores n\xe3o foi encontrado no DOM.");
+    }, 100);
+};
+window.abrirModalUsuariosAdmin = async function() {
+    await (0, _modais.criarModalUsuariosAdminHTML)();
+    setTimeout(()=>{
+        const modalEl = document.getElementById("modalUsuariosAdmin");
+        if (modalEl) {
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        } else console.error("Modal de usu\xe1rios n\xe3o foi encontrado no DOM.");
+    }, 100);
+};
+window.abrirModalAulasAdmin = async function() {
+    await (0, _modais.criarModalAulasAdminHTML)();
+    setTimeout(()=>{
+        const modalEl = document.getElementById("modalAulasAdmin");
+        if (modalEl) {
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        } else console.error("Modal de aulas n\xe3o foi encontrado no DOM.");
+    }, 100);
+};
 
-</section>
-
-<nav class="d-flex justify-content-between align-items-center px-4 py-2 border-bottom"  id="nav">
-
-  <div class="nav nav-underline">
-    <a class="nav-link m-1 text-secondary" aria-current="page" href="#home">Home</a>
-    <a class="nav-link m-1 text-secondary" href="#agendamento">Agendamento</a>
-    <a class="nav-link m-1 text-secondary" href="#">Aulas</a>
-  </div>
-
-  <div class="nav">
-    <a class="nav-link m-1 text-secondary" href="#login">
-      <i class="bi bi-people-fill"></i>
-    </a>
-  </div>
-
-</nav>
-`;
-const headerElement = document.createElement('header');
-headerElement.innerHTML = headerHtml;
-document.body.insertAdjacentElement('afterbegin', headerElement);
+},{"../../components/main":"5zsxX","../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"5zsxX":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getOrCreateMainElement", ()=>getOrCreateMainElement);
+const getOrCreateMainElement = ()=>{
+    let main = document.getElementById('main');
+    if (!main) {
+        main = document.createElement('main');
+        main.id = 'main';
+        const header = document.getElementsByTagName('header')[0];
+        if (header) header.insertAdjacentElement('afterend', main);
+        const footer = document.getElementsByTagName('footer')[0];
+        if (footer) footer.insertAdjacentElement('beforebegin', main);
+        else document.body.appendChild(main);
+    }
+    return main;
+};
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"jnFvT":[function(require,module,exports,__globalThis) {
 exports.interopDefault = function(a) {
@@ -3791,409 +3896,7 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"dr3uo":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "footerHtml", ()=>footerHtml);
-parcelHelpers.export(exports, "createFooterElement", ()=>createFooterElement);
-const footerHtml = `
-<section class="p-4 border-top d-flex">
-
-    <div class="col mb-3 text-center">
-      <h5 class="pt-2">A</h5>
-      <ul class="nav flex-column">
-      </ul>
-    </div>
-
-    <div class="col mb-3 text-center">
-      <h5 class="pt-2">B</h5>
-      <ul class="nav flex-column">
-      </ul>
-    </div>
-
-    <div class="col mb-3 text-center">
-      <h5 class="pt-2">C</h5>
-      <ul class="nav flex-column">
-      </ul>
-    </div>
-
-    <div class="col mb-3 text-center">
-      <h5 class="pt-2">D</h5>
-      <ul class="nav flex-column">
-      </ul>
-    </div>
-
-  </section>
-`;
-const createFooterElement = ()=>{
-    let footerElement = document.getElementById("footer");
-    if (!footerElement) {
-        footerElement = document.createElement("footer");
-        footerElement.id = "footer";
-        footerElement.innerHTML = footerHtml;
-        document.body.insertAdjacentElement("beforeend", footerElement);
-    }
-};
-createFooterElement();
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"gDpnp":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-// Retorna a role do usuário logado
-parcelHelpers.export(exports, "getUserRole", ()=>getUserRole);
-// Retorna os dados do usuário logado
-parcelHelpers.export(exports, "getUserLoggedData", ()=>getUserLoggedData);
-parcelHelpers.export(exports, "renderAgendamentoPage", ()=>renderAgendamentoPage);
-var _main = require("../../components/main");
-var _modais = require("../../components/modais");
-function getUserRole() {
-    const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
-    return user?.role;
-}
-function getUserLoggedData() {
-    return JSON.parse(localStorage.getItem("usuarioLogado")) || {};
-}
-async function fetchAulas() {
-    try {
-        const response = await fetch("http://localhost:8080/sessions", {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`
-            }
-        });
-        if (!response.ok) {
-            // Se a resposta não for ok, você pode capturar o erro e retornar um valor padrão
-            console.error("Erro ao buscar aulas:", response.statusText);
-            return []; // Retorna um array vazio em caso de erro
-        }
-        // Verifica se a resposta tem um corpo
-        const text = await response.text();
-        if (!text) {
-            console.error("Resposta vazia do servidor.");
-            return []; // Retorna um array vazio se a resposta estiver vazia
-        }
-        const data = JSON.parse(text); // Converte o texto em JSON
-        return data;
-    } catch (error) {
-        console.error("Erro ao buscar aulas:", error);
-        return []; // Retorna um array vazio em caso de erro de conexão
-    }
-}
-window.aulaSelecionadaId = null;
-const eventoAtualizarAlunos = new Event("atualizarListaAlunos");
-async function renderAgendamentoPage() {
-    const main = (0, _main.getOrCreateMainElement)();
-    main.innerHTML = "";
-    main.style.minHeight = "calc(100vh - 200px)";
-    main.style.display = "flex";
-    main.style.flexDirection = "column";
-    main.style.justifyContent = "between";
-    const role = getUserRole();
-    const user = getUserLoggedData();
-    async function atualizarTabela() {
-        const aulas = await fetchAulas();
-        const tableBody = document.querySelector("tbody.table-group-divider");
-        if (!tableBody) return;
-        const tableRows = aulas.map((aula)=>{
-            const aulaId = aula.id || aula._id?.$oid || aula._id;
-            let acoes = "";
-            const jaAgendado = Array.isArray(aula.students) && aula.students.includes(user.id);
-            if (role === "ROLE_STUDENT") {
-                if (!jaAgendado && aula.status === "aberta") acoes = `<button class="btn btn-sm btn-success" onclick="agendarAula('${aulaId}')">Agendar</button>`;
-                else if (jaAgendado) acoes = `<button class="btn btn-sm btn-danger" onclick="cancelarAula('${aulaId}')">Cancelar</button>`;
-            } else if (role === "recepcionista") acoes = `<button class="btn btn-sm btn-outline-success" onclick="abrirModalAlunos('${aulaId}')">Ver</button>`;
-            else if (role === "ROLE_INSTRUCTOR") acoes = `<button class="btn btn-sm btn-secondary" onclick="abrirModalAlunos('${aulaId}')">Visualizar</button>`;
-            return `
-        <tr>
-          <td>${aula.instructor}</td>
-          <td>${aula.day}</td>
-          <td>${aula.hours}</td>
-          <td>${aula.studio}</td>
-          <td>${aula.status}</td>
-          <td>${acoes}</td>
-        </tr>
-      `;
-        }).join("");
-        tableBody.innerHTML = tableRows;
-    }
-    // Estrutura da tela principal
-    main.innerHTML = `
-    <h2 class="ms-4">Datas</h2>
-    <div class="d-flex justify-content-center">
-      <div class="table-responsive w-100" style="max-width: 960px;">
-        <table class="table table-hover table-striped">
-          <thead>
-            <tr>
-              <th>Instrutor</th>
-              <th>Dia</th>
-              <th>Hora</th>
-              <th>Est\xfadio</th>
-              <th>Status</th>
-              <th>A\xe7\xf5es</th>
-            </tr>
-          </thead>
-          <tbody class="table-group-divider"></tbody>
-        </table>
-      </div>
-    </div>
-    ${(0, _modais.criarModalListaAlunosHTML)()}
-    ${(0, _modais.criarModalCadastroAlunoHTML)()}
-    ${(0, _modais.criarModalConfirmacaoHTML)()}
-  `;
-    await atualizarTabela();
-}
-window.registrarAluno = async function(sessionId, studentId) {
-    const id = sessionId || aulaSelecionadaId; // usa aulaSelecionadaId se sessionId for undefined
-    if (!id) {
-        alert("ID da aula n\xe3o foi definido.");
-        return;
-    }
-    try {
-        const response = await fetch(`/api/sessions/register/${id}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                studentId
-            })
-        });
-        if (response.ok) {
-            document.dispatchEvent(eventoAtualizarAlunos);
-            mostrarModalConfirmacao("Aluno registrado com sucesso!");
-        } else {
-            const erro = await response.json();
-            alert(erro.message || "Erro ao registrar aluno.");
-        }
-    } catch (error) {
-        console.error("Erro ao registrar aluno:", error);
-        alert("Erro de conex\xe3o ao tentar registrar aluno.");
-    }
-};
-let ultimaListaAlunos = []; // Guarda o estado atual
-async function verificarAtualizacoes() {
-    if (!aulaSelecionadaId) return;
-    const response = await fetch(`/api/sessions/${aulaSelecionadaId}`);
-    if (!response.ok) return;
-    const aula = await response.json();
-    const alunosAtuais = aula.students || [];
-    // Se a lista mudou, atualiza o modal
-    if (JSON.stringify(alunosAtuais) !== JSON.stringify(ultimaListaAlunos)) {
-        ultimaListaAlunos = alunosAtuais;
-        await atualizarModalAlunos(aulaSelecionadaId);
-    }
-}
-window.agendarAula = async function(id) {
-    try {
-        const user = getUserLoggedData();
-        const response = await fetch(`/api/sessions/register/${id}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                studentId: user.id
-            })
-        });
-        if (response.ok) {
-            mostrarModalConfirmacao("Aula agendada com sucesso!");
-            renderAgendamentoPage();
-        } else {
-            const erro = await response.json();
-            alert(erro.message || "Erro ao agendar a aula.");
-        }
-    } catch (error) {
-        console.error("Erro ao agendar:", error);
-        alert("Erro de conex\xe3o ao tentar agendar a aula.");
-    }
-};
-window.cancelarAula = async function(id) {
-    try {
-        const user = getUserLoggedData();
-        const response = await fetch(`/api/sessions/unregister/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                studentId: user.id
-            })
-        });
-        if (response.ok) {
-            mostrarModalConfirmacao("Agendamento cancelado.");
-            renderAgendamentoPage();
-        } else alert("Erro ao cancelar a aula.");
-    } catch (error) {
-        console.error("Erro ao cancelar:", error);
-    }
-};
-// Abre modal com alunos na aula
-window.abrirModalAlunos = async function(id) {
-    try {
-        window.aulaSelecionadaId = id;
-        const role = getUserRole();
-        // Fecha modal aberto anteriormente
-        const modalEl = document.getElementById("modalListaAlunos");
-        const existingInstance = bootstrap.Modal.getInstance(modalEl);
-        if (existingInstance) existingInstance.hide();
-        document.body.classList.remove("modal-open");
-        document.querySelectorAll(".modal-backdrop").forEach((el)=>el.remove());
-        const response = await fetch(`/api/sessions/${id}`);
-        // console.log("ID da aula recebido:", id);
-        if (!response.ok) throw new Error("Falha ao buscar aula");
-        const aula = await response.json();
-        const alunosIds = aula.students || [];
-        const alunos = await (0, _modais.buscarDadosCompletosDosAlunos)(alunosIds);
-        const presences = aula.presences || [];
-        (0, _modais.criarModalListaAlunosHTML)(alunos, role, presences);
-        const modal = new bootstrap.Modal(document.getElementById("modalListaAlunos"));
-        modal.show();
-        document.addEventListener("atualizarListaAlunos", async function() {
-            await atualizarModalAlunos(aulaSelecionadaId);
-        });
-    } catch (error) {
-        console.error("Erro ao abrir modal de alunos:", error);
-        alert("N\xe3o foi poss\xedvel carregar os alunos da aula.");
-    }
-};
-window.mostrarModalConfirmacao = function(mensagem) {
-    const el = document.getElementById("mensagemConfirmacao");
-    if (el) el.textContent = mensagem;
-    const modalLista = bootstrap.Modal.getInstance(document.getElementById("modalListaAlunos"));
-    if (modalLista) modalLista.hide();
-    const modalConfirmacao = new bootstrap.Modal(document.getElementById("modalConfirmacao"));
-    modalConfirmacao.show();
-};
-async function atualizarModalAlunos(aulaId) {
-    try {
-        const response = await fetch(`/api/sessions/${aulaId}`);
-        if (!response.ok) throw new Error("Falha ao buscar aula");
-        const aula = await response.json();
-        const alunosIds = aula.students || [];
-        const alunos = await (0, _modais.buscarDadosCompletosDosAlunos)(alunosIds);
-        const presences = aula.presences || [];
-        const role = getUserRole();
-        const tbody = document.querySelector("#modalListaAlunos tbody");
-        if (!tbody) return;
-        const checkboxesState = {};
-        document.querySelectorAll(".presence-checkbox").forEach((checkbox)=>{
-            checkboxesState[checkbox.dataset.alunoId] = checkbox.checked;
-        });
-        tbody.innerHTML = alunos.map((alunoId)=>{
-            const wasChecked = checkboxesState[alunoId];
-            const isPresent = presences.includes(alunoId) || wasChecked;
-            if (role === "instrutor") return `
-          <tr>
-            <td>${alunoId}</td>
-            <td>\u{2014}</td>
-            <td>\u{2014}</td>
-            <td>
-              <input type="checkbox" class="form-check-input presence-checkbox" 
-                     data-aluno-id="${alunoId}" ${isPresent ? "checked" : ""}>
-            </td>
-          </tr>
-        `;
-            return `
-        <tr>
-          <td>${alunoId}</td>
-          <td>\u{2014}</td>
-          <td>\u{2014}</td>
-          <td>
-            <button class="btn btn-sm btn-danger" onclick="removerAluno('${alunoId}')">Remover</button>
-          </td>
-        </tr>
-      `;
-        }).join("");
-    } catch (error) {
-        console.error("Erro ao atualizar lista de alunos:", error);
-    }
-}
-window.removerAluno = async function(studentId) {
-    if (!aulaSelecionadaId) {
-        alert("Aula n\xe3o encontrada.");
-        return;
-    }
-    try {
-        const response = await fetch(`/api/sessions/unregister/${aulaSelecionadaId}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                studentId
-            })
-        });
-        if (response.ok) await atualizarModalAlunos(aulaSelecionadaId);
-        else {
-            const erro = await response.json();
-            alert(erro.message || "Erro ao remover o aluno.");
-        }
-    } catch (error) {
-        console.error("Erro ao remover aluno:", error);
-        alert("Erro ao remover aluno.");
-    }
-};
-window.fecharModalAlunos = function() {
-    const modal = bootstrap.Modal.getInstance(document.getElementById("modalListaAlunos"));
-    modal.hide();
-    if (window.alunoModalInterval) {
-        clearInterval(window.alunoModalInterval);
-        window.alunoModalInterval = null;
-    }
-};
-// Fecha o modal de cadastro de aluno
-window.cancelarCadastro = function() {
-    const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastroAluno"));
-    modal.hide();
-};
-window.salvarPresencas = async function() {
-    try {
-        const checkboxes = document.querySelectorAll(".presence-checkbox");
-        const presences = [];
-        checkboxes.forEach((checkbox)=>{
-            if (checkbox.checked) presences.push(checkbox.dataset.alunoId);
-        });
-        if (!aulaSelecionadaId) {
-            alert("Erro: Aula n\xe3o encontrada.");
-            return;
-        }
-        const response = await fetch(`/api/sessions/presence/${aulaSelecionadaId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(presences)
-        });
-        if (response.ok) mostrarModalConfirmacao("Presen\xe7as registradas com sucesso!");
-        else {
-            const erro = await response.json();
-            alert(erro.message || "Erro ao salvar presen\xe7as.");
-        }
-    } catch (error) {
-        console.error("Erro ao salvar presen\xe7as:", error);
-        alert("Erro ao processar presen\xe7a dos alunos.");
-    }
-};
-
-},{"../../components/main":"5zsxX","../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"5zsxX":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "getOrCreateMainElement", ()=>getOrCreateMainElement);
-const getOrCreateMainElement = ()=>{
-    let main = document.getElementById('main');
-    if (!main) {
-        main = document.createElement('main');
-        main.id = 'main';
-        const header = document.getElementsByTagName('header')[0];
-        if (header) header.insertAdjacentElement('afterend', main);
-        const footer = document.getElementsByTagName('footer')[0];
-        if (footer) footer.insertAdjacentElement('beforebegin', main);
-        else document.body.appendChild(main);
-    }
-    return main;
-};
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"1Ukbc":[function(require,module,exports,__globalThis) {
+},{}],"1Ukbc":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "criarModalListaAlunosHTML", ()=>criarModalListaAlunosHTML);
@@ -4729,117 +4432,423 @@ async function criarModalAulasAdminHTML() {
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"lYthH":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"3QKkX":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "homeScreen", ()=>homeScreen);
+parcelHelpers.export(exports, "headerHtml", ()=>headerHtml);
+const headerHtml = `
+
+<section class="d-flex justify-content-center" id="head">
+
+<h1>Estudio de Pilates</h1>
+
+</section>
+
+<nav class="d-flex justify-content-between align-items-center px-4 py-2 border-bottom"  id="nav">
+
+  <div class="nav nav-underline">
+    <a class="nav-link m-1 text-secondary" aria-current="page" href="#home">Home</a>
+    <a class="nav-link m-1 text-secondary" href="#agendamento">Agendamento</a>
+    <a class="nav-link m-1 text-secondary" href="#">Aulas</a>
+  </div>
+
+  <div class="nav">
+    <a class="nav-link m-1 text-secondary" href="#login">
+      <i class="bi bi-people-fill"></i>
+    </a>
+  </div>
+
+</nav>
+`;
+const headerElement = document.createElement('header');
+headerElement.innerHTML = headerHtml;
+document.body.insertAdjacentElement('afterbegin', headerElement);
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"dr3uo":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "footerHtml", ()=>footerHtml);
+parcelHelpers.export(exports, "createFooterElement", ()=>createFooterElement);
+const footerHtml = `
+<section class="p-4 border-top d-flex">
+
+    <div class="col mb-3 text-center">
+      <h5 class="pt-2">A</h5>
+      <ul class="nav flex-column">
+      </ul>
+    </div>
+
+    <div class="col mb-3 text-center">
+      <h5 class="pt-2">B</h5>
+      <ul class="nav flex-column">
+      </ul>
+    </div>
+
+    <div class="col mb-3 text-center">
+      <h5 class="pt-2">C</h5>
+      <ul class="nav flex-column">
+      </ul>
+    </div>
+
+    <div class="col mb-3 text-center">
+      <h5 class="pt-2">D</h5>
+      <ul class="nav flex-column">
+      </ul>
+    </div>
+
+  </section>
+`;
+const createFooterElement = ()=>{
+    let footerElement = document.getElementById("footer");
+    if (!footerElement) {
+        footerElement = document.createElement("footer");
+        footerElement.id = "footer";
+        footerElement.innerHTML = footerHtml;
+        document.body.insertAdjacentElement("beforeend", footerElement);
+    }
+};
+createFooterElement();
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"gDpnp":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+// Retorna a role do usuário logado
+parcelHelpers.export(exports, "getUserRole", ()=>getUserRole);
+// Retorna os dados do usuário logado
+parcelHelpers.export(exports, "getUserLoggedData", ()=>getUserLoggedData);
+parcelHelpers.export(exports, "renderAgendamentoPage", ()=>renderAgendamentoPage);
 var _main = require("../../components/main");
 var _modais = require("../../components/modais");
 function getUserRole() {
     const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
-    return user.role;
+    return user?.role;
 }
-function createCard(title, imageUrl, modalTargetId, useOnClick = false) {
-    const button = useOnClick ? `<button class="btn btn-dark w-100 rounded-pill mt-2" onclick="${modalTargetId}()">Acessar</button>` : `<button class="btn btn-dark w-100 rounded-pill mt-2" data-bs-toggle="modal" data-bs-target="#${modalTargetId}">Acessar</button>`;
-    return `
-    <div class="col p-3">
-      <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
-        <img src="${imageUrl}" class="card-img-top" alt="${title}">
-        <div class="card-body text-center">
-          <h5 class="card-title fw-bold">${title}</h5>
-          ${button}
-        </div>
+function getUserLoggedData() {
+    return JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+}
+async function fetchAulas() {
+    try {
+        const response = await fetch("http://localhost:8080/sessions", {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        if (!response.ok) {
+            // Se a resposta não for ok, você pode capturar o erro e retornar um valor padrão
+            console.error("Erro ao buscar aulas:", response.statusText);
+            return []; // Retorna um array vazio em caso de erro
+        }
+        // Verifica se a resposta tem um corpo
+        const text = await response.text();
+        if (!text) {
+            console.error("Resposta vazia do servidor.");
+            return []; // Retorna um array vazio se a resposta estiver vazia
+        }
+        const data = JSON.parse(text); // Converte o texto em JSON
+        return data;
+    } catch (error) {
+        console.error("Erro ao buscar aulas:", error);
+        return []; // Retorna um array vazio em caso de erro de conexão
+    }
+}
+window.aulaSelecionadaId = null;
+const eventoAtualizarAlunos = new Event("atualizarListaAlunos");
+async function renderAgendamentoPage() {
+    const main = (0, _main.getOrCreateMainElement)();
+    main.innerHTML = "";
+    main.style.minHeight = "calc(100vh - 200px)";
+    main.style.display = "flex";
+    main.style.flexDirection = "column";
+    main.style.justifyContent = "between";
+    const role = getUserRole();
+    const user = getUserLoggedData();
+    async function atualizarTabela() {
+        const aulas = await fetchAulas();
+        const tableBody = document.querySelector("tbody.table-group-divider");
+        if (!tableBody) return;
+        const tableRows = aulas.map((aula)=>{
+            const aulaId = aula.id || aula._id?.$oid || aula._id;
+            let acoes = "";
+            const jaAgendado = Array.isArray(aula.students) && aula.students.includes(user.id);
+            if (role === "ROLE_STUDENT") {
+                if (!jaAgendado && aula.status === "aberta") acoes = `<button class="btn btn-sm btn-success" onclick="agendarAula('${aulaId}')">Agendar</button>`;
+                else if (jaAgendado) acoes = `<button class="btn btn-sm btn-danger" onclick="cancelarAula('${aulaId}')">Cancelar</button>`;
+            } else if (role === "recepcionista") acoes = `<button class="btn btn-sm btn-outline-success" onclick="abrirModalAlunos('${aulaId}')">Ver</button>`;
+            else if (role === "ROLE_INSTRUCTOR") acoes = `<button class="btn btn-sm btn-secondary" onclick="abrirModalAlunos('${aulaId}')">Visualizar</button>`;
+            return `
+        <tr>
+          <td>${aula.instructor}</td>
+          <td>${aula.day}</td>
+          <td>${aula.hours}</td>
+          <td>${aula.studio}</td>
+          <td>${aula.status}</td>
+          <td>${acoes}</td>
+        </tr>
+      `;
+        }).join("");
+        tableBody.innerHTML = tableRows;
+    }
+    // Estrutura da tela principal
+    main.innerHTML = `
+    <h2 class="ms-4">Datas</h2>
+    <div class="d-flex justify-content-center">
+      <div class="table-responsive w-100" style="max-width: 960px;">
+        <table class="table table-hover table-striped">
+          <thead>
+            <tr>
+              <th>Instrutor</th>
+              <th>Dia</th>
+              <th>Hora</th>
+              <th>Est\xfadio</th>
+              <th>Status</th>
+              <th>A\xe7\xf5es</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider"></tbody>
+        </table>
       </div>
     </div>
+    ${(0, _modais.criarModalListaAlunosHTML)()}
+    ${(0, _modais.criarModalCadastroAlunoHTML)()}
+    ${(0, _modais.criarModalConfirmacaoHTML)()}
   `;
+    await atualizarTabela();
 }
-async function homeScreen() {
-    const role = getUserRole();
-    console.log("Role do usu\xe1rio:", role);
-    let titulo = "Bem-vindo ao Est\xfadio de Pilates";
-    let subtitulo = "Transforme seu corpo e mente com nossas aulas especializadas.";
-    let cards = "";
-    let modais = "";
-    if (role === "ROLE_INSTRUCTOR") {
-        titulo = "\xc1rea do Instrutor";
-        subtitulo = "Gerencie suas aulas e visualize seu perfil profissional.";
-        cards += createCard("Minhas Aulas", "https://placehold.co/600x400?text=Minhas+Aulas", "modalAulasInstrutor");
-        cards += createCard("Meu Perfil", "https://placehold.co/600x400?text=Perfil", "modalPerfilInstrutor");
-        modais += await (0, _modais.criarModalAulasInstrutorHTML)();
-        modais += await (0, _modais.criarModalPerfilInstrutorHTML)();
-    } else if (role === "ROLE_RECEPTIONIST") {
-        titulo = "\xc1rea da Recep\xe7\xe3o";
-        subtitulo = "Organize agendamentos e cadastros de clientes com facilidade.";
-        cards += createCard("Agenda", "https://placehold.co/600x400?text=Agenda", "modalAgendaRecepcao");
-        cards += createCard("Clientes", "https://placehold.co/600x400?text=Clientes", "modalCadastroClientes");
-        modais += await (0, _modais.criarModalAgendaRecepcaoHTML)();
-        modais += await (0, _modais.criarModalCadastroClientesHTML)();
-    } else if (role === "ROLE_ADMIN") {
-        titulo = "\xc1rea do Administrador";
-        subtitulo = "Gerencie usu\xe1rios, aulas e todo o sistema.";
-        cards += createCard("Gerenciar Usu\xe1rios", "https://placehold.co/600x400?text=Usu\xe1rios", "modalUsuariosAdmin");
-        cards += createCard("Gerenciar Aulas", "https://placehold.co/600x400?text=Aulas", "modalAulasAdmin");
-        modais += await (0, _modais.criarModalUsuariosAdminHTML)();
-        modais += await (0, _modais.criarModalAulasAdminHTML)();
-    } else {
-        // Aluno padrão
-        cards += createCard("Instrutores", "https://placehold.co/600x400?text=Instrutores", "abrirModalInstrutores", true);
-        cards += createCard("Assinaturas", "https://placehold.co/600x400?text=Assinaturas", "modalAssinaturas");
-        modais += await (0, _modais.criarModalAssinaturasHTML)();
+window.registrarAluno = async function(sessionId, studentId) {
+    const id = sessionId || aulaSelecionadaId; // usa aulaSelecionadaId se sessionId for undefined
+    if (!id) {
+        alert("ID da aula n\xe3o foi definido.");
+        return;
     }
-    // O modal "Sobre" é comum a todos
-    cards += createCard("Sobre", "https://placehold.co/600x400?text=Sobre", "modalSobre");
-    modais += await (0, _modais.criarModalSobreHTML)();
-    const homeHTML = `
-    <section id="bemVindoSection">
-      <div class="bem-vindo-container text-center">
-        <img src="https://cdn-icons-png.flaticon.com/512/2983/2983094.png" alt="\xcdcone de Pilates" class="bem-vindo-icone">
-        <h1 class="bem-vindo-titulo">${titulo}</h1>
-        <p class="bem-vindo-subtitulo">${subtitulo}</p>
-      </div>
-    </section>
-
-    <section class="row row-cols-1 row-cols-md-3 g-4 w-100 justify-content-center">
-      ${cards}
-    </section>
-
-    ${modais}
-  `;
-    const main = (0, _main.getOrCreateMainElement)();
-    main.innerHTML = homeHTML;
+    try {
+        const response = await fetch(`/api/sessions/register/${id}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                studentId
+            })
+        });
+        if (response.ok) {
+            document.dispatchEvent(eventoAtualizarAlunos);
+            mostrarModalConfirmacao("Aluno registrado com sucesso!");
+        } else {
+            const erro = await response.json();
+            alert(erro.message || "Erro ao registrar aluno.");
+        }
+    } catch (error) {
+        console.error("Erro ao registrar aluno:", error);
+        alert("Erro de conex\xe3o ao tentar registrar aluno.");
+    }
+};
+let ultimaListaAlunos = []; // Guarda o estado atual
+async function verificarAtualizacoes() {
+    if (!aulaSelecionadaId) return;
+    const response = await fetch(`/api/sessions/${aulaSelecionadaId}`);
+    if (!response.ok) return;
+    const aula = await response.json();
+    const alunosAtuais = aula.students || [];
+    // Se a lista mudou, atualiza o modal
+    if (JSON.stringify(alunosAtuais) !== JSON.stringify(ultimaListaAlunos)) {
+        ultimaListaAlunos = alunosAtuais;
+        await atualizarModalAlunos(aulaSelecionadaId);
+    }
 }
-window.abrirModalInstrutores = async function() {
-    await (0, _modais.criarModalInstrutoresHTML)();
-    setTimeout(()=>{
-        const modalEl = document.getElementById("modalInstrutores");
-        if (modalEl) {
-            const modal = new bootstrap.Modal(modalEl);
-            modal.show();
-        } else console.error("Modal de instrutores n\xe3o foi encontrado no DOM.");
-    }, 100);
+window.agendarAula = async function(id) {
+    try {
+        const user = getUserLoggedData();
+        const response = await fetch(`/api/sessions/register/${id}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                studentId: user.id
+            })
+        });
+        if (response.ok) {
+            mostrarModalConfirmacao("Aula agendada com sucesso!");
+            renderAgendamentoPage();
+        } else {
+            const erro = await response.json();
+            alert(erro.message || "Erro ao agendar a aula.");
+        }
+    } catch (error) {
+        console.error("Erro ao agendar:", error);
+        alert("Erro de conex\xe3o ao tentar agendar a aula.");
+    }
 };
-window.abrirModalInstrutores = async function() {
-    await (0, _modais.criarModalInstrutoresHTML)();
-    setTimeout(()=>{
-        const modalEl = document.getElementById("modalInstrutores");
-        if (modalEl) {
-            const modal = new bootstrap.Modal(modalEl);
-            modal.show();
-        } else console.error("Modal de instrutores n\xe3o foi encontrado no DOM.");
-    }, 100);
+window.cancelarAula = async function(id) {
+    try {
+        const user = getUserLoggedData();
+        const response = await fetch(`/api/sessions/unregister/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                studentId: user.id
+            })
+        });
+        if (response.ok) {
+            mostrarModalConfirmacao("Agendamento cancelado.");
+            renderAgendamentoPage();
+        } else alert("Erro ao cancelar a aula.");
+    } catch (error) {
+        console.error("Erro ao cancelar:", error);
+    }
 };
-window.abrirModalAssinaturas = async function() {
-    await (0, _modais.criarModalAssinaturasHTML)();
-    setTimeout(()=>{
-        const modalEl = document.getElementById("modalAssinaturas");
-        if (modalEl) {
-            const modal = new bootstrap.Modal(modalEl);
-            modal.show();
-        } else console.error("Modal de assinaturas n\xe3o foi encontrado no DOM.");
-    }, 100);
+// Abre modal com alunos na aula
+window.abrirModalAlunos = async function(id) {
+    try {
+        window.aulaSelecionadaId = id;
+        const role = getUserRole();
+        // Fecha modal aberto anteriormente
+        const modalEl = document.getElementById("modalListaAlunos");
+        const existingInstance = bootstrap.Modal.getInstance(modalEl);
+        if (existingInstance) existingInstance.hide();
+        document.body.classList.remove("modal-open");
+        document.querySelectorAll(".modal-backdrop").forEach((el)=>el.remove());
+        const response = await fetch(`/api/sessions/${id}`);
+        // console.log("ID da aula recebido:", id);
+        if (!response.ok) throw new Error("Falha ao buscar aula");
+        const aula = await response.json();
+        const alunosIds = aula.students || [];
+        const alunos = await (0, _modais.buscarDadosCompletosDosAlunos)(alunosIds);
+        const presences = aula.presences || [];
+        (0, _modais.criarModalListaAlunosHTML)(alunos, role, presences);
+        const modal = new bootstrap.Modal(document.getElementById("modalListaAlunos"));
+        modal.show();
+        document.addEventListener("atualizarListaAlunos", async function() {
+            await atualizarModalAlunos(aulaSelecionadaId);
+        });
+    } catch (error) {
+        console.error("Erro ao abrir modal de alunos:", error);
+        alert("N\xe3o foi poss\xedvel carregar os alunos da aula.");
+    }
+};
+window.mostrarModalConfirmacao = function(mensagem) {
+    const el = document.getElementById("mensagemConfirmacao");
+    if (el) el.textContent = mensagem;
+    const modalLista = bootstrap.Modal.getInstance(document.getElementById("modalListaAlunos"));
+    if (modalLista) modalLista.hide();
+    const modalConfirmacao = new bootstrap.Modal(document.getElementById("modalConfirmacao"));
+    modalConfirmacao.show();
+};
+async function atualizarModalAlunos(aulaId) {
+    try {
+        const response = await fetch(`/api/sessions/${aulaId}`);
+        if (!response.ok) throw new Error("Falha ao buscar aula");
+        const aula = await response.json();
+        const alunosIds = aula.students || [];
+        const alunos = await (0, _modais.buscarDadosCompletosDosAlunos)(alunosIds);
+        const presences = aula.presences || [];
+        const role = getUserRole();
+        const tbody = document.querySelector("#modalListaAlunos tbody");
+        if (!tbody) return;
+        const checkboxesState = {};
+        document.querySelectorAll(".presence-checkbox").forEach((checkbox)=>{
+            checkboxesState[checkbox.dataset.alunoId] = checkbox.checked;
+        });
+        tbody.innerHTML = alunos.map((alunoId)=>{
+            const wasChecked = checkboxesState[alunoId];
+            const isPresent = presences.includes(alunoId) || wasChecked;
+            if (role === "instrutor") return `
+          <tr>
+            <td>${alunoId}</td>
+            <td>\u{2014}</td>
+            <td>\u{2014}</td>
+            <td>
+              <input type="checkbox" class="form-check-input presence-checkbox" 
+                     data-aluno-id="${alunoId}" ${isPresent ? "checked" : ""}>
+            </td>
+          </tr>
+        `;
+            return `
+        <tr>
+          <td>${alunoId}</td>
+          <td>\u{2014}</td>
+          <td>\u{2014}</td>
+          <td>
+            <button class="btn btn-sm btn-danger" onclick="removerAluno('${alunoId}')">Remover</button>
+          </td>
+        </tr>
+      `;
+        }).join("");
+    } catch (error) {
+        console.error("Erro ao atualizar lista de alunos:", error);
+    }
+}
+window.removerAluno = async function(studentId) {
+    if (!aulaSelecionadaId) {
+        alert("Aula n\xe3o encontrada.");
+        return;
+    }
+    try {
+        const response = await fetch(`/api/sessions/unregister/${aulaSelecionadaId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                studentId
+            })
+        });
+        if (response.ok) await atualizarModalAlunos(aulaSelecionadaId);
+        else {
+            const erro = await response.json();
+            alert(erro.message || "Erro ao remover o aluno.");
+        }
+    } catch (error) {
+        console.error("Erro ao remover aluno:", error);
+        alert("Erro ao remover aluno.");
+    }
+};
+window.fecharModalAlunos = function() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById("modalListaAlunos"));
+    modal.hide();
+    if (window.alunoModalInterval) {
+        clearInterval(window.alunoModalInterval);
+        window.alunoModalInterval = null;
+    }
+};
+// Fecha o modal de cadastro de aluno
+window.cancelarCadastro = function() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastroAluno"));
+    modal.hide();
+};
+window.salvarPresencas = async function() {
+    try {
+        const checkboxes = document.querySelectorAll(".presence-checkbox");
+        const presences = [];
+        checkboxes.forEach((checkbox)=>{
+            if (checkbox.checked) presences.push(checkbox.dataset.alunoId);
+        });
+        if (!aulaSelecionadaId) {
+            alert("Erro: Aula n\xe3o encontrada.");
+            return;
+        }
+        const response = await fetch(`/api/sessions/presence/${aulaSelecionadaId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(presences)
+        });
+        if (response.ok) mostrarModalConfirmacao("Presen\xe7as registradas com sucesso!");
+        else {
+            const erro = await response.json();
+            alert(erro.message || "Erro ao salvar presen\xe7as.");
+        }
+    } catch (error) {
+        console.error("Erro ao salvar presen\xe7as:", error);
+        alert("Erro ao processar presen\xe7a dos alunos.");
+    }
 };
 
-},{"../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../components/main":"5zsxX"}],"9vJvL":[function(require,module,exports,__globalThis) {
+},{"../../components/main":"5zsxX","../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"9vJvL":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "loginScreen", ()=>loginScreen);
@@ -4869,7 +4878,7 @@ function loginScreen() {
     const loginForm = document.getElementById("loginForm");
     loginForm.addEventListener("submit", async (event)=>{
         event.preventDefault();
-        const formData = new FormData(event.target);
+        const formData = new FormData(loginForm);
         const username = formData.get("username");
         const password = formData.get("password");
         try {
@@ -4884,31 +4893,28 @@ function loginScreen() {
                 })
             });
             const data = await response.json();
-            if (response.ok) {
-                // Armazenar o token junto às infos do usuário
-                localStorage.setItem("token", data.token);
-                // Decodificar o JWT para obter o role
-                const decoded = (0, _jwtDecode.jwtDecode)(data.token);
-                const role = decoded.roles[0];
-                localStorage.setItem("usuarioLogado", JSON.stringify({
-                    ...decoded,
-                    role
-                }));
-                // Exibir mensagem de sucesso
-                document.getElementById("loginMessage").innerHTML = "<span class='text-info'>Login realizado com sucesso</span>";
-                console.log("Dados do usu\xe1rio!", decoded);
-                console.log("Role!", role);
-            // Redirecionar para home ou agendamento
-            // location.hash = "#home";
-            } else document.getElementById("loginMessage").innerHTML = "<span class='text-danger'>" + (data.message || "Erro ao fazer login.") + "</span>";
+            if (!response.ok) {
+                document.getElementById("loginMessage").innerHTML = `<span class='text-danger'>${data.message || "Erro ao fazer login."}</span>`;
+                return;
+            }
+            localStorage.setItem("token", data.token);
+            const decoded = (0, _jwtDecode.jwtDecode)(data.token);
+            const role = decoded.roles?.[0] || decoded.role || "aluno";
+            localStorage.setItem("usuarioLogado", JSON.stringify({
+                ...decoded,
+                role,
+                token: data.token
+            }));
+            document.getElementById("loginMessage").innerHTML = "<span class='text-info'>Login realizado com sucesso</span>";
+            location.hash = "#home";
         } catch (error) {
-            console.error("Erro ao fazer login.", error);
+            console.error("Erro ao fazer login:", error);
             document.getElementById("loginMessage").innerHTML = "<span class='text-danger'>Erro de conex\xe3o.</span>";
         }
     });
 }
 
-},{"../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","jwt-decode":"4WbSe"}],"4WbSe":[function(require,module,exports,__globalThis) {
+},{"../../components/main":"5zsxX","jwt-decode":"4WbSe","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"4WbSe":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "InvalidTokenError", ()=>InvalidTokenError);
