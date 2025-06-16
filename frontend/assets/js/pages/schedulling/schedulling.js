@@ -5,6 +5,7 @@ import {
   criarModalConfirmacaoHTML,
   buscarDadosCompletosDosAlunos,
 } from "../../components/modais";
+import { formatarDataExibicao } from "../../service/formatData";
 
 // Retorna a role do usuário logado
 export function getUserRole() {
@@ -128,7 +129,7 @@ export async function renderAgendamentoPage() {
         return `
         <tr>
           <td>${aula.instructor}</td>
-          <td>${aula.day}</td>
+          <td>${formatarDataExibicao(aula.day)}</td>
           <td>${aula.hours}</td>
           <td>${aula.studio}</td>
           <td>${aula.status}</td>
