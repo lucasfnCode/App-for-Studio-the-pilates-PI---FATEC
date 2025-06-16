@@ -41,7 +41,3 @@ Com essa aplicação, buscamos otimizar a rotina dos profissionais, aprimorar a 
   Empacotador de aplicações web que compila, agrupa e otimiza os arquivos do front-end de forma rápida e eficiente, sem necessidade de configuração complexa.
 
 ---
-
-## 📁 Estrutura do Projeto (exemplo)
-
-
