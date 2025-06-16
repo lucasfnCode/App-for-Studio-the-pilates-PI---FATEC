@@ -10,6 +10,10 @@ import {
   criarModalUsuariosAdminHTML,   
   criarModalAulasAdminHTML,      
 } from "../../components/modais";
+import { criarModalCadastroAulaHTML } from "../session/components/componentsSession";
+import { renderizarTabelaAulas } from "../session/components/tableSession";
+import { init } from "../session/session";
+
 
 function getUserRole() {
   const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};

@@ -11,7 +11,7 @@ export const headerHtml = `
   <div class="nav nav-underline">
     <a class="nav-link m-1 text-secondary" aria-current="page" href="#home">Home</a>
     <a class="nav-link m-1 text-secondary" href="#agendamento">Agendamento</a>
-    <a class="nav-link m-1 text-secondary" href="#">Aulas</a>
+    <a class="nav-link m-1 text-secondary" href="#aula">Aulas</a>
   </div>
 
   <div class="nav">

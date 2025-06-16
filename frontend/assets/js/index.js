@@ -4,6 +4,7 @@ import { headerHtml } from './components/header';
 import { footerHtml } from './components/footer';
 import { renderAgendamentoPage } from './pages/schedulling/schedulling';
 import { loginScreen } from "./pages/loginScreen/loginScreen";
+import { init } from "./pages/session/session";
 
 
 function isUserLoggedIn() {
@@ -30,6 +31,9 @@ function renderContentBasedOnHash() {
       break;
     case "#login":
       loginScreen();
+      break;
+    case "#aula":
+      init();
       break;
   }
 }
