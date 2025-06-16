@@ -36,5 +36,4 @@ export function renderHeader() {
   document.body.insertAdjacentElement('afterbegin', headerElement);
 }
 
-// Para manter compatibilidade, exporte o HTML puro também (opcional)
 export const headerHtml = ""; // Não use mais diretamente, mas mantém para evitar erros de importação
