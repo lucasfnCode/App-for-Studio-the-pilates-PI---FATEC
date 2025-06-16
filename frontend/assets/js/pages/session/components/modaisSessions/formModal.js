@@ -34,8 +34,13 @@ export function criarModalCadastroAulaHTML() {
         ).hide();
         document.getElementById("modalCadastroAula").remove();
 
-        // Mostra modal de confirmação de criação
-        criarModalConfirmacaoCriaçãoHTML("Aula criada com sucesso!");
+        // Mostra modal de confirmação de criação corretamente
+        const existente = document.getElementById("modalConfirmacaoCriacao");
+        if (existente) existente.remove();
+        document.body.insertAdjacentHTML(
+          "beforeend",
+          criarModalConfirmacaoCriaçãoHTML("Aula criada com sucesso!")
+        );
         const modal = new bootstrap.Modal(document.getElementById("modalConfirmacaoCriacao"));
         modal.show();
 

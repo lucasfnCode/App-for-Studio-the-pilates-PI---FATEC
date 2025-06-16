@@ -25,17 +25,21 @@ async function fetchAulas() {
   // Se for instrutor e não houver nome, tenta buscar pelo id
   if (role === "ROLE_INSTRUCTOR" && !user.name) {
     try {
-      const response = await fetch(`http://localhost:8080/users/instructors/${user.id}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await fetch(
+        `http://localhost:8080/users/instructors/${user.id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       if (response.ok) {
         const userData = await response.json();
         user.name = userData.name; // ajuste se o campo for diferente
         // Atualiza o localStorage para as próximas requisições
-        const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+        const usuarioLogado =
+          JSON.parse(localStorage.getItem("usuarioLogado")) || {};
         usuarioLogado.name = userData.name;
         localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
       }
@@ -65,10 +69,12 @@ async function fetchAulas() {
 
     const data = JSON.parse(text);
 
-    // Filtra as aulas pelo nome do instrutor logado
     if (role === "ROLE_INSTRUCTOR" && user.name) {
-      return data.filter(aula => aula.instructor === user.name);
+      return data.filter(
+        (aula) => aula.instructor === user.name && aula.isActive
+      );
     }
+    return data.filter((aula) => aula.isActive);
 
     return data;
   } catch (error) {
