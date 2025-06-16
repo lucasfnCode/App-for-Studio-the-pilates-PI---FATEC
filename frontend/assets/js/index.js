@@ -8,6 +8,7 @@ import { createPageAdm } from "./pages/adm/admpage";
 import { StudioManegementPage } from "./pages/adm/StudioManegement/StudioManegement";
 import { clearBody } from "./functions/clearBody";
 import { instructorManegement } from "./pages/adm/instrutor/instructorManegement";
+import { init } from "./pages/session/session";
 
 function isUserLoggedIn() {
   const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
@@ -16,6 +17,7 @@ function isUserLoggedIn() {
 
 function renderContentBasedOnHash() {
   clearBody();
+  renderHeader();
   switch (location.hash) {
     case "":
     case "#home":
