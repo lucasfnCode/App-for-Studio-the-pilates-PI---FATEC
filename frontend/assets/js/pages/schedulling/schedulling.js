@@ -17,7 +17,7 @@ export function getUserLoggedData() {
 
 async function fetchAulas() {
   const user = getUserLoggedData();
-  const role = getUserRoles();
+  const roles = getUserRoles();
 
   // Se for instrutor e não houver nome, tenta buscar pelo id
   if (roles.includes("ROLE_INSTRUCTOR" && !user.name)) {
@@ -91,7 +91,7 @@ export async function renderAgendamentoPage() {
   main.style.flexDirection = "column";
   main.style.justifyContent = "between";
 
-  const role = getUserRoles();
+  const roles = getUserRoles();
   const user = getUserLoggedData();
 
   async function atualizarTabela() {
@@ -279,7 +279,7 @@ window.cancelarAula = async function (id) {
 window.abrirModalAlunos = async function (id) {
   try {
     window.aulaSelecionadaId = id;
-    const role = getUserRoles();
+    const roles = getUserRoles();
 
     // Fecha modal aberto anteriormente
     const modalEl = document.getElementById("modalListaAlunos");
@@ -344,7 +344,7 @@ async function atualizarModalAlunos(aulaId) {
     const alunos = await buscarDadosCompletosDosAlunos(alunosIds);
 
     const presences = aula.presences || [];
-    const role = getUserRoles();
+    const roles = getUserRoles();
 
     const tbody = document.querySelector("#modalListaAlunos tbody");
     if (!tbody) return;
