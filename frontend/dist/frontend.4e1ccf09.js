@@ -673,7 +673,18 @@ var _header = require("./components/header");
 var _footer = require("./components/footer");
 var _schedulling = require("./pages/schedulling/schedulling");
 var _loginScreen = require("./pages/loginScreen/loginScreen");
+var _admpage = require("./pages/adm/admpage");
+var _studioManegement = require("./pages/adm/StudioManegement/StudioManegement");
+var _clearBody = require("./functions/clearBody");
+var _instructorManegement = require("./pages/adm/instrutor/instructorManegement");
+var _session = require("./pages/session/session");
+function isUserLoggedIn() {
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+    return usuario && usuario.token;
+}
 function renderContentBasedOnHash() {
+    (0, _clearBody.clearBody)();
+    (0, _header.renderHeader)();
     switch(location.hash){
         case "":
         case "#home":
@@ -686,12 +697,24 @@ function renderContentBasedOnHash() {
         case "#login":
             (0, _loginScreen.loginScreen)();
             break;
+        case "#aula":
+            (0, _session.init)();
+            break;
+        case "#gerenciamento":
+            (0, _admpage.createPageAdm)();
+            break;
+        case "#Studio-manegment":
+            (0, _studioManegement.StudioManegementPage)();
+            break;
+        case "#instructor-manegment":
+            (0, _instructorManegement.instructorManegement)();
+            break;
     }
 }
 renderContentBasedOnHash();
 window.addEventListener("hashchange", renderContentBasedOnHash);
 
-},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp","./pages/loginScreen/loginScreen":"9vJvL"}],"joWv1":[function(require,module,exports,__globalThis) {
+},{"bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","./pages/home/home":"lYthH","./components/header":"3QKkX","./components/footer":"dr3uo","./pages/schedulling/schedulling":"gDpnp","./pages/loginScreen/loginScreen":"9vJvL","./pages/adm/admpage":"eIH1s","./pages/adm/StudioManegement/StudioManegement":"hZsFQ","./functions/clearBody":"k97dv","./pages/adm/instrutor/instructorManegement":"adWcJ","./pages/session/session":"cSjf2"}],"joWv1":[function(require,module,exports,__globalThis) {
 /*!
   * Bootstrap v5.3.6 (https://getbootstrap.com/)
   * Copyright 2011-2025 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
@@ -3735,53 +3758,63 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "homeScreen", ()=>homeScreen);
 var _main = require("../../components/main");
 var _modais = require("../../components/modais");
+var _componentsSession = require("../session/components/componentsSession");
+var _tableSession = require("../session/components/tableSession");
+var _session = require("../session/session");
 function getUserRole() {
     const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
-    return user.role || "aluno";
+    return user.role;
 }
-function createCard(title, imageUrl, modalTargetId) {
+function createCard(title, imageUrl, modalTargetId, useOnClick = false) {
+    const button = useOnClick ? `<button class="btn btn-dark w-100 rounded-pill mt-2" onclick="${modalTargetId}()">Acessar</button>` : `<button class="btn btn-dark w-100 rounded-pill mt-2" data-bs-toggle="modal" data-bs-target="#${modalTargetId}">Acessar</button>`;
     return `
     <div class="col p-3">
       <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
         <img src="${imageUrl}" class="card-img-top" alt="${title}">
         <div class="card-body text-center">
           <h5 class="card-title fw-bold">${title}</h5>
-          <button class="btn btn-dark w-100 rounded-pill mt-2" data-bs-toggle="modal" data-bs-target="#${modalTargetId}">Acessar</button>
+          ${button}
         </div>
       </div>
     </div>
   `;
 }
-function homeScreen() {
+async function homeScreen() {
     const role = getUserRole();
     let titulo = "Bem-vindo ao Est\xfadio de Pilates";
     let subtitulo = "Transforme seu corpo e mente com nossas aulas especializadas.";
     let cards = "";
     let modais = "";
-    if (role === "instrutor") {
+    if (role === "ROLE_INSTRUCTOR") {
         titulo = "\xc1rea do Instrutor";
         subtitulo = "Gerencie suas aulas e visualize seu perfil profissional.";
         cards += createCard("Minhas Aulas", "https://placehold.co/600x400?text=Minhas+Aulas", "modalAulasInstrutor");
         cards += createCard("Meu Perfil", "https://placehold.co/600x400?text=Perfil", "modalPerfilInstrutor");
-        modais += (0, _modais.criarModalAulasInstrutorHTML)();
-        modais += (0, _modais.criarModalPerfilInstrutorHTML)();
-    } else if (role === "recepcionista") {
+        modais += await (0, _modais.criarModalAulasInstrutorHTML)();
+        modais += await (0, _modais.criarModalPerfilInstrutorHTML)();
+    } else if (role === "ROLE_RECEPTIONIST") {
         titulo = "\xc1rea da Recep\xe7\xe3o";
         subtitulo = "Organize agendamentos e cadastros de clientes com facilidade.";
         cards += createCard("Agenda", "https://placehold.co/600x400?text=Agenda", "modalAgendaRecepcao");
         cards += createCard("Clientes", "https://placehold.co/600x400?text=Clientes", "modalCadastroClientes");
-        modais += (0, _modais.criarModalAgendaRecepcaoHTML)();
-        modais += (0, _modais.criarModalCadastroClientesHTML)();
+        modais += await (0, _modais.criarModalAgendaRecepcaoHTML)();
+        modais += await (0, _modais.criarModalCadastroClientesHTML)();
+    } else if (role === "ROLE_ADMIN") {
+        titulo = "\xc1rea do Administrador";
+        subtitulo = "Gerencie usu\xe1rios, aulas e todo o sistema.";
+        cards += createCard("Gerenciar Usu\xe1rios", "https://placehold.co/600x400?text=Usu\xe1rios", "modalUsuariosAdmin");
+        cards += createCard("Gerenciar Aulas", "https://placehold.co/600x400?text=Aulas", "modalAulasAdmin");
+        modais += await (0, _modais.criarModalUsuariosAdminHTML)();
+        modais += await (0, _modais.criarModalAulasAdminHTML)();
     } else {
-        // aluno padrão
-        cards += createCard("Instrutores", "https://placehold.co/600x400?text=Instrutores", "modalInstrutores");
+        // Aluno padrão
+        cards += createCard("Instrutores", "https://placehold.co/600x400?text=Instrutores", "abrirModalInstrutores", true);
         cards += createCard("Assinaturas", "https://placehold.co/600x400?text=Assinaturas", "modalAssinaturas");
-        modais += (0, _modais.criarModalInstrutoresHTML)();
-        modais += (0, _modais.criarModalAssinaturasHTML)();
+        modais += await (0, _modais.criarModalAssinaturasHTML)();
     }
     // O modal "Sobre" é comum a todos
     cards += createCard("Sobre", "https://placehold.co/600x400?text=Sobre", "modalSobre");
-    modais += (0, _modais.criarModalSobreHTML)();
+    modais += await (0, _modais.criarModalSobreHTML)();
     const homeHTML = `
     <section id="bemVindoSection">
       <div class="bem-vindo-container text-center">
@@ -3800,8 +3833,38 @@ function homeScreen() {
     const main = (0, _main.getOrCreateMainElement)();
     main.innerHTML = homeHTML;
 }
+window.abrirModalInstrutores = async function() {
+    await (0, _modais.criarModalInstrutoresHTML)();
+    setTimeout(()=>{
+        const modalEl = document.getElementById("modalInstrutores");
+        if (modalEl) {
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        } else console.error("Modal de instrutores n\xe3o foi encontrado no DOM.");
+    }, 100);
+};
+window.abrirModalUsuariosAdmin = async function() {
+    await (0, _modais.criarModalUsuariosAdminHTML)();
+    setTimeout(()=>{
+        const modalEl = document.getElementById("modalUsuariosAdmin");
+        if (modalEl) {
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        } else console.error("Modal de usu\xe1rios n\xe3o foi encontrado no DOM.");
+    }, 100);
+};
+window.abrirModalAulasAdmin = async function() {
+    await (0, _modais.criarModalAulasAdminHTML)();
+    setTimeout(()=>{
+        const modalEl = document.getElementById("modalAulasAdmin");
+        if (modalEl) {
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        } else console.error("Modal de aulas n\xe3o foi encontrado no DOM.");
+    }, 100);
+};
 
-},{"../../components/main":"5zsxX","../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"5zsxX":[function(require,module,exports,__globalThis) {
+},{"../../components/main":"5zsxX","../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../session/components/tableSession":"2xVui","../session/components/componentsSession":"dEN24","../session/session":"cSjf2"}],"5zsxX":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getOrCreateMainElement", ()=>getOrCreateMainElement);
@@ -3866,6 +3929,10 @@ parcelHelpers.export(exports, "criarModalPerfilInstrutorHTML", ()=>criarModalPer
 parcelHelpers.export(exports, "criarModalAgendaRecepcaoHTML", ()=>criarModalAgendaRecepcaoHTML);
 parcelHelpers.export(exports, "criarModalCadastroClientesHTML", ()=>criarModalCadastroClientesHTML);
 parcelHelpers.export(exports, "buscarDadosCompletosDosAlunos", ()=>buscarDadosCompletosDosAlunos);
+parcelHelpers.export(exports, "criarModalCadastroUsuarioHTML", ()=>criarModalCadastroUsuarioHTML);
+parcelHelpers.export(exports, "criarModalUsuariosAdminHTML", ()=>criarModalUsuariosAdminHTML);
+// Modal para gerenciar aulas
+parcelHelpers.export(exports, "criarModalAulasAdminHTML", ()=>criarModalAulasAdminHTML);
 function criarModalListaAlunosHTML(alunos = [], role = "aluno", presences = []) {
     const alunosRows = alunos.map((aluno)=>{
         const alunoId = aluno.id || aluno._id || "\u2014";
@@ -3873,7 +3940,7 @@ function criarModalListaAlunosHTML(alunos = [], role = "aluno", presences = []) 
         const cpf = aluno.cpf || "\u2014";
         const nascimento = aluno.birthDate || "\u2014";
         const isPresent = presences.includes(alunoId);
-        if (role === "instrutor") return `
+        if (role === "ROLE_INSTRUCTOR" || role === "instrutor" || role === "INSTRUTOR") return `
           <tr>
             <td>${nome}</td>
             <td>${cpf}</td>
@@ -3916,7 +3983,7 @@ function criarModalListaAlunosHTML(alunos = [], role = "aluno", presences = []) 
             </table>
           </div>
           <div class="modal-footer d-flex justify-content-end gap-2">
-            ${role !== "instrutor" ? `<button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>` : `<button type="button" class="btn btn-outline-primary" onclick="salvarPresencas()">Salvar Presen\xe7as</button>`}
+            ${role !== "ROLE_INSTRUCTOR" && role !== "instrutor" && role !== "INSTRUTOR" ? `<button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>` : `<button type="button" class="btn btn-outline-primary" onclick="salvarPresencas()">Salvar Presen\xe7as</button>`}
             <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
@@ -3997,8 +4064,9 @@ window.carregarAlunosDisponiveis = async function() {
 };
 window.salvarAlunosSelecionados = async function() {
     const checkboxes = document.querySelectorAll("#alunosDisponiveisTabela input[type='checkbox']:checked");
-    const alunosSelecionados = Array.from(checkboxes).map((cb)=>cb.dataset.id);
-    for (const studentId of alunosSelecionados)await window.registrarAluno(window.aulaSelecionadaId, studentId);
+    // Filtra apenas IDs válidos
+    const alunosSelecionados = Array.from(checkboxes).map((cb)=>cb.dataset.id).filter((id)=>!!id && id !== "null" && id.length > 10); // IDs do Mongo geralmente têm 24 caracteres
+    for (const studentId of alunosSelecionados)await window.registrarAluno(window.aulaSelecionadaId, String(studentId));
     const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastroAluno"));
     modal.hide();
 };
@@ -4022,36 +4090,42 @@ function criarModalConfirmacaoHTML() {
     </div>
   `;
 }
-function criarModalInstrutoresHTML() {
-    return `
-    <div class="modal fade" id="modalInstrutores" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content p-4 rounded-4">
-          <div class="modal-header border-0">
-            <h4 class="modal-title">Nossos Instrutores</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-          <div class="modal-body row g-4">
-            <div class="col-md-4 text-center">
-              <img src="https://placehold.co/600x400?text=Ana" class="img-fluid rounded-3 shadow-sm" alt="Ana Clara">
-              <h5 class="mt-3">Ana Clara</h5>
-              <p>Especialista em Pilates Solo e Alongamento</p>
+async function criarModalInstrutoresHTML() {
+    try {
+        const res = await fetch("/api/users/instructors", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        const instructors = await res.json();
+        const modalHTML = `
+      <div class="modal fade" id="modalInstrutores" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content p-4 rounded-4">
+            <div class="modal-header border-0">
+              <h4 class="modal-title">Nossos Instrutores</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            <div class="col-md-4 text-center">
-              <img src="https://placehold.co/600x400?text=Bruno" class="img-fluid rounded-3 shadow-sm" alt="Bruno Silva">
-              <h5 class="mt-3">Bruno Silva</h5>
-              <p>Reabilita\xe7\xe3o e Pilates para Idosos</p>
-            </div>
-            <div class="col-md-4 text-center">
-              <img src="https://placehold.co/600x400?text=Camila" class="img-fluid rounded-3 shadow-sm" alt="Camila Torres">
-              <h5 class="mt-3">Camila Torres</h5>
-              <p>Pilates com foco em respira\xe7\xe3o e relaxamento</p>
+            <div class="modal-body row g-4">
+              ${instructors.map((instructors)=>`
+                <div class="col-md-4 text-center">
+                  <img src='https://placehold.co/600x400?text=Instrutor' class="img-fluid rounded-3 shadow-sm" alt="${instructors.name}">
+                  <h5 class="mt-3">${instructors.name}</h5>
+                  <p>${instructors.formation || 'Especialista em Pilates'}</p>
+                </div>
+              `).join('')}
             </div>
           </div>
         </div>
       </div>
-    </div>
-  `;
+    `;
+        // Remove se já existir
+        const existente = document.getElementById("modalInstrutores");
+        if (existente) existente.remove();
+        document.body.insertAdjacentHTML("beforeend", modalHTML);
+    } catch (error) {
+        console.error("Erro ao buscar instrutores:", error);
+    }
 }
 function criarModalAssinaturasHTML() {
     return `
@@ -4248,7 +4322,12 @@ function criarModalCadastroClientesHTML() {
 }
 async function buscarDadosCompletosDosAlunos(listaDeIds) {
     try {
-        const response = await fetch("/api/students");
+        const response = await fetch("/api/users/students", {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
         if (!response.ok) throw new Error("Erro ao buscar alunos");
         const todosAlunos = await response.json();
         // Filtra apenas os que estão na lista da aula
@@ -4259,9 +4338,14 @@ async function buscarDadosCompletosDosAlunos(listaDeIds) {
     }
 }
 document.addEventListener("atualizarListaAlunos", async function() {
-    if (!aulaSelecionadaId) return;
+    if (!window.aulaSelecionadaId) return;
     try {
-        const response = await fetch(`/api/sessions/${aulaSelecionadaId}`);
+        const response = await fetch(`/api/sessions/${window.aulaSelecionadaId}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
         if (!response.ok) throw new Error("Falha ao buscar aula");
         const aula = await response.json();
         const alunos = aula.students || [];
@@ -4281,38 +4365,921 @@ document.addEventListener("atualizarListaAlunos", async function() {
         console.error("Erro ao atualizar lista de alunos:", error);
     }
 });
+function criarModalCadastroUsuarioHTML() {
+    return `
+    <div class="modal fade" id="modalCadastroUsuario" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4">
+          <div class="modal-header">
+            <h5 class="modal-title">Cadastro de Aluno</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <form id="formCadastroUsuario">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">Nome completo</label>
+                <input name="name" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">CPF</label>
+                <input name="cpf" class="form-control" required maxlength="14" placeholder="000.000.000-00">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Data de nascimento</label>
+                <input name="birthDate" type="date" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">E-mail</label>
+                <input name="email" type="email" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Contato</label>
+                <input name="contact" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Senha</label>
+                <input name="password" type="password" class="form-control" required minlength="6">
+              </div>
+              <div id="cadastroUsuarioMsg" class="text-center mt-2"></div>
+            </div>
+            <div class="modal-footer d-flex justify-content-end gap-2">
+              <button type="submit" class="btn btn-success">Cadastrar</button>
+              <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  `;
+}
+// Evento de submit do formulário de cadastro
+document.addEventListener("submit", async function(e) {
+    if (e.target && e.target.id === "formCadastroUsuario") {
+        e.preventDefault();
+        const form = e.target;
+        const msg = form.querySelector("#cadastroUsuarioMsg");
+        msg.innerHTML = "";
+        const formData = new FormData(form);
+        // Monta o objeto conforme o Student.java e o exemplo fornecido
+        const aluno = {
+            name: formData.get("name"),
+            cpf: formData.get("cpf"),
+            birthDate: formData.get("birthDate"),
+            email: formData.get("email"),
+            contact: formData.get("contact"),
+            password: formData.get("password"),
+            role: [
+                "ROLE_STUDENT"
+            ],
+            photo: "",
+            assessment: {
+                description: "Avalia\xe7\xe3o inicial pendente",
+                professional: "",
+                posturalPhoto: "",
+                relevantData: ""
+            },
+            progress: "",
+            plan: null,
+            clientArea: {
+                paymentDueDate: "2025-06-01",
+                makeUps: 0,
+                paymentProof: "",
+                fiscalReceipt: "",
+                contract: "",
+                upComingClasses: [],
+                imageAuthorization: false
+            },
+            isActive: true
+        };
+        try {
+            const response = await fetch("http://localhost:8080/users/students", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(aluno)
+            });
+            if (response.ok) {
+                msg.innerHTML = `<span class="text-success">Cadastro realizado com sucesso! Fa\xe7a login para acessar.</span>`;
+                setTimeout(()=>{
+                    const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastroUsuario"));
+                    if (modal) modal.hide();
+                }, 1500);
+            } else {
+                const data = await response.json();
+                msg.innerHTML = `<span class="text-danger">${data.message || "Erro ao cadastrar."}</span>`;
+            }
+        } catch (err) {
+            msg.innerHTML = `<span class="text-danger">Erro de conex\xe3o.</span>`;
+        }
+    }
+});
+async function criarModalUsuariosAdminHTML() {
+    try {
+        const res = await fetch("/api/users", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        const users = await res.json();
+        const modalHTML = `
+      <div class="modal fade" id="modalUsuariosAdmin" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content p-4 rounded-4">
+            <div class="modal-header border-0">
+              <h4 class="modal-title">Gerenciar Usu\xe1rios</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table table-striped">
+                <thead>
+                  <tr><th>Nome</th><th>Email</th><th>Perfil</th><th>A\xe7\xf5es</th></tr>
+                </thead>
+                <tbody>
+                  ${users.map((user)=>`
+                    <tr>
+                      <td>${user.name}</td>
+                      <td>${user.email}</td>
+                      <td>${user.role}</td>
+                      <td>
+                        <button class="btn btn-sm btn-warning" onclick="editarUsuario('${user.id}')">Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="removerUsuario('${user.id}')">Remover</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+        const existente = document.getElementById("modalUsuariosAdmin");
+        if (existente) existente.remove();
+        document.body.insertAdjacentHTML("beforeend", modalHTML);
+    } catch (error) {
+        console.error("Erro ao buscar usu\xe1rios:", error);
+    }
+}
+async function criarModalAulasAdminHTML() {
+    try {
+        const res = await fetch("/api/sessions", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        const aulas = await res.json();
+        const modalHTML = `
+      <div class="modal fade" id="modalAulasAdmin" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content p-4 rounded-4">
+            <div class="modal-header border-0">
+              <h4 class="modal-title">Gerenciar Aulas</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table table-striped">
+                <thead>
+                  <tr><th>Nome da Aula</th><th>Instrutor</th><th>Hor\xe1rio</th><th>A\xe7\xf5es</th></tr>
+                </thead>
+                <tbody>
+                  ${aulas.map((aula)=>`
+                    <tr>
+                      <td>${aula.name}</td>
+                      <td>${aula.instructorName || "\u2014"}</td>
+                      <td>${aula.schedule || "\u2014"}</td>
+                      <td>
+                        <button class="btn btn-sm btn-warning" onclick="editarAula('${aula.id}')">Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="removerAula('${aula.id}')">Remover</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+        const existente = document.getElementById("modalAulasAdmin");
+        if (existente) existente.remove();
+        document.body.insertAdjacentHTML("beforeend", modalHTML);
+    } catch (error) {
+        console.error("Erro ao buscar aulas:", error);
+    }
+}
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"3QKkX":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"2xVui":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "renderizarTabelaAulas", ()=>renderizarTabelaAulas);
+var _bootstrapBundleMinJs = require("bootstrap/dist/js/bootstrap.bundle.min.js");
+var _bootstrapBundleMinJsDefault = parcelHelpers.interopDefault(_bootstrapBundleMinJs);
+var _confirmModalJs = require("./modaisSessions/confirmModal.js");
+var _sessionServiceJs = require("../service/sessionService.js");
+var _editModalJs = require("./modaisSessions/editModal.js");
+var _formatDataJs = require("../../../service/formatData.js");
+async function renderizarTabelaAulas() {
+    const aulas = (await (0, _sessionServiceJs.fetchAulasInstrutor)()).filter((aula)=>aula.isActive);
+    const tabela = document.getElementById("tabelaAulas").querySelector("tbody");
+    if (!tabela) return;
+    tabela.innerHTML = aulas.map((aula)=>`
+    <tr>
+      <td>${aula.studio || "-"}</td>
+      <td>${(0, _formatDataJs.formatarDataExibicao)(aula.day) || "-"}</td>
+      <td>${aula.hours || "-"}</td>
+      <td>
+        <button class="btn btn-warning btn-sm" onclick="editarAula('${aula.id}')">
+          <i class="bi bi-pencil"></i>
+        </button>
+        <button class="btn btn-danger btn-sm" onclick="confirmarExclusao('${aula.id}')">
+          <i class="bi bi-trash"></i>
+        </button>
+      </td>
+    </tr>
+  `).join("");
+}
+// Função global para excluir aula
+window.confirmarExclusao = function(id) {
+    const modalId = (0, _confirmModalJs.criarModalConfirmacaoExclusaoHTML)("Voc\xea tem certeza que deseja excluir esta aula?");
+    const modalEl = document.getElementById(modalId);
+    const modal = new (0, _bootstrapBundleMinJsDefault.default).Modal(modalEl);
+    modal.show();
+    modalEl.querySelector("#btnConfirmarExclusao")?.addEventListener("click", async ()=>{
+        try {
+            await (0, _sessionServiceJs.excluirAula)(id);
+            modal.hide();
+            modalEl.remove();
+            window.renderizarTabelaAulas && window.renderizarTabelaAulas();
+        } catch (err) {
+            alert("Erro ao excluir aula!");
+        }
+    });
+};
+window.editarAula = async function(id) {
+    // Busca a aula pelo id
+    const aulas = await (0, _sessionServiceJs.fetchAulasInstrutor)();
+    const aula = aulas.find((a)=>a.id == id);
+    if (!aula) {
+        alert("Aula n\xe3o encontrada!");
+        return;
+    }
+    // Busca studios e alunos/presenças
+    const studios = await (0, _sessionServiceJs.fetchStudios)();
+    const { presences } = await (0, _sessionServiceJs.fetchAlunosDaAula)(id);
+    // Remove modal antigo se existir
+    const modalExistente = document.getElementById("modalEditarAula");
+    if (modalExistente) modalExistente.remove();
+    // Busca os dados dos alunos presentes (nome/id) via fetchAlunoById
+    const alunosPresentes = await Promise.all(presences.map(async (alunoId)=>{
+        try {
+            const aluno = await (0, _sessionServiceJs.fetchAlunoById)(alunoId);
+            return {
+                id: alunoId,
+                nome: aluno.nome || aluno.name || alunoId
+            };
+        } catch  {
+            return {
+                id: alunoId,
+                nome: alunoId
+            };
+        }
+    }));
+    // Insere o modal no DOM
+    document.body.insertAdjacentHTML("beforeend", (0, _editModalJs.criarModalEditarAulaHTML)(aula, studios, alunosPresentes, presences));
+    // Inicializa o modal Bootstrap
+    const modalEl = document.getElementById("modalEditarAula");
+    const modal = new (0, _bootstrapBundleMinJsDefault.default).Modal(modalEl);
+    modal.show();
+    // Evento para remover presença (ao clicar no X da tag)
+    modalEl.querySelectorAll(".remover-presenca-btn").forEach((btn)=>{
+        btn.addEventListener("click", async function() {
+            const alunoId = this.dataset.alunoId;
+            try {
+                await (0, _sessionServiceJs.removerPresencaAula)(id, alunoId);
+                modal.hide();
+                modalEl.addEventListener("hidden.bs.modal", ()=>{
+                    window.editarAula(id);
+                }, {
+                    once: true
+                });
+            } catch (err) {
+                alert("Erro ao remover presen\xe7a!");
+            }
+        });
+    });
+    // Submit do form de edição
+    modalEl.querySelector("#formEditarAula").onsubmit = async function(e) {
+        e.preventDefault();
+        const studio = modalEl.querySelector("#studioSelectEdit").value;
+        const day = modalEl.querySelector("#campoData").value;
+        const hours = modalEl.querySelector("#campoHorario").value;
+        const type = modalEl.querySelector("#tipoAulaEdit").value;
+        const status = modalEl.querySelector("#statusAulaEdit").value;
+        const isActive = modalEl.querySelector("#isActiveAulaEdit").value === "true";
+        // Atualiza presences pegando os badges restantes (apenas os IDs)
+        const presencesEdit = Array.from(modalEl.querySelectorAll(".remover-presenca-btn")).map((btn)=>btn.dataset.alunoId);
+        // Garante que students seja igual ao original (ou busque se necessário)
+        const students = (aula.students || []).map((s)=>typeof s === "string" ? s : s.id);
+        const body = {
+            students,
+            studio,
+            instructor: aula.instructor,
+            day,
+            hours,
+            status,
+            presences: presencesEdit,
+            type,
+            isActive
+        };
+        await (0, _sessionServiceJs.atualizarAula)(id, body);
+        modal.hide();
+        modalEl.remove();
+        window.renderizarTabelaAulas && window.renderizarTabelaAulas();
+    };
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1","../service/sessionService.js":"g9u3Z","./modaisSessions/confirmModal.js":"5ZRhV","./modaisSessions/editModal.js":"9MP5a","../../../service/formatData.js":"iMnpH"}],"g9u3Z":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "fetchAulasInstrutor", ()=>fetchAulasInstrutor);
+parcelHelpers.export(exports, "fetchAlunosDaAula", ()=>fetchAlunosDaAula);
+parcelHelpers.export(exports, "fetchStudios", ()=>fetchStudios);
+parcelHelpers.export(exports, "criarAula", ()=>criarAula);
+parcelHelpers.export(exports, "excluirAula", ()=>excluirAula);
+parcelHelpers.export(exports, "atualizarAula", ()=>atualizarAula);
+parcelHelpers.export(exports, "removerPresencaAula", ()=>removerPresencaAula);
+parcelHelpers.export(exports, "fetchAlunoById", ()=>fetchAlunoById);
+async function fetchAulasInstrutor() {
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+    if (!usuario.id) return [];
+    try {
+        const response = await fetch(`http://localhost:8080/sessions/instructor/${encodeURIComponent(usuario.name)}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${usuario.token}`
+            }
+        });
+        if (!response.ok) return [];
+        return await response.json();
+    } catch (e) {
+        console.error("Erro ao buscar aulas do instrutor:", e);
+        return [];
+    }
+}
+async function fetchAlunosDaAula(aulaId) {
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+    try {
+        const response = await fetch(`http://localhost:8080/sessions/${aulaId}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${usuario.token}`
+            }
+        });
+        if (!response.ok) throw new Error("Erro ao buscar aula");
+        const aula = await response.json();
+        return {
+            alunos: aula.students || [],
+            presences: aula.presences || []
+        };
+    } catch (err) {
+        throw err;
+    }
+}
+async function fetchStudios() {
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+    try {
+        const response = await fetch("http://localhost:8080/studios", {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${usuario.token}`
+            }
+        });
+        if (!response.ok) return [];
+        return await response.json();
+    } catch (e) {
+        console.error("Erro ao buscar studios:", e);
+        return [];
+    }
+}
+async function criarAula(body) {
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+    try {
+        const response = await fetch("http://localhost:8080/sessions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + usuario.token
+            },
+            body: JSON.stringify(body)
+        });
+        console.log("Status criarAula:", response.status);
+        if (!response.ok) throw new Error("Erro ao criar aula");
+        return;
+    } catch (err) {
+        throw err;
+    }
+}
+async function excluirAula(id) {
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+    try {
+        const response = await fetch(`http://localhost:8080/sessions/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + usuario.token
+            }
+        });
+        if (!response.ok) throw new Error("Erro ao excluir aula");
+        return true;
+    } catch (err) {
+        throw err;
+    }
+}
+async function atualizarAula(id, body) {
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+    try {
+        const response = await fetch(`http://localhost:8080/sessions/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${usuario.token}`
+            },
+            body: JSON.stringify(body)
+        });
+        if (!response.ok) throw new Error("Erro ao atualizar aula");
+        return await response.json();
+    } catch (err) {
+        throw err;
+    }
+}
+async function removerPresencaAula(aulaId, alunoId) {
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+    try {
+        const response = await fetch(`http://localhost:8080/sessions/presence/${aulaId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${usuario.token}`
+            },
+            body: JSON.stringify([
+                alunoId
+            ])
+        });
+        if (!response.ok) throw new Error("Erro ao remover presen\xe7a");
+        return true;
+    } catch (err) {
+        throw err;
+    }
+}
+async function fetchAlunoById(alunoId) {
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+    try {
+        const response = await fetch(`http://localhost:8080/users/students/${alunoId}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${usuario.token}`
+            }
+        });
+        if (!response.ok) throw new Error("Erro ao buscar aluno");
+        return await response.json();
+    } catch (err) {
+        throw err;
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"5ZRhV":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "criarModalConfirmacaoExclusaoHTML", ()=>criarModalConfirmacaoExclusaoHTML);
+parcelHelpers.export(exports, "criarModalConfirmacaoCria\xe7\xe3oHTML", ()=>criarModalConfirmacaoCria\u00e7\u00e3oHTML);
+function criarModalConfirmacaoExclusaoHTML(mensagem = "Voc\xea tem certeza que deseja excluir esta aula?") {
+    // Remove modal antigo se existir
+    const existente = document.getElementById("modalConfirmacaoExclusao");
+    if (existente) existente.remove();
+    const modalHTML = `
+    <div id="modalConfirmacaoExclusao" class="modal fade" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirma\xe7\xe3o</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p>${mensagem}</p>
+          </div>
+          <div class="modal-footer d-flex justify-content-end">
+            <button type="button" class="btn btn-danger" id="btnConfirmarExclusao">Excluir</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+    return "modalConfirmacaoExclusao";
+}
+function criarModalConfirmacaoCria\u00e7\u00e3oHTML(mensagem = "A\xe7\xe3o conclu\xedda com sucesso.") {
+    // Remove modal antigo se existir
+    const existente = document.getElementById("modalConfirmacaoCriacao");
+    if (existente) existente.remove();
+    const modalHTML = `
+    <div id="modalConfirmacaoCriacao" class="modal fade" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirma\xe7\xe3o</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p>${mensagem}</p>
+          </div>
+          <div class="modal-footer d-flex justify-content-end">
+            <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+    return "modalConfirmacaoCriacao";
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"9MP5a":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "criarModalEditarAulaHTML", ()=>criarModalEditarAulaHTML);
+function criarModalEditarAulaHTML(aula, studios, alunos, presences) {
+    // Filtra alunos presentes
+    const alunosPresentes = alunos.filter((aluno)=>presences.includes(aluno.id || aluno));
+    return `
+    <div class="modal fade" id="modalEditarAula" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Editar Aula</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="formEditarAula">
+              <div class="mb-3">
+                <label for="studioSelectEdit" class="form-label">Studio</label>
+                <select class="form-control" id="studioSelectEdit" required>
+                  ${studios.map((studio)=>`<option value="${studio.name}" ${studio.name === aula.studio ? "selected" : ""}>${studio.name}</option>`).join("")}
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="campoData" class="form-label">Data</label>
+                <input type="date" class="form-control" id="campoData" value="${aula.day}" required>
+              </div>
+              <div class="mb-3">
+                <label for="campoHorario" class="form-label">Hor\xe1rio</label>
+                <input type="time" class="form-control" id="campoHorario" value="${aula.hours}" required>
+              </div>
+              <div class="mb-3">
+                <label for="tipoAulaEdit" class="form-label">Tipo</label>
+                <input type="text" class="form-control" id="tipoAulaEdit" value="${aula.type}" required>
+              </div>
+              <div class="mb-3">
+                <label for="statusAulaEdit" class="form-label">Status</label>
+                <select class="form-control" id="statusAulaEdit" required>
+                  <option value="aberta" ${aula.status === "aberta" ? "selected" : ""}>Aberta</option>
+                  <option value="fechada" ${aula.status === "fechada" ? "selected" : ""}>Fechada</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="isActiveAulaEdit" class="form-label">Ativa?</label>
+                <select class="form-control" id="isActiveAulaEdit" required>
+                  <option value="true" ${aula.isActive ? "selected" : ""}>Sim</option>
+                  <option value="false" ${!aula.isActive ? "selected" : ""}>N\xe3o</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Presen\xe7as</label>
+                <div id="listaPresencasEdit" class="d-flex flex-wrap gap-2">
+                  ${alunosPresentes.map((aluno)=>`
+                        <span class="badge bg-primary d-flex align-items-center">
+                          ${aluno.nome || aluno.name || aluno.id}
+                          <button type="button" class="btn btn-sm btn-close ms-2 remover-presenca-btn" data-aluno-id="${aluno.id}" aria-label="Remover"></button>
+                        </span>
+                      `).join("")}
+                  ${alunosPresentes.length === 0 ? '<span class="text-muted">Nenhum aluno presente.</span>' : ""}
+                </div>
+              </div>
+              <button type="submit" class="btn btn-success">Salvar Altera\xe7\xf5es</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"iMnpH":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "formatarDataExibicao", ()=>formatarDataExibicao);
+const formatarDataExibicao = (data)=>{
+    if (!data) return "";
+    const [ano, mes, dia] = data.split("-");
+    return `${dia}/${mes}/${ano}`;
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"dEN24":[function(require,module,exports,__globalThis) {
+// frontend/assets/js/components/modais.js
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "criarModalCadastroAulaHTML", ()=>criarModalCadastroAulaHTML);
+parcelHelpers.export(exports, "criarModalEditarAulaHTML", ()=>criarModalEditarAulaHTML);
+function criarModalCadastroAulaHTML() {
+    return `
+    <div class="modal fade" id="modalCadastroAula" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title">Adicionar Aula</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="formCadastroAula">
+              <div class="mb-3">
+                <label for="campoNome" class="form-label">Nome da Aula</label>
+                <input type="text" class="form-control" id="campoNome" required>
+              </div>
+              <div class="mb-3">
+                <label for="campoData" class="form-label">Data</label>
+                <input type="date" class="form-control" id="campoData" required>
+              </div>
+              <div class="mb-3">
+                <label for="campoHorario" class="form-label">Hor\xe1rio</label>
+                <input type="time" class="form-control" id="campoHorario" required>
+              </div>
+              <button type="submit" class="btn btn-success">Criar Aula</button>
+              <button type="cancel" class="btn btn-danger">Cancelar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function criarModalEditarAulaHTML(aula, studios, alunosPresentes, presences) {
+    return `
+    <div class="modal fade" id="modalEditarAula" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Editar Aula</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="formEditarAula">
+              <div class="mb-3">
+                <label for="studioSelectEdit" class="form-label">Studio</label>
+                <select class="form-control" id="studioSelectEdit" required>
+                  ${studios.map((studio)=>`<option value="${studio.name}" ${studio.name === aula.studio ? "selected" : ""}>${studio.name}</option>`).join("")}
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="campoData" class="form-label">Data</label>
+                <input type="date" class="form-control" id="campoData" value="${aula.day}" required>
+              </div>
+              <div class="mb-3">
+                <label for="campoHorario" class="form-label">Hor\xe1rio</label>
+                <input type="time" class="form-control" id="campoHorario" value="${aula.hours}" required>
+              </div>
+              <div class="mb-3">
+                <label for="tipoAulaEdit" class="form-label">Tipo</label>
+                <input type="text" class="form-control" id="tipoAulaEdit" value="${aula.type}" required>
+              </div>
+              <div class="mb-3">
+      <label class="form-label">Presen\xe7as</label>
+      <div id="listaPresencasEdit" class="d-flex flex-wrap gap-2">
+        ${alunosPresentes.map((aluno)=>`
+              <span class="badge bg-primary d-flex align-items-center">
+                ${aluno.nome}
+                <button type="button" class="btn btn-sm btn-close ms-2 remover-presenca-btn" data-aluno-id="${aluno.id}" aria-label="Remover"></button>
+              </span>
+            `).join("")}
+        ${alunosPresentes.length === 0 ? '<span class="text-muted">Nenhum aluno presente.</span>' : ""}
+      </div>
+    </div>
+              <button type="submit" class="btn btn-success">Salvar Altera\xe7\xf5es</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"cSjf2":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "init", ()=>init);
+var _tableSession = require("./components/tableSession");
+var _formModal = require("./components/modaisSessions/formModal");
+var _main = require("../../components/main");
+async function init() {
+    let usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+    if (!usuario || usuario.role !== "ROLE_INSTRUCTOR") {
+        document.body.innerHTML = "<h2 class='text-center mt-5'>Acesso restrito a instrutores.</h2>";
+        return;
+    }
+    // Garante que o nome do instrutor está no localStorage
+    if (!usuario.name) try {
+        const response = await fetch(`http://localhost:8080/users/instructors/${usuario.id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${usuario.token}`
+            }
+        });
+        if (response.ok) {
+            const userData = await response.json();
+            usuario.name = userData.name;
+            localStorage.setItem("usuarioLogado", JSON.stringify(usuario));
+        } else console.warn("N\xe3o foi poss\xedvel buscar o nome do instrutor.");
+    } catch (e) {
+        console.warn("Erro ao buscar nome do instrutor:", e);
+    }
+    const main = (0, _main.getOrCreateMainElement)();
+    main.innerHTML = `
+    <section class="container mt-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Minhas Aulas</h2>
+        <button id="btnAdicionarAula" class="btn btn-success">Adicionar Aula</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table" id="tabelaAulas">
+          <thead>
+            <tr>
+              <th>Studio</th>
+              <th>Data</th>
+              <th>Hor\xe1rio</th>
+              <th>A\xe7\xf5es</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- As aulas ser\xe3o renderizadas aqui -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
+    // Garante que o DOM foi atualizado antes de renderizar a tabela
+    setTimeout(()=>{
+        (0, _tableSession.renderizarTabelaAulas)();
+        window.renderizarTabelaAulas = (0, _tableSession.renderizarTabelaAulas);
+    }, 0);
+    document.getElementById('btnAdicionarAula').addEventListener('click', ()=>{
+        const modalExistente = document.getElementById('modalCadastroAula');
+        if (modalExistente) modalExistente.remove();
+        document.body.insertAdjacentHTML('beforeend', (0, _formModal.criarModalCadastroAulaHTML)());
+        (0, _formModal.configurarModalCadastroAula)();
+        const modal = new bootstrap.Modal(document.getElementById('modalCadastroAula'));
+        modal.show();
+    });
+}
+
+},{"./components/tableSession":"2xVui","./components/modaisSessions/formModal":"k2MAV","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../components/main":"5zsxX"}],"k2MAV":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "criarModalCadastroAulaHTML", ()=>criarModalCadastroAulaHTML);
+parcelHelpers.export(exports, "configurarModalCadastroAula", ()=>configurarModalCadastroAula);
+var _sessionServiceJs = require("../../service/sessionService.js");
+var _confirmModalJs = require("./confirmModal.js");
+var _bootstrapBundleMinJs = require("bootstrap/dist/js/bootstrap.bundle.min.js");
+var _bootstrapBundleMinJsDefault = parcelHelpers.interopDefault(_bootstrapBundleMinJs);
+function criarModalCadastroAulaHTML() {
+    // Retorna o HTML do modal
+    return `
+    <div class="modal fade" id="modalCadastroAula" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <form class="modal-content" id="formCadastroAula">
+          <div class="modal-header">
+            <h5 class="modal-title">Adicionar Aula</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="studioSelect" class="form-label">Studio</label>
+              <select class="form-control" id="studioSelect" required></select>
+            </div>
+            <div class="mb-3">
+              <label for="dataAula" class="form-label">Data</label>
+              <input type="date" class="form-control" id="dataAula" required>
+            </div>
+            <div class="mb-3">
+              <label for="horarioInput" class="form-label">Hor\xe1rio</label>
+              <input type="time" class="form-control" id="horarioInput" required>
+            </div>
+            <div class="mb-3">
+              <label for="tipoAula" class="form-label">Tipo</label>
+              <input type="text" class="form-control" id="tipoAula" value="aula_flexivel" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Salvar</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+}
+function configurarModalCadastroAula() {
+    setTimeout(async ()=>{
+        // Preenche studios
+        const studios = await (0, _sessionServiceJs.fetchStudios)();
+        const selectStudio = document.getElementById("studioSelect");
+        selectStudio.innerHTML = studios.map((studio)=>`<option value="${studio.name}">${studio.name}</option>`).join("");
+        document.getElementById("formCadastroAula").onsubmit = async function(e) {
+            e.preventDefault();
+            const usuario = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+            const body = {
+                students: [],
+                studio: document.getElementById("studioSelect").value,
+                instructor: usuario.name,
+                day: document.getElementById("dataAula").value,
+                hours: document.getElementById("horarioInput").value,
+                status: "aberta",
+                presences: [],
+                type: document.getElementById("tipoAula").value,
+                isActive: true
+            };
+            try {
+                await (0, _sessionServiceJs.criarAula)(body);
+                // Fecha e remove imediatamente o modal de cadastro e o backdrop
+                const modalEl = document.getElementById("modalCadastroAula");
+                let modalCadastro = (0, _bootstrapBundleMinJsDefault.default).Modal.getInstance(modalEl);
+                if (!modalCadastro) modalCadastro = new (0, _bootstrapBundleMinJsDefault.default).Modal(modalEl);
+                modalCadastro.hide();
+                modalEl.classList.remove('show');
+                modalEl.style.display = 'none';
+                document.querySelectorAll('.modal-backdrop').forEach((el)=>el.remove());
+                modalEl.remove();
+                // Agora sim, mostra o modal de confirmação
+                const modalId = (0, _confirmModalJs.criarModalConfirmacaoCria\u00e7\u00e3oHTML)("Aula criada com sucesso!");
+                const modalConfirmEl = document.getElementById(modalId);
+                const modalConfirm = new (0, _bootstrapBundleMinJsDefault.default).Modal(modalConfirmEl);
+                modalConfirm.show();
+                // Ao fechar o modal de confirmação, remove ele e atualiza a tabela
+                modalConfirmEl.addEventListener('hidden.bs.modal', ()=>{
+                    modalConfirmEl.remove();
+                    window.renderizarTabelaAulas && window.renderizarTabelaAulas();
+                }, {
+                    once: true
+                });
+            } catch (err) {
+                alert("Erro ao criar aula!");
+            }
+        };
+    }, 0);
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../service/sessionService.js":"g9u3Z","./confirmModal.js":"5ZRhV","bootstrap/dist/js/bootstrap.bundle.min.js":"joWv1"}],"3QKkX":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "renderHeader", ()=>renderHeader);
 parcelHelpers.export(exports, "headerHtml", ()=>headerHtml);
-const headerHtml = `
-
-<section class="d-flex justify-content-center" id="head">
-
-<h1>Estudio de Pilates</h1>
-
-</section>
-
-<nav class="d-flex justify-content-between align-items-center px-4 py-2 border-bottom"  id="nav">
-
-  <div class="nav nav-underline">
-    <a class="nav-link m-1 text-secondary" aria-current="page" href="#home">Home</a>
-    <a class="nav-link m-1 text-secondary" href="#agendamento">Agendamento</a>
-    <a class="nav-link m-1 text-secondary" href="#">Aulas</a>
-  </div>
-
-  <div class="nav">
-    <a class="nav-link m-1 text-secondary" href="#login">
-      <i class="bi bi-people-fill"></i>
-    </a>
-  </div>
-
-</nav>
-`;
-const headerElement = document.createElement('header');
-headerElement.innerHTML = headerHtml;
-document.body.insertAdjacentElement('afterbegin', headerElement);
+function getUserRole() {
+    try {
+        const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+        return user?.role;
+    } catch  {
+        return null;
+    }
+}
+function renderHeader() {
+    const isInstructor = getUserRole() === "ROLE_INSTRUCTOR";
+    const isAdmin = getUserRole() === "ROLE_ADMIN";
+    const headerHtml = `
+    <section class="d-flex justify-content-center" id="head">
+      <h1>Estudio de Pilates</h1>
+    </section>
+    <nav class="d-flex justify-content-between align-items-center px-4 py-2 border-bottom"  id="nav">
+      <div class="nav nav-underline">
+        <a class="nav-link m-1 text-secondary" aria-current="page" href="#home">Home</a>
+        <a class="nav-link m-1 text-secondary" href="#agendamento">Agendamento</a>
+        ${isInstructor ? `<a class="nav-link m-1 text-secondary" href="#aula">Gerenciar Aulas</a>` : ""}
+        ${isAdmin ? `<a class="nav-link m-1 text-secondary" href="#gerenciamento">gerenciamento</a>` : ""}
+      </div>
+      <div class="nav">
+        <a class="nav-link m-1 text-secondary" href="#login">
+          <i class="bi bi-people-fill"></i>
+        </a>
+      </div>
+    </nav>
+  `;
+    // Remove header antigo, se existir
+    const oldHeader = document.querySelector('header');
+    if (oldHeader) oldHeader.remove();
+    // Cria e insere o novo header
+    const headerElement = document.createElement('header');
+    headerElement.innerHTML = headerHtml;
+    document.body.insertAdjacentElement('afterbegin', headerElement);
+}
+const headerHtml = ""; // Não use mais diretamente, mas mantém para evitar erros de importação
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"dr3uo":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -4320,33 +5287,9 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "footerHtml", ()=>footerHtml);
 parcelHelpers.export(exports, "createFooterElement", ()=>createFooterElement);
 const footerHtml = `
-<section class="p-4 border-top d-flex">
-
-    <div class="col mb-3 text-center">
-      <h5 class="pt-2">A</h5>
-      <ul class="nav flex-column">
-      </ul>
-    </div>
-
-    <div class="col mb-3 text-center">
-      <h5 class="pt-2">B</h5>
-      <ul class="nav flex-column">
-      </ul>
-    </div>
-
-    <div class="col mb-3 text-center">
-      <h5 class="pt-2">C</h5>
-      <ul class="nav flex-column">
-      </ul>
-    </div>
-
-    <div class="col mb-3 text-center">
-      <h5 class="pt-2">D</h5>
-      <ul class="nav flex-column">
-      </ul>
-    </div>
-
-  </section>
+<section class="d-flex justify-content-center p-4" id="footer-content">
+  <p>&copy; 2025 Estudio de Pilates. Todos os direitos reservados.</p>
+</section>
 `;
 const createFooterElement = ()=>{
     let footerElement = document.getElementById("footer");
@@ -4354,7 +5297,7 @@ const createFooterElement = ()=>{
         footerElement = document.createElement("footer");
         footerElement.id = "footer";
         footerElement.innerHTML = footerHtml;
-        document.body.insertAdjacentElement("beforeend", footerElement);
+        document.body.appendChild(footerElement);
     }
 };
 createFooterElement();
@@ -4362,19 +5305,47 @@ createFooterElement();
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"gDpnp":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+// Retorna a role do usuário logado
+parcelHelpers.export(exports, "getUserRole", ()=>getUserRole);
+// Retorna os dados do usuário logado
+parcelHelpers.export(exports, "getUserLoggedData", ()=>getUserLoggedData);
 parcelHelpers.export(exports, "renderAgendamentoPage", ()=>renderAgendamentoPage);
 var _main = require("../../components/main");
 var _modais = require("../../components/modais");
-// Retorna a role do usuário logado (padrão: aluno)
+var _formatData = require("../../service/formatData");
 function getUserRole() {
     const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
-    return user?.role || "aluno";
+    return user?.role;
 }
-// Retorna os dados do usuário logado
 function getUserLoggedData() {
-    return JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+    const user = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+    return {
+        ...user,
+        id: user.id || user.sub
+    };
 }
 async function fetchAulas() {
+    const user = getUserLoggedData();
+    const role = getUserRole();
+    // Se for instrutor e não houver nome, tenta buscar pelo id
+    if (role === "ROLE_INSTRUCTOR" && !user.name) try {
+        const response = await fetch(`http://localhost:8080/users/instructors/${user.id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        if (response.ok) {
+            const userData = await response.json();
+            user.name = userData.name; // ajuste se o campo for diferente
+            // Atualiza o localStorage para as próximas requisições
+            const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+            usuarioLogado.name = userData.name;
+            localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
+        }
+    } catch (e) {
+        console.warn("N\xe3o foi poss\xedvel buscar o nome do instrutor:", e);
+    }
     try {
         const response = await fetch("http://localhost:8080/sessions", {
             headers: {
@@ -4382,8 +5353,18 @@ async function fetchAulas() {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
             }
         });
-        const data = await response.json();
-        return data;
+        if (!response.ok) {
+            console.error("Erro ao buscar aulas:", response.statusText);
+            return [];
+        }
+        const text = await response.text();
+        if (!text) {
+            console.error("Resposta vazia do servidor.");
+            return [];
+        }
+        const data = JSON.parse(text);
+        if (role === "ROLE_INSTRUCTOR" && user.name) return data.filter((aula)=>aula.instructor === user.name && aula.isActive);
+        return data.filter((aula)=>aula.isActive);
     } catch (error) {
         console.error("Erro ao buscar aulas:", error);
         return [];
@@ -4407,16 +5388,16 @@ async function renderAgendamentoPage() {
         const tableRows = aulas.map((aula)=>{
             const aulaId = aula.id || aula._id?.$oid || aula._id;
             let acoes = "";
-            const jaAgendado = Array.isArray(aula.students) && aula.students.includes(user.id);
-            if (role === "aluno") {
+            const jaAgendado = Array.isArray(aula.students) && aula.students.filter((id)=>!!id && id !== "null").map(String).includes(String(user.id));
+            if (role === "ROLE_STUDENT") {
                 if (!jaAgendado && aula.status === "aberta") acoes = `<button class="btn btn-sm btn-success" onclick="agendarAula('${aulaId}')">Agendar</button>`;
                 else if (jaAgendado) acoes = `<button class="btn btn-sm btn-danger" onclick="cancelarAula('${aulaId}')">Cancelar</button>`;
-            } else if (role === "recepcionista") acoes = `<button class="btn btn-sm btn-outline-success" onclick="abrirModalAlunos('${aulaId}')">Ver</button>`;
-            else if (role === "instrutor") acoes = `<button class="btn btn-sm btn-secondary" onclick="abrirModalAlunos('${aulaId}')">Visualizar</button>`;
+            } else if (role === "ROLE_RECEPTIONIST") acoes = `<button class="btn btn-sm btn-outline-success" onclick="abrirModalAlunos('${aulaId}')">Ver</button>`;
+            else if (role === "ROLE_INSTRUCTOR") acoes = `<button class="btn btn-sm btn-secondary" onclick="abrirModalAlunos('${aulaId}')">Visualizar</button>`;
             return `
         <tr>
           <td>${aula.instructor}</td>
-          <td>${aula.day}</td>
+          <td>${(0, _formatData.formatarDataExibicao)(aula.day)}</td>
           <td>${aula.hours}</td>
           <td>${aula.studio}</td>
           <td>${aula.status}</td>
@@ -4453,19 +5434,21 @@ async function renderAgendamentoPage() {
     await atualizarTabela();
 }
 window.registrarAluno = async function(sessionId, studentId) {
-    const id = sessionId || aulaSelecionadaId; // usa aulaSelecionadaId se sessionId for undefined
-    if (!id) {
-        alert("ID da aula n\xe3o foi definido.");
+    const id = sessionId || aulaSelecionadaId;
+    // Garante que só envia ID válido
+    if (!id || !studentId || studentId === "null" || studentId.length < 10) {
+        alert("ID da aula ou do aluno n\xe3o foi definido corretamente.");
         return;
     }
     try {
         const response = await fetch(`/api/sessions/register/${id}`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
             },
             body: JSON.stringify({
-                studentId
+                studentId: String(studentId)
             })
         });
         if (response.ok) {
@@ -4480,14 +5463,18 @@ window.registrarAluno = async function(sessionId, studentId) {
         alert("Erro de conex\xe3o ao tentar registrar aluno.");
     }
 };
-let ultimaListaAlunos = []; // Guarda o estado atual
+let ultimaListaAlunos = [];
 async function verificarAtualizacoes() {
     if (!aulaSelecionadaId) return;
-    const response = await fetch(`/api/sessions/${aulaSelecionadaId}`);
+    const response = await fetch(`/api/sessions/${aulaSelecionadaId}`, {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+    });
     if (!response.ok) return;
     const aula = await response.json();
     const alunosAtuais = aula.students || [];
-    // Se a lista mudou, atualiza o modal
     if (JSON.stringify(alunosAtuais) !== JSON.stringify(ultimaListaAlunos)) {
         ultimaListaAlunos = alunosAtuais;
         await atualizarModalAlunos(aulaSelecionadaId);
@@ -4496,13 +5483,18 @@ async function verificarAtualizacoes() {
 window.agendarAula = async function(id) {
     try {
         const user = getUserLoggedData();
+        if (!user.id) {
+            alert("Usu\xe1rio sem ID v\xe1lido.");
+            return;
+        }
         const response = await fetch(`/api/sessions/register/${id}`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
             },
             body: JSON.stringify({
-                studentId: user.id
+                studentId: String(user.id)
             })
         });
         if (response.ok) {
@@ -4520,13 +5512,18 @@ window.agendarAula = async function(id) {
 window.cancelarAula = async function(id) {
     try {
         const user = getUserLoggedData();
+        if (!user.id) {
+            alert("Usu\xe1rio sem ID v\xe1lido.");
+            return;
+        }
         const response = await fetch(`/api/sessions/unregister/${id}`, {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
             },
             body: JSON.stringify({
-                studentId: user.id
+                studentId: String(user.id)
             })
         });
         if (response.ok) {
@@ -4548,8 +5545,12 @@ window.abrirModalAlunos = async function(id) {
         if (existingInstance) existingInstance.hide();
         document.body.classList.remove("modal-open");
         document.querySelectorAll(".modal-backdrop").forEach((el)=>el.remove());
-        const response = await fetch(`/api/sessions/${id}`);
-        // console.log("ID da aula recebido:", id);
+        const response = await fetch(`/api/sessions/${id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
         if (!response.ok) throw new Error("Falha ao buscar aula");
         const aula = await response.json();
         const alunosIds = aula.students || [];
@@ -4558,9 +5559,6 @@ window.abrirModalAlunos = async function(id) {
         (0, _modais.criarModalListaAlunosHTML)(alunos, role, presences);
         const modal = new bootstrap.Modal(document.getElementById("modalListaAlunos"));
         modal.show();
-        document.addEventListener("atualizarListaAlunos", async function() {
-            await atualizarModalAlunos(aulaSelecionadaId);
-        });
     } catch (error) {
         console.error("Erro ao abrir modal de alunos:", error);
         alert("N\xe3o foi poss\xedvel carregar os alunos da aula.");
@@ -4576,7 +5574,12 @@ window.mostrarModalConfirmacao = function(mensagem) {
 };
 async function atualizarModalAlunos(aulaId) {
     try {
-        const response = await fetch(`/api/sessions/${aulaId}`);
+        const response = await fetch(`/api/sessions/${aulaId}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
         if (!response.ok) throw new Error("Falha ao buscar aula");
         const aula = await response.json();
         const alunosIds = aula.students || [];
@@ -4592,7 +5595,7 @@ async function atualizarModalAlunos(aulaId) {
         tbody.innerHTML = alunos.map((alunoId)=>{
             const wasChecked = checkboxesState[alunoId];
             const isPresent = presences.includes(alunoId) || wasChecked;
-            if (role === "instrutor") return `
+            if (role === "ROLE_INSTRUCTOR") return `
           <tr>
             <td>${alunoId}</td>
             <td>\u{2014}</td>
@@ -4627,7 +5630,8 @@ window.removerAluno = async function(studentId) {
         const response = await fetch(`/api/sessions/unregister/${aulaSelecionadaId}`, {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
             },
             body: JSON.stringify({
                 studentId
@@ -4670,7 +5674,8 @@ window.salvarPresencas = async function() {
         const response = await fetch(`/api/sessions/presence/${aulaSelecionadaId}`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
             },
             body: JSON.stringify(presences)
         });
@@ -4685,16 +5690,18 @@ window.salvarPresencas = async function() {
     }
 };
 
-},{"../../components/main":"5zsxX","../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"9vJvL":[function(require,module,exports,__globalThis) {
+},{"../../components/main":"5zsxX","../../components/modais":"1Ukbc","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../service/formatData":"iMnpH"}],"9vJvL":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "loginScreen", ()=>loginScreen);
 var _main = require("../../components/main");
+var _jwtDecode = require("jwt-decode");
+var _modais = require("../../components/modais");
 function loginScreen() {
     const mainElement = (0, _main.getOrCreateMainElement)();
     mainElement.innerHTML = `
     <section class="d-flex justify-content-center align-items-center vh-100">
-      <div class="card p-4 w-25">
+      <div class="card p-4 w-50 w-sm-75 w-md-50 w-lg-25"">
         <h2 class="text-center mb-4">Login</h2>
         <form id="loginForm">
           <div class="mb-3">
@@ -4707,39 +5714,979 @@ function loginScreen() {
           </div>
           <button type="submit" class="btn btn-secondary w-100">Login</button>
         </form>
+        <div id="loginMessage" class="mt-3 text-center"></div>
+        <div class="text-center text-decoration-none fw-light mt-3">
+          <button id="btnCadastroUsuario" class="btn btn-link text-decoration">Cadastre-se</button>
+        </div>
       </div>
     </section>
   `;
     const loginForm = document.getElementById("loginForm");
     loginForm.addEventListener("submit", async (event)=>{
         event.preventDefault();
-        const formData = new FormData(event.target);
+        const formData = new FormData(loginForm);
         const username = formData.get("username");
         const password = formData.get("password");
-        const body = {
-            username: username,
-            password: password
-        };
-        console.log(body);
         try {
-            const response = await fetch(`http://localhost:8080/auth/login`, {
+            const response = await fetch("http://localhost:8080/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(body)
+                body: JSON.stringify({
+                    username,
+                    password
+                })
             });
-            const data = await response.json(); // Captura o corpo da resposta como objeto JS
-            localStorage.setItem("token", data.token); // Armazena o token no localStorage
+            const data = await response.json();
+            if (response.ok) {
+                // Armazenar o token
+                localStorage.setItem("token", data.token);
+                // loginScreen.js
+                const decoded = (0, _jwtDecode.jwtDecode)(data.token);
+                // Descubra qual campo é o ID do banco (exemplo: decoded.id, decoded._id, decoded.sub)
+                const userId = decoded.id || decoded._id || decoded.sub; // ajuste conforme o JWT
+                const role = decoded.roles ? decoded.roles[0] : decoded.role;
+                localStorage.setItem("usuarioLogado", JSON.stringify({
+                    ...decoded,
+                    id: userId,
+                    role,
+                    token: data.token
+                }));
+                localStorage.setItem("token", data.token);
+                document.getElementById("loginMessage").innerHTML = "<span class='text-info'>Login realizado com sucesso</span>";
+                // Redirecionar após login
+                setTimeout(()=>{
+                    location.hash = "#home";
+                }, 800);
+            } else document.getElementById("loginMessage").innerHTML = "<span class='text-danger'>" + (data.message || "Erro ao fazer login.") + "</span>";
         } catch (error) {
-            console.error("Erro ao buscar dados completos dos alunos:", error);
-            return [];
+            console.error("Erro ao fazer login:", error);
+            document.getElementById("loginMessage").innerHTML = "<span class='text-danger'>Erro de conex\xe3o.</span>";
         }
-    // // Redirecionamento
-    // location.hash = '#home';
+    });
+    if (!document.getElementById("modalCadastroUsuario")) document.body.insertAdjacentHTML("beforeend", (0, _modais.criarModalCadastroUsuarioHTML)());
+    document.getElementById("btnCadastroUsuario").onclick = function() {
+        // Remove e recria o modal para garantir que está limpo
+        const modalExistente = document.getElementById("modalCadastroUsuario");
+        if (modalExistente) modalExistente.remove();
+        document.body.insertAdjacentHTML("beforeend", (0, _modais.criarModalCadastroUsuarioHTML)());
+        const modal = new bootstrap.Modal(document.getElementById("modalCadastroUsuario"));
+        modal.show();
+    };
+}
+
+},{"../../components/main":"5zsxX","jwt-decode":"4WbSe","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../../components/modais":"1Ukbc"}],"4WbSe":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "InvalidTokenError", ()=>InvalidTokenError);
+parcelHelpers.export(exports, "jwtDecode", ()=>jwtDecode);
+class InvalidTokenError extends Error {
+}
+InvalidTokenError.prototype.name = "InvalidTokenError";
+function b64DecodeUnicode(str) {
+    return decodeURIComponent(atob(str).replace(/(.)/g, (m, p)=>{
+        let code = p.charCodeAt(0).toString(16).toUpperCase();
+        if (code.length < 2) code = "0" + code;
+        return "%" + code;
+    }));
+}
+function base64UrlDecode(str) {
+    let output = str.replace(/-/g, "+").replace(/_/g, "/");
+    switch(output.length % 4){
+        case 0:
+            break;
+        case 2:
+            output += "==";
+            break;
+        case 3:
+            output += "=";
+            break;
+        default:
+            throw new Error("base64 string is not of the correct length");
+    }
+    try {
+        return b64DecodeUnicode(output);
+    } catch (err) {
+        return atob(output);
+    }
+}
+function jwtDecode(token, options) {
+    if (typeof token !== "string") throw new InvalidTokenError("Invalid token specified: must be a string");
+    options || (options = {});
+    const pos = options.header === true ? 0 : 1;
+    const part = token.split(".")[pos];
+    if (typeof part !== "string") throw new InvalidTokenError(`Invalid token specified: missing part #${pos + 1}`);
+    let decoded;
+    try {
+        decoded = base64UrlDecode(part);
+    } catch (e) {
+        throw new InvalidTokenError(`Invalid token specified: invalid base64 for part #${pos + 1} (${e.message})`);
+    }
+    try {
+        return JSON.parse(decoded);
+    } catch (e) {
+        throw new InvalidTokenError(`Invalid token specified: invalid json for part #${pos + 1} (${e.message})`);
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"eIH1s":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "createPageAdm", ()=>createPageAdm);
+var _main = require("../../components/main");
+function createPageAdm() {
+    const main = (0, _main.getOrCreateMainElement)();
+    main.innerHTML = `
+        <section class="menagement container d-flex  p-4">
+            <a href="#Studio-manegment">
+                    <div id="Studios" class="card m-2 text-bg-primary" style="width: 18rem">
+                        <div class="card-body">
+                            <h5 class="card-title text-center p-5">gerenciar estudios</h5>
+                            <h6> </h6>
+                        </div>
+                    </div>
+            </a>
+
+                <a href="#instructor-manegment">
+                    <div id="Studios" class="card m-2 text-bg-success" style="width: 18rem">
+                        <div class="card-body">
+                            <h5 class="card-title text-center p-5">gerenciar instrutores</h5>
+                            <h6> </h6>
+                        </div>
+                    </div>
+            </a>
+        </section>
+    `;
+}
+
+},{"../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"hZsFQ":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "StudioManegementPage", ()=>StudioManegementPage);
+var _main = require("../../../components/main");
+var _newStudioForm = require("./components/newStudioform/NewStudioForm");
+var _listar = require("./service/functions/listar");
+function StudioManegementPage() {
+    const main = (0, _main.getOrCreateMainElement)();
+    main.innerHTML = `
+       <button class="btn btn-primary fw-bold px-4 py-2 rounded-pill shadow-sm w-25 m-5" id="new">
+                <i class="bi bi-plus-circle me-2"></i>Criar Est\xfadio
+        </button>
+    <section class="container-fluid my-4" >
+
+        <section id="studios-row" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
+
+           
+                
+        </section>
+
+    <section>
+    `;
+    (0, _listar.listarStudios)();
+    const $new = document.querySelector("#new");
+    $new.addEventListener("click", ()=>(0, _newStudioForm.NewStudioForm)());
+}
+
+},{"../../../components/main":"5zsxX","./components/newStudioform/NewStudioForm":"2bJdg","./service/functions/listar":"8sfIm","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"2bJdg":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "NewStudioForm", ()=>NewStudioForm);
+var _main = require("../../../../../components/main");
+var _closeform = require("./closeform");
+var _saveform = require("./saveform");
+function NewStudioForm() {
+    const main = (0, _main.getOrCreateMainElement)();
+    if (!document.querySelector("#newformcon")) main.insertAdjacentHTML("beforeend", `
+
+    <div class="card position-absolute top-50 start-50 translate-middle" id="newformcon">
+  <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+    <h5 class="card-title mb-0">Cadastro de Local</h5>
+
+
+    <button id="close" class="p-0 btn">
+      <i class="bi bi-x-lg btn btn-danger"></i>
+    </button>
+  </div>
+  <div class="card-body">
+    <form id="cardInfoForm">
+      <!-- Linha 1 - Nome -->
+      <div class="mb-3">
+        <label for="name" class="form-label">Nome do Estudio</label>
+        <input type="text" class="form-control" name="name" id="name" placeholder="Digite o nome" required>
+      </div>
+
+      <!-- Linha 2 - Endere\xe7o -->
+      <div class="mb-3">
+        <label for="address" class="form-label">Endere\xe7o</label>
+        <textarea class="form-control" id="address" rows="2" placeholder="Endere\xe7o completo" required name="address"></textarea>
+      </div>
+
+      <!-- Linha 3 - Dias de Funcionamento -->
+      <div class="mb-3">
+        <label class="form-label">Dias de Funcionamento</label>
+        <div class="d-flex flex-wrap gap-3">
+          <div class="form-check">
+
+            <input class="form-check-input" name="daysOperation" type="checkbox" id="monday" value="segunda-feira">
+            <label class="form-check-label" for="monday">Seg</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" name="daysOperation" type="checkbox" id="tuesday" value="ter\xe7a-feira">
+            <label class="form-check-label" for="tuesday">Ter</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" name="daysOperation" type="checkbox" id="wednesday" value="quarta-feira">
+            <label class="form-check-label" for="wednesday">Qua</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" name="daysOperation" type="checkbox" id="thursday" value="quinta-feira">
+            <label class="form-check-label" for="thursday">Qui</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" name="daysOperation" type="checkbox" id="friday" value="Sexta-feira">
+            <label class="form-check-label" for="friday">Sex</label>
+          </div>
+          
+          <div class="form-check">
+            <input class="form-check-input" name="daysOperation" type="checkbox" id="saturday" value="s\xe1bado">
+            <label class="form-check-label" for="saturday">S\xe1b</label>
+          </div>
+          
+          <div class="form-check">
+            <input class="form-check-input" name="daysOperation" type="checkbox" id="sunday" value="domingo">
+            <label class="form-check-label" for="sunday">Dom</label>
+          </div>
+        </div>
+      </div>
+
+      
+      <!-- Linha 4 - Hor\xe1rio e Limite -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Hor\xe1rio de Funcionamento</label>
+          <div class="input-group">
+            <input type="time" class="form-control" name="openingHours">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="limitStudents" class="form-label">Limite de Alunos</label>
+          <input type="number" class="form-control" id="limitStudents" min="1" placeholder="Ex: 20" name="limitStudentsPerClass">
+        </div>
+      </div>
+
+
+        <!-- linha 5 - instrutor -->
+         <div class="row mb-3">
+        <div class="col-md-6 ">
+
+          <label for="instructorsByTime" class="form-label">instrutores</label>
+            <input type="text" name="instructorsByTime" class="form-control" data-instructor="instrutor"/>
+ 
+          </div>
+
+          <div class="col-md-6">                
+            <label for="instructorsByTime" class="form-label">horario</label>
+            <input type="time" name="instructorsByTime" class="form-control" data-instructor="horario"/>
+          
+          </div>
+        </div>
+        <!-- linha 6 - datas em dias - -->
+        
+            <div class="row mb-3">
+                <div class="col-md-6">
+
+                    <label for="limitStudents" class="form-label">dias que nao abrem</label>
+        </div>
+      
+                    <label for="limitStudents" class="form-label">feriados</label>
+                    <input type="date" class="form-control" id="limitStudents" min="1" placeholder="Ex: 20" name="holidays">
+                    
+                    <label for="limitStudents" class="form-label">recessos</label>
+                    <input type="date" class="form-control" id="limitStudents" min="1" placeholder="Ex: 20" name="recesses">
+                    </div>
+         
+
+      <button type="submit" class="btn btn-success start-50 w-100 mx-5r"> salvar </button>
+    </form>
+  </div>
+    `);
+    (0, _closeform.closeform)();
+    (0, _saveform.saveform)();
+}
+
+},{"../../../../../components/main":"5zsxX","./closeform":"eFdFn","./saveform":"c8nDu","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"eFdFn":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "closeform", ()=>closeform);
+function closeform() {
+    const $btn = document.querySelector("#close");
+    $btn.addEventListener("click", ()=>{
+        const $form = document.querySelector("#newformcon");
+        $form.innerHTML = ``;
+        $form.remove();
+    });
+    document.addEventListener("submit", ()=>{
+        const $form = document.querySelector("#newformcon");
+        $form.innerHTML = ``;
+        $form.remove();
     });
 }
 
-},{"../../components/main":"5zsxX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"c8nDu":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "saveform", ()=>saveform);
+var _service = require("../../service/service");
+async function saveform() {
+    const $form = document.querySelector("#cardInfoForm");
+    window.addEventListener("submit", async (e)=>{
+        e.preventDefault();
+        const form = new FormData($form);
+        const data = Object.fromEntries(form.entries());
+        data.isActive = true;
+        data.unavailableTimes = [];
+        data.instructorsByTime = {};
+        const recessos = [
+            data.recesses
+        ];
+        const feriados = [
+            data.holidays
+        ];
+        data.daysOperation = form.getAll("daysOperation");
+        data.openingHours = data.openingHours.split("\n");
+        data.holidays = feriados;
+        data.recesses = recessos;
+        console.log("estudio q esta sendo enviado pro back via post:", data);
+        const $formContainer = document.querySelector("#studios-row");
+        $formContainer.innerHTML = "";
+        await (0, _service.createStudio)(data);
+    });
+}
+
+},{"../../service/service":"8jQ4q","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8jQ4q":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getStudios", ()=>getStudios);
+parcelHelpers.export(exports, "createStudio", ()=>createStudio);
+parcelHelpers.export(exports, "deleteStudio", ()=>deleteStudio);
+parcelHelpers.export(exports, "getStudioById", ()=>getStudioById);
+var _reloadmain = require("../../function/reloadmain");
+var _listar = require("./functions/listar");
+const api = "http://localhost:8080/";
+// Função para montar os headers com token
+function getAuthHeaders(extraHeaders = {}) {
+    const token = localStorage.getItem('token');
+    return {
+        authorization: token,
+        ...extraHeaders
+    };
+}
+async function getStudios() {
+    try {
+        const response = await fetch(`${api}studios`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+        return response.json();
+    } catch (error) {
+        console.error("Erro ao buscar est\xfadios:", error);
+        return null;
+    }
+}
+async function createStudio(studioData) {
+    try {
+        const response = await fetch(`${api}studios`, {
+            method: 'POST',
+            headers: getAuthHeaders({
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify(studioData)
+        });
+        // Verifica se há conteúdo antes de tentar fazer o .json()
+        const contentType = response.headers.get("content-type");
+        if (response.ok) {
+            (0, _listar.listarStudios)().then(alert("estudio criado"));
+            console.log("estudio q vai ser criado>", studioData);
+            if (contentType && contentType.includes("application/json")) return await response.json();
+            else console.warn("Resposta sem JSON v\xe1lido.");
+        } else {
+            console.error(`Erro ${response.status}:`, await response.text());
+            return null;
+        }
+    } catch (error) {
+        console.error("Erro ao criar est\xfadio:", error);
+        return null;
+    }
+}
+async function deleteStudio(id) {
+    try {
+        const response = await fetch(`${api}studios/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+        if (response.ok) {
+            alert("esudio deletado");
+            (0, _listar.listarStudios)();
+        }
+        return response.json();
+    } catch (error) {
+        alert("erro ao deletar estudio");
+        console.error("Erro ao excluir est\xfadio:", error);
+        return null;
+    }
+}
+async function getStudioById(id) {
+    try {
+        const response = await fetch(`${api}studios/${id}`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+        return response.json();
+    } catch (error) {
+        console.error("Erro ao buscar est\xfadio por ID:", error);
+        return null;
+    }
+}
+
+},{"../../function/reloadmain":"fffU7","./functions/listar":"8sfIm","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"fffU7":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "MainReload", ()=>MainReload);
+function MainReload(IDelementopae) {
+    document.querySelector(`#${IDelementopae}`).remove();
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8sfIm":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "listarStudios", ()=>listarStudios);
+var _service = require("../service");
+var _deletar = require("./deletar");
+async function listarStudios() {
+    const $stuiosrow = document.querySelector("#studios-row");
+    const studio = await (0, _service.getStudios)();
+    if ($stuiosrow) $stuiosrow.innerHTML = "";
+    studio.forEach((e)=>{
+        $stuiosrow.insertAdjacentHTML("beforeend", `
+
+   <div class="m-4 card" style="max-width: 400px;">
+    <div class="card-header bg-primary text-white p-2 d-flex justify-content-between align-items-center">
+        <h6 class="card-title mb-0">Informa\xe7\xf5es do Est\xfadio: ${e.name}</h6>
+        <div>
+            <button class="btn btn-sm btn-danger delete">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body p-2">
+        <dl class="row mb-0">
+            <dt class="col-sm-5">ID:</dt>
+            <dd class="id col-sm-7 p-0 " data-id="${e.id}">${e.id}</dd>
+
+            <dt class="col-sm-5">Endere\xe7o:</dt>
+            <dd class="col-sm-7 p-0 ">${e.address}</dd>
+            
+            <dt class="col-sm-5">Dias/Hor\xe1rios:</dt>
+            <dd class="col-sm-7 p-0 days">
+                <div>${e.daysOperation}</div>
+                <div class="small">${e.openingHours}</div>
+            </dd>
+            
+            <dt class="col-sm-5">Capacidade:</dt>
+            <dd class="col-sm-7 p-0 ">${e.limitStudentsPerClass} pessoas por turma</dd>
+
+            <dt class="col-sm-5">Instrutores:</dt>
+            <dd class="col-sm-7 p-0 ">${e.instructorsByTime}</dd>
+        </dl>
+    </div>
+</div>
+
+            `);
+    });
+    console.log("lista de estudios vindo do back : ", studio);
+    const button = document.querySelectorAll("button.delete");
+    button.forEach((btn)=>{
+        btn.addEventListener("click", ()=>{
+            const card = btn.closest(".card");
+            const id = card.querySelector(".id");
+            const cardid = id.innerHTML.trim();
+            (0, _deletar.Deletar)(cardid);
+        });
+    });
+}
+
+},{"../service":"8jQ4q","./deletar":"kBHqA","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"kBHqA":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Deletar", ()=>Deletar);
+var _main = require("../../../../../components/main");
+var _service = require("../service");
+function Deletar(id) {
+    const main = (0, _main.getOrCreateMainElement)();
+    console.log("id do estudio q vai ser deletado : ", id);
+    main.insertAdjacentHTML("afterend", `
+    <div class="card shadow-sm mx-auto position-absolute top-50 start-50 translate-middle" style="max-width: 300px;" id="alert">
+    <div class="card-body text-center p-4">
+        <p class="mb-4">Tem certeza que quer deletar esse estudio?</p>
+        
+        <div class="d-flex justify-content-center gap-2">
+        <button class="btn btn-danger fw-bold" id="deletar">Deletar</button>
+        <button class="btn btn-outline-secondary" id="cancelar">Cancelar</button>
+        </div>
+    </div>
+    </div>
+    `);
+    const $alert = document.querySelector("#alert");
+    const $deletar = document.querySelector("#deletar");
+    const $cacelar = document.querySelector("#cancelar");
+    $deletar.addEventListener("click", ()=>{
+        (0, _service.deleteStudio)(id);
+        $alert.remove();
+    });
+    $cacelar.addEventListener("click", ()=>{
+        $alert.remove();
+    });
+}
+
+},{"../../../../../components/main":"5zsxX","../service":"8jQ4q","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"k97dv":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "clearBody", ()=>clearBody);
+function clearBody() {
+    const main = document.getElementById("main");
+    if (main) {
+        main.innerHTML = '';
+        main.classList = null;
+        const body = document.getElementsByTagName('body');
+        body[0].classList = "";
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"adWcJ":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "instructorManegement", ()=>instructorManegement);
+var _main = require("../../../components/main");
+var _newInstructorForm = require("./components/NewInstructorForm");
+var _listarInstrutores = require("./instructorService/componentes/listarInstrutores");
+function instructorManegement() {
+    const main = (0, _main.getOrCreateMainElement)();
+    main.innerHTML = `
+     <button class="btn btn-success fw-bold px-4 py-2 rounded-pill shadow-sm w-25 m-5" id="new">
+                <i class="bi bi-plus-circle me-2"></i>Criar usuario
+        </button>
+
+
+
+    <div class="container-fluid m-0">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-success text-white py-2 px-3">
+        <h6 class="mb-0">Lista de Usu\xe1rios</h6>
+        </div>
+        <div class="table-responsive">
+        <table class="table table-sm table-striped table-hover align-middle mb-0">
+            <thead class="table-light">
+            <tr>
+                <th>Nome</th>
+                <th>Fun\xe7\xe3o</th>
+                <th>Email</th>
+                <th>Contato</th>
+                <th>CPF</th>
+                <th>Nascimento</th>
+                <th>Forma\xe7\xe3o</th>
+                <th>Contrata\xe7\xe3o</th>
+                <th>Status</th>
+                <th class="text-center">A\xe7\xf5es</th>
+            </tr>
+            </thead>
+            <tbody id="instructors-body">
+            
+            <tr>
+               
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+    `;
+    (0, _listarInstrutores.listarInstructors)();
+    (0, _newInstructorForm.NewInstructorForm)();
+}
+
+},{"../../../components/main":"5zsxX","./components/NewInstructorForm":"dHxvQ","./instructorService/componentes/listarInstrutores":"62YiX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"dHxvQ":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "NewInstructorForm", ()=>NewInstructorForm);
+var _main = require("../../../../components/main");
+var _service = require("../instructorService/service");
+function NewInstructorForm() {
+    const $new = document.querySelector("#new");
+    const main = (0, _main.getOrCreateMainElement)();
+    const $fomrcontainer = document.querySelector("#userFromCon");
+    $new.addEventListener("click", ()=>{
+        main.insertAdjacentHTML("beforeend", `
+<div class="card position-absolute top-50 start-50 translate-middle" id="userFormCon">
+
+  <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+
+    <h5 class="card-title mb-0">Cadastro de Instrutor</h5>
+
+    <button id="close" class="p-0 btn">
+      <i class="bi bi-x-lg btn btn-danger"></i>
+    </button>
+
+  </div>
+
+  <div class="card-body">
+
+
+    <form id="userForm">
+  <!-- Nome -->
+  <div class="mb-3">
+    <label for="name" class="form-label">Nome Completo</label>
+    <input type="text" class="form-control" name="name" id="name" required>
+  </div>
+
+  <!-- E-mail e Contato -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" name="email" id="email" required>
+    </div>
+    <div class="col-md-6">
+      <label for="contact" class="form-label">Contato</label>
+      <input type="tel" class="form-control" name="contact" id="contact">
+    </div>
+  </div>
+
+  <!-- CPF e Nascimento -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="cpf" class="form-label">CPF</label>
+      <input type="text" class="form-control" name="cpf" id="cpf">
+    </div>
+    <div class="col-md-6">
+      <label for="birthDate" class="form-label">Data de Nascimento</label>
+      <input type="date" class="form-control" name="birthDate" id="birthDate">
+    </div>
+  </div>
+
+  <!-- Forma\xe7\xe3o -->
+  <div class="mb-3">
+    <label for="formation" class="form-label">Forma\xe7\xe3o</label>
+    <input type="text" class="form-control" name="formation" id="formation">
+  </div>
+
+  <!-- Frase de conselho -->
+  <div class="mb-3">
+    <label for="advice" class="form-label">Conselho</label>
+    <textarea class="form-control" name="advice" id="advice" rows="2"></textarea>
+  </div>
+
+  <!-- Data de contrata\xe7\xe3o e ativo -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="hiringDate" class="form-label">Data de Contrata\xe7\xe3o</label>
+      <input type="date" class="form-control" name="hiringDate" id="hiringDate">
+    </div>
+  </div>
+
+  <!-- Senha -->
+  <div class="mb-3">
+    <label for="password" class="form-label">Senha</label>
+    <input type="password" class="form-control" name="password" id="password">
+  </div>
+
+  <!-- Bot\xe3o -->
+  <button type="submit" class="btn btn-success w-100">Salvar</button>
+</form>
+
+
+
+  </div>
+</div>`);
+    });
+    $new.addEventListener("click", ()=>{
+        document.addEventListener("submit", async (e)=>{
+            e.preventDefault();
+            const $form = document.querySelector("#userForm");
+            const formData = new FormData($form);
+            const data = Object.fromEntries(formData.entries());
+            data.isActive = true;
+            data.roles = [
+                "ROLE_INSTRUCTOR"
+            ];
+            data.photo = "";
+            (0, _service.createInstructor)(data);
+        });
+    });
+}
+
+},{"../../../../components/main":"5zsxX","../instructorService/service":"32p1a","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"32p1a":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getInstructors", ()=>getInstructors);
+parcelHelpers.export(exports, "getActiveInstructors", ()=>getActiveInstructors);
+parcelHelpers.export(exports, "createInstructor", ()=>createInstructor);
+parcelHelpers.export(exports, "deleteInstructor", ()=>deleteInstructor);
+parcelHelpers.export(exports, "getInstructorById", ()=>getInstructorById);
+parcelHelpers.export(exports, "updateInstructor", ()=>updateInstructor);
+var _listarInstrutores = require("./componentes/listarInstrutores");
+const api = "http://localhost:8080/";
+// Função para montar os headers com token
+function getAuthHeaders(extraHeaders = {}) {
+    const token = localStorage.getItem('token');
+    return {
+        authorization: token,
+        ...extraHeaders
+    };
+}
+async function getInstructors() {
+    try {
+        const response = await fetch(`${api}users/instructors`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+        return response.json();
+    } catch (error) {
+        console.error("Erro ao buscar instrutores:", error);
+        return null;
+    }
+}
+async function getActiveInstructors() {
+    try {
+        const response = await fetch(`${api}users/instructors/actives`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+        return response.json();
+    } catch (error) {
+        console.error("Erro ao buscar instrutores ativos:", error);
+        return null;
+    }
+}
+async function createInstructor(instructorData) {
+    try {
+        console.log("Instrutor a ser criado:", instructorData);
+        const response = await fetch(`${api}users/instructors`, {
+            method: 'POST',
+            headers: getAuthHeaders({
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify(instructorData)
+        });
+        if (response.ok) {
+            const pinto = document.querySelector("#instructors-body");
+            pinto.innerHTML = "";
+            await (0, _listarInstrutores.listarInstructors)();
+            document.querySelector("#userFormCon").remove();
+        }
+    } catch (error) {
+        console.error("Erro ao criar instrutor:", error);
+        return null;
+    }
+}
+async function deleteInstructor(id) {
+    try {
+        const response = await fetch(`${api}users/instructors/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+        if (response.ok) alert("Instrutor desativado com sucesso");
+        return response.json();
+    } catch (error) {
+        alert("Erro ao deletar instrutor");
+        console.error("Erro ao excluir instrutor:", error);
+        return null;
+    }
+}
+async function getInstructorById(id) {
+    try {
+        console.log(id);
+        const response = await fetch(`${api}users/instructors/${id}`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+        const result = await response.json();
+        result.isActive = true;
+        return result;
+    } catch (error) {
+        console.error("Erro ao buscar instrutor por ID:", error);
+        return null;
+    }
+}
+async function updateInstructor(id, bodyrequest) {
+    try {
+        const response = await fetch(`${api}users/instructors/${id}`, {
+            method: 'PUT',
+            headers: getAuthHeaders({
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify(bodyrequest)
+        });
+        const contentType = response.headers.get("content-type");
+        if (response.ok) {
+            alert("Instrutor atualizado com sucesso");
+            console.log("Instrutor a ser atualizado:", bodyrequest);
+            const $instructorsTable = document.querySelector("#instructors-body");
+            $instructorsTable.innerHTML = "";
+            (0, _listarInstrutores.listarInstructors)();
+            if (contentType && contentType.includes("application/json")) return await response.json();
+            else console.warn("Resposta sem JSON.");
+        } else {
+            console.error(`Erro ${response.status}:`, await response.text());
+            return null;
+        }
+    } catch (error) {
+        console.error("Erro ao atualizar instrutor:", error, bodyrequest);
+        return null;
+    }
+}
+
+},{"./componentes/listarInstrutores":"62YiX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"62YiX":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "listarInstructors", ()=>listarInstructors);
+var _editFormInstrutor = require("../../components/EditFormInstrutor");
+var _service = require("../service");
+async function listarInstructors() {
+    const $instructorsTable = document.querySelector("#instructors-body");
+    const instructors = await (0, _service.getInstructors)();
+    instructors.forEach((instrutor)=>{
+        const activeBadge = instrutor.isActive ? `<span class="badge bg-success">Ativo</span>` : `<span class="badge bg-secondary">Inativo</span>`;
+        const actionButtons = instrutor.isActive ? `
+    <button class="btn btn-sm btn-outline-danger me-1 deactivate" data-id="${instrutor.id}">
+      <i class="bi bi-slash-circle"></i>
+    </button>
+    <button class="btn btn-sm btn-outline-secondary edit" data-id="${instrutor.id}">
+      <i class="bi bi-pencil"></i>
+    </button>
+    ` : `<p class="text-danger">DESATIVADO</p>`;
+        const birthDate = new Date(instrutor.birthDate).toLocaleDateString("pt-BR");
+        const hiringDate = new Date(instrutor.hiringDate).toLocaleDateString("pt-BR");
+        $instructorsTable.insertAdjacentHTML("afterbegin", `
+        <tr data-di="${instrutor.id}">
+            <td data-name="${instrutor.name}"><strong class="small">${instrutor.name}</strong></td>
+            <td><span class="badge bg-info text-dark">Instrutor</span></td>
+            <td class="small" data-email="${instrutor.email}">${instrutor.email}</td>
+            <td class="small" data-contact="${instrutor.contact}">${instrutor.contact}</td>
+            <td class="small" data-cpf="${instrutor.cpf}">${instrutor.cpf}</td>
+            <td class="small" data-birth="${birthDate}">${birthDate}</td>
+            <td class="small" data-formation="${instrutor.formation}">${instrutor.formation}</td>
+            <td class="small" data-hiringDate="${hiringDate}">${hiringDate}</td>
+            <td>${activeBadge}</td>
+            <td class="text-center">
+            
+            ${actionButtons}
+            </td>
+        </tr>
+        `);
+    });
+    // Exemplo de listeners para botões (se desejar)
+    document.querySelectorAll(".deactivate").forEach((btn)=>{
+        btn.addEventListener("click", async ()=>{
+            const dataid = btn.dataset.id;
+            await (0, _service.deleteInstructor)(dataid);
+            $instructorsTable.innerHTML = "";
+            listarInstructors();
+        });
+    });
+    document.querySelectorAll(".edit").forEach((btn)=>{
+        const dataid = btn.dataset.id;
+        btn.addEventListener("click", ()=>{
+            (0, _editFormInstrutor.EditInstructorForm)(dataid);
+        });
+    });
+}
+
+},{"../../components/EditFormInstrutor":"8as8w","../service":"32p1a","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8as8w":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "EditInstructorForm", ()=>EditInstructorForm);
+var _main = require("../../../../components/main");
+var _service = require("../instructorService/service");
+async function EditInstructorForm(id) {
+    const main = (0, _main.getOrCreateMainElement)();
+    const instructor = await (0, _service.getInstructorById)(id);
+    const $form = `
+  <div class="w-100 card position-absolute top-50 start-50 translate-middle" id="userFormCon" style="max-width: 48rem">
+  <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+    <h5 class="card-title mb-0">Editar Instrutor</h5>
+    <button id="close" class="p-0 btn">
+      <i class="bi bi-x-lg btn btn-danger"></i>
+    </button>
+  </div>
+  <div class="card-body">
+   <form id="userForm" data-id="${instructor.id}">
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="name" class="form-label">Nome Completo</label>
+      <input type="text" class="form-control" name="name" id="name" value="${instructor.name}" required>
+    </div>
+    <div class="col-md-6">
+      <label for="cpf" class="form-label">CPF</label>
+      <input type="text" class="form-control" name="cpf" id="cpf" value="${instructor.cpf}">
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" name="email" id="email" value="${instructor.email}" required>
+    </div>
+    <div class="col-md-6">
+      <label for="birthDate" class="form-label">Data de Contrata\xe7\xe3o</label>
+      <input type="date" class="form-control" name="birthDate" id="birthDate" value="${instructor.birthDate}">
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="hiringDate" class="form-label">Data de Contrata\xe7\xe3o</label>
+      <input type="date" class="form-control" name="hiringDate" id="hiringDate" value="${instructor.hiringDate}">
+    </div>
+    <div class="col-md-6">
+      <label for="contact" class="form-label">Contato</label>
+      <input type="text" class="form-control" name="contact" id="contact" value="${instructor.contact}">
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="formation" class="form-label">Forma\xe7\xe3o</label>
+      <input type="text" class="form-control" name="formation" id="formation" value="${instructor.formation}">
+    </div>
+  
+
+  <div class="mb-3">
+    <label for="advice" class="form-label">Conselho</label>
+    <textarea class="form-control" name="advice" id="advice" rows="2">${instructor.advice}</textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary w-100">Atualizar</button>
+</form>
+
+  </div>
+</div>`;
+    main.insertAdjacentHTML("beforeend", $form);
+    document.querySelector("#userForm").addEventListener("submit", async (e)=>{
+        e.preventDefault();
+        const $form = document.querySelector("#userForm");
+        const formData = new FormData($form);
+        const data = Object.fromEntries(formData.entries());
+        data.roles = [
+            "ROLE_INSTRUCTOR"
+        ];
+        data.isActive = true;
+        const id = $form.dataset.id;
+        const bodyrequest = data;
+        await (0, _service.updateInstructor)(id, bodyrequest);
+        document.querySelector("#userFormCon").remove();
+    });
+}
+
+},{"../../../../components/main":"5zsxX","../instructorService/service":"32p1a","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["4QmSj","kCTUO"], "kCTUO", "parcelRequire431a", {})
 
 //# sourceMappingURL=frontend.4e1ccf09.js.map

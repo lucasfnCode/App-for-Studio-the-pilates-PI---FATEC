@@ -99,3 +99,55 @@ main {
   font-size: 1.25rem;
   color: #5e4a4a;
 }
+/* Estilos gerais da aplicação */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilos do cabeçalho */
+#head {
+    background-color: #343a40;
+    color: white;
+    padding: 20px 0;
+}
+
+#nav {
+    background-color: #ffffff;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Estilos das tabelas */
+.table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #dee2e6;
+}
+
+.table th {
+    background-color: #f1f1f1;
+}
+
+/* Estilos de formulários */
+.form-label {
+    margin-bottom: 5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}

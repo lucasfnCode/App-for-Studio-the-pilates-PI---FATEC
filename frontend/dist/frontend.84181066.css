@@ -98,4 +98,53 @@ main {
   color: #5e4a4a;
   font-size: 1.25rem;
 }
+
+body {
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+#head {
+  color: #fff;
+  background-color: #343a40;
+  padding: 20px 0;
+}
+
+#nav {
+  background-color: #fff;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 20px 0;
+}
+
+.table th, .table td {
+  text-align: left;
+  border: 1px solid #dee2e6;
+  padding: 12px;
+}
+
+.table th {
+  background-color: #f1f1f1;
+}
+
+.form-label {
+  margin-bottom: 5px;
+}
+
+.form-control {
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  width: 100%;
+  padding: 10px;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
 /*# sourceMappingURL=frontend.84181066.css.map */

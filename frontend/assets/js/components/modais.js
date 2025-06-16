@@ -11,7 +11,7 @@ export function criarModalListaAlunosHTML(
       const nascimento = aluno.birthDate || "—";
       const isPresent = presences.includes(alunoId);
 
-      if (role === "instrutor") {
+      if (role === "ROLE_INSTRUCTOR" || role === "instrutor" || role === "INSTRUTOR") {
         return `
           <tr>
             <td>${nome}</td>
@@ -61,7 +61,7 @@ export function criarModalListaAlunosHTML(
           </div>
           <div class="modal-footer d-flex justify-content-end gap-2">
             ${
-              role !== "instrutor"
+              role !== "ROLE_INSTRUCTOR" && role !== "instrutor" && role !== "INSTRUTOR"
                 ? `<button type="button" class="btn btn-outline-success" onclick="adicionarAluno()">Adicionar Aluno</button>`
                 : `<button type="button" class="btn btn-outline-primary" onclick="salvarPresencas()">Salvar Presenças</button>`
             }
@@ -171,10 +171,13 @@ window.salvarAlunosSelecionados = async function () {
   const checkboxes = document.querySelectorAll(
     "#alunosDisponiveisTabela input[type='checkbox']:checked"
   );
-  const alunosSelecionados = Array.from(checkboxes).map((cb) => cb.dataset.id);
+  // Filtra apenas IDs válidos
+  const alunosSelecionados = Array.from(checkboxes)
+  .map((cb) => cb.dataset.id)
+  .filter((id) => !!id && id !== "null" && id.length > 10); // IDs do Mongo geralmente têm 24 caracteres
 
   for (const studentId of alunosSelecionados) {
-    await window.registrarAluno(window.aulaSelecionadaId, studentId);
+    await window.registrarAluno(window.aulaSelecionadaId, String(studentId));
   }
 
   const modal = bootstrap.Modal.getInstance(
@@ -204,37 +207,47 @@ export function criarModalConfirmacaoHTML() {
   `;
 }
 
-export function criarModalInstrutoresHTML() {
-  return `
-    <div class="modal fade" id="modalInstrutores" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content p-4 rounded-4">
-          <div class="modal-header border-0">
-            <h4 class="modal-title">Nossos Instrutores</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-          <div class="modal-body row g-4">
-            <div class="col-md-4 text-center">
-              <img src="https://placehold.co/600x400?text=Ana" class="img-fluid rounded-3 shadow-sm" alt="Ana Clara">
-              <h5 class="mt-3">Ana Clara</h5>
-              <p>Especialista em Pilates Solo e Alongamento</p>
+export async function criarModalInstrutoresHTML() {
+  try {
+    const res = await fetch("/api/users/instructors", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const instructors = await res.json();
+
+    const modalHTML = `
+      <div class="modal fade" id="modalInstrutores" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content p-4 rounded-4">
+            <div class="modal-header border-0">
+              <h4 class="modal-title">Nossos Instrutores</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            <div class="col-md-4 text-center">
-              <img src="https://placehold.co/600x400?text=Bruno" class="img-fluid rounded-3 shadow-sm" alt="Bruno Silva">
-              <h5 class="mt-3">Bruno Silva</h5>
-              <p>Reabilitação e Pilates para Idosos</p>
-            </div>
-            <div class="col-md-4 text-center">
-              <img src="https://placehold.co/600x400?text=Camila" class="img-fluid rounded-3 shadow-sm" alt="Camila Torres">
-              <h5 class="mt-3">Camila Torres</h5>
-              <p>Pilates com foco em respiração e relaxamento</p>
+            <div class="modal-body row g-4">
+              ${instructors.map(instructors => `
+                <div class="col-md-4 text-center">
+                  <img src='https://placehold.co/600x400?text=Instrutor' class="img-fluid rounded-3 shadow-sm" alt="${instructors.name}">
+                  <h5 class="mt-3">${instructors.name}</h5>
+                  <p>${instructors.formation || 'Especialista em Pilates'}</p>
+                </div>
+              `).join('')}
             </div>
           </div>
         </div>
       </div>
-    </div>
-  `;
+    `;
+
+    // Remove se já existir
+    const existente = document.getElementById("modalInstrutores");
+    if (existente) existente.remove();
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+  } catch (error) {
+    console.error("Erro ao buscar instrutores:", error);
+  }
 }
+
 
 export function criarModalAssinaturasHTML() {
   return `
@@ -450,7 +463,12 @@ export function criarModalCadastroClientesHTML() {
 
 export async function buscarDadosCompletosDosAlunos(listaDeIds) {
   try {
-    const response = await fetch("/api/students");
+    const response = await fetch("/api/users/students", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     if (!response.ok) throw new Error("Erro ao buscar alunos");
     const todosAlunos = await response.json();
 
@@ -463,10 +481,14 @@ export async function buscarDadosCompletosDosAlunos(listaDeIds) {
 }
 
 document.addEventListener("atualizarListaAlunos", async function () {
-  if (!aulaSelecionadaId) return;
-
+  if (!window.aulaSelecionadaId) return;
   try {
-    const response = await fetch(`/api/sessions/${aulaSelecionadaId}`);
+    const response = await fetch(`/api/sessions/${window.aulaSelecionadaId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     if (!response.ok) throw new Error("Falha ao buscar aula");
 
     const aula = await response.json();
@@ -493,3 +515,217 @@ document.addEventListener("atualizarListaAlunos", async function () {
     console.error("Erro ao atualizar lista de alunos:", error);
   }
 });
+
+
+export function criarModalCadastroUsuarioHTML() {
+  return `
+    <div class="modal fade" id="modalCadastroUsuario" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4">
+          <div class="modal-header">
+            <h5 class="modal-title">Cadastro de Aluno</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <form id="formCadastroUsuario">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">Nome completo</label>
+                <input name="name" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">CPF</label>
+                <input name="cpf" class="form-control" required maxlength="14" placeholder="000.000.000-00">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Data de nascimento</label>
+                <input name="birthDate" type="date" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">E-mail</label>
+                <input name="email" type="email" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Contato</label>
+                <input name="contact" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Senha</label>
+                <input name="password" type="password" class="form-control" required minlength="6">
+              </div>
+              <div id="cadastroUsuarioMsg" class="text-center mt-2"></div>
+            </div>
+            <div class="modal-footer d-flex justify-content-end gap-2">
+              <button type="submit" class="btn btn-success">Cadastrar</button>
+              <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Evento de submit do formulário de cadastro
+document.addEventListener("submit", async function (e) {
+  if (e.target && e.target.id === "formCadastroUsuario") {
+    e.preventDefault();
+    const form = e.target;
+    const msg = form.querySelector("#cadastroUsuarioMsg");
+    msg.innerHTML = "";
+
+    const formData = new FormData(form);
+
+    // Monta o objeto conforme o Student.java e o exemplo fornecido
+    const aluno = {
+      name: formData.get("name"),
+      cpf: formData.get("cpf"),
+      birthDate: formData.get("birthDate"),
+      email: formData.get("email"),
+      contact: formData.get("contact"),
+      password: formData.get("password"),
+      role: ["ROLE_STUDENT"],
+      photo: "",
+      assessment: {
+        description: "Avaliação inicial pendente",
+        professional: "",
+        posturalPhoto: "",
+        relevantData: ""
+      },
+      progress: "",
+      plan: null,
+      clientArea: {
+        paymentDueDate: "2025-06-01",
+        makeUps: 0,
+        paymentProof: "",
+        fiscalReceipt: "",
+        contract: "",
+        upComingClasses: [],
+        imageAuthorization: false
+      },
+      isActive: true
+    };
+
+    try {
+      const response = await fetch("http://localhost:8080/users/students", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(aluno)
+      });
+
+      if (response.ok) {
+        msg.innerHTML = `<span class="text-success">Cadastro realizado com sucesso! Faça login para acessar.</span>`;
+        setTimeout(() => {
+          const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastroUsuario"));
+          if (modal) modal.hide();
+        }, 1500);
+      } else {
+        const data = await response.json();
+        msg.innerHTML = `<span class="text-danger">${data.message || "Erro ao cadastrar."}</span>`;
+      }
+    } catch (err) {
+      msg.innerHTML = `<span class="text-danger">Erro de conexão.</span>`;
+    }
+  }
+});
+export async function criarModalUsuariosAdminHTML() {
+  try {
+    const res = await fetch("/api/users", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const users = await res.json();
+
+    const modalHTML = `
+      <div class="modal fade" id="modalUsuariosAdmin" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content p-4 rounded-4">
+            <div class="modal-header border-0">
+              <h4 class="modal-title">Gerenciar Usuários</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table table-striped">
+                <thead>
+                  <tr><th>Nome</th><th>Email</th><th>Perfil</th><th>Ações</th></tr>
+                </thead>
+                <tbody>
+                  ${users.map(user => `
+                    <tr>
+                      <td>${user.name}</td>
+                      <td>${user.email}</td>
+                      <td>${user.role}</td>
+                      <td>
+                        <button class="btn btn-sm btn-warning" onclick="editarUsuario('${user.id}')">Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="removerUsuario('${user.id}')">Remover</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const existente = document.getElementById("modalUsuariosAdmin");
+    if (existente) existente.remove();
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+  } catch (error) {
+    console.error("Erro ao buscar usuários:", error);
+  }
+}
+
+// Modal para gerenciar aulas
+export async function criarModalAulasAdminHTML() {
+  try {
+    const res = await fetch("/api/sessions", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const aulas = await res.json();
+
+    const modalHTML = `
+      <div class="modal fade" id="modalAulasAdmin" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content p-4 rounded-4">
+            <div class="modal-header border-0">
+              <h4 class="modal-title">Gerenciar Aulas</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table table-striped">
+                <thead>
+                  <tr><th>Nome da Aula</th><th>Instrutor</th><th>Horário</th><th>Ações</th></tr>
+                </thead>
+                <tbody>
+                  ${aulas.map(aula => `
+                    <tr>
+                      <td>${aula.name}</td>
+                      <td>${aula.instructorName || "—"}</td>
+                      <td>${aula.schedule || "—"}</td>
+                      <td>
+                        <button class="btn btn-sm btn-warning" onclick="editarAula('${aula.id}')">Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="removerAula('${aula.id}')">Remover</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const existente = document.getElementById("modalAulasAdmin");
+    if (existente) existente.remove();
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+  } catch (error) {
+    console.error("Erro ao buscar aulas:", error);
+  }
+}
