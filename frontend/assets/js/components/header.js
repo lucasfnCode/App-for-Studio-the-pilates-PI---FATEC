@@ -18,6 +18,7 @@ export function renderHeader() {
         <a class="nav-link m-1 text-secondary" aria-current="page" href="#home">Home</a>
         <a class="nav-link m-1 text-secondary" href="#agendamento">Agendamento</a>
         ${isInstructor ? `<a class="nav-link m-1 text-secondary" href="#aula">Gerenciar Aulas</a>` : ""}
+        <a class="nav-link m-1 text-secondary" href="#gerenciamento">gerenciamento</a>
       </div>
       <div class="nav">
         <a class="nav-link m-1 text-secondary" href="#login">

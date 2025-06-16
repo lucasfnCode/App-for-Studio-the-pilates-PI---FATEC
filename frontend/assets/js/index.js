@@ -4,8 +4,10 @@ import { renderHeader } from './components/header';
 import { footerHtml } from './components/footer';
 import { renderAgendamentoPage } from './pages/schedulling/schedulling';
 import { loginScreen } from "./pages/loginScreen/loginScreen";
-import { init } from "./pages/session/session";
-
+import { createPageAdm } from "./pages/adm/admpage";
+import { StudioManegementPage } from "./pages/adm/StudioManegement/StudioManegement";
+import { clearBody } from "./functions/clearBody";
+import { instructorManegement } from "./pages/adm/instrutor/instructorManegement";
 
 function isUserLoggedIn() {
   const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
@@ -13,14 +15,8 @@ function isUserLoggedIn() {
 }
 
 function renderContentBasedOnHash() {
-  const hash = location.hash;
-
-  if (!isUserLoggedIn() && hash !== "#login") {
-    location.hash = "#login";
-    return;
-  }
-  renderHeader();
-  switch (hash) {
+  clearBody();
+  switch (location.hash) {
     case "":
     case "#home":
     case undefined:
@@ -32,8 +28,17 @@ function renderContentBasedOnHash() {
     case "#login":
       loginScreen();
       break;
-    case "#aula":
+      case "#aula":
       init();
+      break;
+      case "#gerenciamento":
+      createPageAdm()
+      break;
+    case "#Studio-manegment":
+      StudioManegementPage()
+      break;
+    case "#instructor-manegment":
+      instructorManegement()
       break;
   }
 }
