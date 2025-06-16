@@ -8,12 +8,6 @@ Com essa aplicação, buscamos otimizar a rotina dos profissionais, aprimorar a 
 
 ---
 
-## 🌐 Link do Projeto
-
-[🔗 Clique aqui para acessar o projeto no GuitHub](https://github.com/lucasfnCode/App-for-Studio-the-pilates-PI---FATEC)
-
----
-
 ## 💻 Tecnologias Utilizadas
 
 ### 🧠 Back-End
@@ -26,8 +20,6 @@ Com essa aplicação, buscamos otimizar a rotina dos profissionais, aprimorar a 
 
 - **MongoDB**  
   Banco de dados NoSQL que armazena dados em formato flexível (JSON-like), ideal para lidar com estruturas dinâmicas e escaláveis.
-
----
 
 ### 🎨 Front-End
 
@@ -45,15 +37,35 @@ Com essa aplicação, buscamos otimizar a rotina dos profissionais, aprimorar a 
 ## ⚙️ Como executar o Projeto ?
 
 - **Clonar o repository no GitHub**
-  [Clique para clonar o repositório](https://github.com/lucasfnCode/App-for-Studio-the-pilates-PI---FATEC.git)
+  ```shell
+  git clone https://github.com/lucasfnCode/App-for-Studio-the-pilates-PI---FATEC.git
+  ```
   
 - **Executar uma instancia do MongoDB**
-  docker tralala  
+  ```shell
+  docker run --name mongodb-pilates -d -p 27017:27017 mongo
+  ```
 
 - **Executar o Backend**
-  cd backend && ./mvnw spring-boot:run  
+  ```shell
+  cd backend && ./mvnw spring-boot:run 
+  ``` 
 
 - **Executar o Frontend(Em outro terminal)**
+  ```shell
   cd frontend && npm install && npm start
+  ``` 
+- **Acessar os recursos**
+  #### Frontend  
+  [http://localhost:3000](a)
+
+  #### Backend
+  [http://localhost:8080](a)
+
+  #### Documentação
+  [Link para a documentação](http://localhost:8080/swagger-ui/index.html)
+
+
+  
     
 
