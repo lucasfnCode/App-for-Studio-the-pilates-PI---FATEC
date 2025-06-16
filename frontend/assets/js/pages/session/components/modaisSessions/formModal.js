@@ -1,61 +1,9 @@
-import {
-  fetchStudios,
-  criarAula,
-} from "../../service/sessionService.js";
+import { fetchStudios, criarAula } from "../../service/sessionService.js";
 import { criarModalConfirmacaoCriaçãoHTML } from "./confirmModal.js";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 export function criarModalCadastroAulaHTML() {
-  setTimeout(async () => {
-    const studios = await fetchStudios();
-    const selectStudio = document.getElementById("studioSelect");
-    selectStudio.innerHTML = studios
-      .map((studio) => `<option value="${studio.name}">${studio.name}</option>`)
-      .join("");
-
-    document.getElementById("formCadastroAula").onsubmit = async function (e) {
-      e.preventDefault();
-      const usuario = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
-      const body = {
-        students: [],
-        studio: document.getElementById("studioSelect").value,
-        instructor: usuario.name,
-        day: document.getElementById("dataAula").value,
-        hours: document.getElementById("horarioInput").value,
-        status: "aberta",
-        presences: [],
-        type: document.getElementById("tipoAula").value,
-        isActive: true,
-      };
-      try {
-        await criarAula(body);
-        bootstrap.Modal.getInstance(
-          document.getElementById("modalCadastroAula")
-        ).hide();
-        document.getElementById("modalCadastroAula").remove();
-
-        // Mostra modal de confirmação de criação corretamente
-        const existente = document.getElementById("modalConfirmacaoCriacao");
-        if (existente) existente.remove();
-        document.body.insertAdjacentHTML(
-          "beforeend",
-          criarModalConfirmacaoCriaçãoHTML("Aula criada com sucesso!")
-        );
-        const modal = new bootstrap.Modal(document.getElementById("modalConfirmacaoCriacao"));
-        modal.show();
-
-        setTimeout(() => {
-          modal.hide();
-          document.getElementById("modalConfirmacaoCriacao")?.remove();
-          window.renderizarTabelaAulas && window.renderizarTabelaAulas();
-        }, 1500);
-
-      } catch (err) {
-        alert("Erro ao criar aula!");
-      }
-    };
-  }, 0);
-
+  // Retorna o HTML do modal
   return `
     <div class="modal fade" id="modalCadastroAula" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
@@ -89,5 +37,63 @@ export function criarModalCadastroAulaHTML() {
         </form>
       </div>
     </div>
-    `;
+  `;
+}
+
+export function configurarModalCadastroAula() {
+  setTimeout(async () => {
+    // Preenche studios
+    const studios = await fetchStudios();
+    const selectStudio = document.getElementById("studioSelect");
+    selectStudio.innerHTML = studios
+      .map((studio) => `<option value="${studio.name}">${studio.name}</option>`)
+      .join("");
+
+    document.getElementById("formCadastroAula").onsubmit = async function (e) {
+      e.preventDefault();
+      const usuario = JSON.parse(localStorage.getItem("usuarioLogado")) || {};
+      const body = {
+        students: [],
+        studio: document.getElementById("studioSelect").value,
+        instructor: usuario.name,
+        day: document.getElementById("dataAula").value,
+        hours: document.getElementById("horarioInput").value,
+        status: "aberta",
+        presences: [],
+        type: document.getElementById("tipoAula").value,
+        isActive: true,
+      };
+
+      try {
+        await criarAula(body);
+
+        // Fecha e remove imediatamente o modal de cadastro e o backdrop
+        const modalEl = document.getElementById("modalCadastroAula");
+        let modalCadastro = bootstrap.Modal.getInstance(modalEl);
+        if (!modalCadastro) {
+          modalCadastro = new bootstrap.Modal(modalEl);
+        }
+        modalCadastro.hide();
+        modalEl.classList.remove('show');
+        modalEl.style.display = 'none';
+        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+        modalEl.remove();
+
+        // Agora sim, mostra o modal de confirmação
+        const modalId = criarModalConfirmacaoCriaçãoHTML("Aula criada com sucesso!");
+        const modalConfirmEl = document.getElementById(modalId);
+        const modalConfirm = new bootstrap.Modal(modalConfirmEl);
+        modalConfirm.show();
+
+        // Ao fechar o modal de confirmação, remove ele e atualiza a tabela
+        modalConfirmEl.addEventListener('hidden.bs.modal', () => {
+          modalConfirmEl.remove();
+          window.renderizarTabelaAulas && window.renderizarTabelaAulas();
+        }, { once: true });
+
+      } catch (err) {
+        alert("Erro ao criar aula!");
+      }
+    };
+  }, 0);
 }

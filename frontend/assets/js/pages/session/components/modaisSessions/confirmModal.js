@@ -28,7 +28,7 @@ export function criarModalConfirmacaoExclusaoHTML(mensagem = "Você tem certeza 
 
 export function criarModalConfirmacaoCriaçãoHTML(mensagem = "Ação concluída com sucesso.") {
   // Remove modal antigo se existir
-  const existente = document.getElementById("modalConfirmacao");
+  const existente = document.getElementById("modalConfirmacaoCriacao");
   if (existente) existente.remove();
 
   const modalHTML = `
@@ -50,4 +50,5 @@ export function criarModalConfirmacaoCriaçãoHTML(mensagem = "Ação concluída
     </div>
   `;
   document.body.insertAdjacentHTML("beforeend", modalHTML);
+  return "modalConfirmacaoCriacao";
 }

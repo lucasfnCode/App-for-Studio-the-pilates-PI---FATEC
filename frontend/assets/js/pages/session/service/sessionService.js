@@ -45,8 +45,9 @@ export async function criarAula(body) {
       },
       body: JSON.stringify(body)
     });
+    console.log("Status criarAula:", response.status);
     if (!response.ok) throw new Error("Erro ao criar aula");
-    return await response.json();
+    return;
   } catch (err) {
     throw err;
   }
