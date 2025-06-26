@@ -233,7 +233,7 @@ public class SessionService {
     private Boolean checkIfSheduleIsAvaliable(SessionInputDTO sessionInputDTO) {
         String studioName = sessionInputDTO.studio();
 
-        Optional<Studio> optionalStudio = studioRepository.findByName(studioName);
+        Optional<Studio> optionalStudio = studioRepository.findByNameAndIsActive(studioName, Boolean.TRUE);
         if (optionalStudio.isEmpty()) {
             throw new RuntimeException("Estúdio não encontrado: " + studioName);
         }
@@ -253,7 +253,7 @@ public class SessionService {
     private Boolean checkIfStudioIsInOperatingDay(SessionInputDTO sessionInputDTO) {
         String studioName = sessionInputDTO.studio();
 
-        Optional<Studio> optionalStudio = studioRepository.findByName(studioName);
+        Optional<Studio> optionalStudio = studioRepository.findByNameAndIsActive(studioName, Boolean.TRUE);
         if (optionalStudio.isEmpty()) {
             throw new RuntimeException("Estúdio não encontrado: " + studioName);
         }
@@ -270,7 +270,7 @@ public class SessionService {
         String studioName = sessionInputDTO.studio();
         String instructorName = sessionInputDTO.instructor();
 
-        Optional<Studio> optionalStudio = studioRepository.findByName(studioName);
+        Optional<Studio> optionalStudio = studioRepository.findByNameAndIsActive(studioName, Boolean.TRUE);
         if (optionalStudio.isEmpty()) {
             throw new RuntimeException("Estúdio não encontrado: " + studioName);
         }
@@ -290,7 +290,7 @@ public class SessionService {
 
     private Boolean checkMaxOfStudents(SessionInputDTO sessionInputDTO) {
         String studioName = sessionInputDTO.studio();
-        Optional<Studio> optionalStudio = studioRepository.findByName(studioName);
+        Optional<Studio> optionalStudio = studioRepository.findByNameAndIsActive(studioName, Boolean.TRUE);
         Studio studio = optionalStudio.get();
         List<String> session = sessionInputDTO.students();
 
