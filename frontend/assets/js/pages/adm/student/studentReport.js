@@ -1,15 +1,16 @@
 import { getOrCreateMainElement } from "../../../components/main";
+import { formatarDataExibicao } from "../../../service/formatData";
 import { getAllStudents } from "../../../service/studentService";
-// import { getStudentSessions } from "../../../service/sessionService"; // Supondo que exista um service para buscar sessões do aluno
+import { getSessionsByAluno } from "../../session/service/sessionService";
 
 export const studentReportPage = async (alunoId) => {
     const token = localStorage.getItem("token");
-    // Busca o aluno pelo ID
     const alunos = await getAllStudents(token);
     const aluno = alunos.find(a => a.id === alunoId);
+    const aulas = await getSessionsByAluno(alunoId);
 
-    // Busca as aulas agendadas do aluno
-    // const aulas = await getStudentSessions(alunoId, token); // [{date, time, status, instructor, studio}, ...]
+    console.log(aulas);
+    
 
     const main = getOrCreateMainElement();
     main.innerHTML = `
@@ -42,8 +43,8 @@ export const studentReportPage = async (alunoId) => {
                     <tbody>
                         ${aulas.length > 0 ? aulas.map(aula => `
                             <tr>
-                                <td>${aula.date ? new Date(aula.date).toLocaleDateString() : '-'}</td>
-                                <td>${aula.time || '-'}</td>
+                                <td>${formatarDataExibicao(aula.day)}</td>
+                                <td>${aula.hours || '-'}</td>
                                 <td>
                                     <span class="badge ${aula.status === 'CONFIRMED' ? 'bg-success' : 'bg-secondary'}">
                                         ${aula.status}

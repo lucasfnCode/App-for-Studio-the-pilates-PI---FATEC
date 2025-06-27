@@ -85,8 +85,6 @@ function renderContentBasedOnHash() {
                     break;
                 }
                 const alunoId = location.hash.replace("#student-report-", "");
-                console.log(alunoId);
-                
                 studentReportPage(alunoId);
                 break;
             }
