@@ -95,9 +95,14 @@ export async function renderAgendamentoPage() {
   const user = getUserLoggedData();
 
   async function atualizarTabela() {
-    const aulas = await fetchAulas();
+    let aulas = await fetchAulas();
     const tableBody = document.querySelector("tbody.table-group-divider");
     if (!tableBody) return;
+
+    // Filtro para estudantes: só aulas abertas
+    if (roles.includes("ROLE_STUDENT")) {
+      aulas = aulas.filter((aula) => aula.status === "aberta");
+    }
 
     const tableRows = aulas
       .map((aula) => {
@@ -116,12 +121,23 @@ export async function renderAgendamentoPage() {
           } else if (jaAgendado) {
             acoes = `<button class="btn btn-sm btn-danger" onclick="cancelarAula('${aulaId}')">Cancelar</button>`;
           }
+          // Não exibe coluna status para estudante
+          return `
+          <tr>
+            <td>${aula.instructor}</td>
+            <td>${formatarDataExibicao(aula.day)}</td>
+            <td>${aula.hours}</td>
+            <td>${aula.studio}</td>
+            <td class="d-flex justify-content-center">${acoes}</td>
+          </tr>
+          `;
         } else if (roles.includes("ROLE_RECEPTIONIST")) {
           acoes = `<button class="btn btn-sm btn-outline-success" onclick="abrirModalAlunos('${aulaId}')">Ver</button>`;
         } else if (roles.includes("ROLE_INSTRUCTOR")) {
           acoes = `<button class="btn btn-sm btn-secondary" onclick="abrirModalAlunos('${aulaId}')">Visualizar</button>`;
         }
 
+        // Para outros papéis, mantém a coluna status
         return `
         <tr>
           <td>${aula.instructor}</td>
@@ -129,9 +145,9 @@ export async function renderAgendamentoPage() {
           <td>${aula.hours}</td>
           <td>${aula.studio}</td>
           <td>${aula.status}</td>
-          <td>${acoes}</td>
+          <td class="d-flex justify-content-center">${acoes}</td>
         </tr>
-      `;
+        `;
       })
       .join("");
 
@@ -140,7 +156,7 @@ export async function renderAgendamentoPage() {
 
   // Estrutura da tela principal
   main.innerHTML = `
-    <h2 class="ms-4">Datas</h2>
+    <h2 class="ms-4">Aulas disponíveis</h2>
     <div class="d-flex justify-content-center">
       <div class="table-responsive w-100" style="max-width: 960px;">
         <table class="table table-hover table-striped">
@@ -150,8 +166,7 @@ export async function renderAgendamentoPage() {
               <th>Dia</th>
               <th>Hora</th>
               <th>Estúdio</th>
-              <th>Status</th>
-              <th>Ações</th>
+              <th class="d-flex justify-content-center">Agendamento</th>
             </tr>
           </thead>
           <tbody class="table-group-divider"></tbody>

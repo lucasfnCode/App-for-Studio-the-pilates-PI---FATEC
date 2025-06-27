@@ -24,6 +24,7 @@ public class TokenService {
                 .withIssuer("Managing Pilates")
                 .withSubject(user.getCpf())
                 .withClaim("id", user.getId())
+                .withClaim("name", user.getName())
                 .withClaim("roles", roles)
                 .withExpiresAt(
                         Date.from(
